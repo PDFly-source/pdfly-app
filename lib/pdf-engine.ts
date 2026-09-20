@@ -455,10 +455,13 @@ export async function pdfToImages(
 // 6. IMAGE TO PDF
 // ==========================================
 export interface ImageToPdfOptions {
-  pageSize?: 'a4' | 'a5' | 'letter' | 'fit';
+  pageSize?: 'a4' | 'a5' | 'a3' | 'letter' | 'legal' | 'fit' | 'custom';
   orientation?: 'portrait' | 'landscape' | 'auto';
   margin?: 'none' | 'small' | 'normal' | 'large';
-  fit?: 'fit' | 'fill' | 'actual';
+  fit?: 'fit' | 'fill' | 'actual' | 'crop';
+  quality?: 'standard' | 'high' | 'maximum';
+  customWidth?: number; // page width in PDF points (for pageSize === 'custom')
+  customHeight?: number; // page height in PDF points (for pageSize === 'custom')
 }
 
 export async function imagesToPdf(
@@ -475,6 +478,9 @@ export async function imagesToPdf(
 
   const marginPt =
     options.margin === 'none' ? 0 : options.margin === 'small' ? 18 : options.margin === 'large' ? 54 : 36;
+
+  const jpegQuality =
+    options.quality === 'standard' ? 0.72 : options.quality === 'maximum' ? 1.0 : 0.92;
 
   for (let i = 0; i < images.length; i++) {
     const imgFile = images[i];
@@ -497,20 +503,6 @@ export async function imagesToPdf(
     const imgWidth = imgEl.naturalWidth;
     const imgHeight = imgEl.naturalHeight;
 
-    // Convert to JPEG bytes via canvas if necessary to handle BMP/WebP/TIFF
-    const canvas = document.createElement('canvas');
-    canvas.width = imgWidth;
-    canvas.height = imgHeight;
-    const ctx = canvas.getContext('2d');
-    if (!ctx) continue;
-    ctx.drawImage(imgEl, 0, 0);
-
-    const jpegDataUrl = canvas.toDataURL('image/jpeg', 0.92);
-    const base64 = jpegDataUrl.split(',')[1];
-    const bytes = Uint8Array.from(atob(base64), (c) => c.charCodeAt(0));
-
-    const embeddedImage = await pdfDoc.embedJpg(bytes);
-
     // Determine target page dimensions
     let pageW = 595.28; // A4 pt
     let pageH = 841.89;
@@ -524,6 +516,15 @@ export async function imagesToPdf(
     } else if (options.pageSize === 'a5') {
       pageW = 419.53;
       pageH = 595.28;
+    } else if (options.pageSize === 'a3') {
+      pageW = 841.89;
+      pageH = 1190.55;
+    } else if (options.pageSize === 'legal') {
+      pageW = 612.0;
+      pageH = 1008.0;
+    } else if (options.pageSize === 'custom' && options.customWidth && options.customHeight) {
+      pageW = options.customWidth;
+      pageH = options.customHeight;
     }
 
     if (options.orientation === 'landscape' || (options.orientation === 'auto' && imgWidth > imgHeight)) {
@@ -535,13 +536,72 @@ export async function imagesToPdf(
     const usableW = pageW - marginPt * 2;
     const usableH = pageH - marginPt * 2;
 
+    // Convert to JPEG bytes via canvas (also handles BMP/WebP/TIFF sources)
+    // For 'crop' fit, center-crop the image to the usable page aspect ratio first.
+    let sourceW = imgWidth;
+    let sourceH = imgHeight;
+    const canvas = document.createElement('canvas');
+    if (options.fit === 'crop' && options.pageSize !== 'fit' && usableW > 0 && usableH > 0) {
+      const targetRatio = usableW / usableH;
+      const imgRatio = imgWidth / imgHeight;
+      if (imgRatio > targetRatio) {
+        sourceW = Math.round(imgHeight * targetRatio);
+        sourceH = imgHeight;
+      } else {
+        sourceW = imgWidth;
+        sourceH = Math.round(imgWidth / targetRatio);
+      }
+      canvas.width = sourceW;
+      canvas.height = sourceH;
+      const cropCtx = canvas.getContext('2d');
+      if (!cropCtx) continue;
+      cropCtx.drawImage(
+        imgEl,
+        (imgWidth - sourceW) / 2,
+        (imgHeight - sourceH) / 2,
+        sourceW,
+        sourceH,
+        0,
+        0,
+        sourceW,
+        sourceH
+      );
+    } else {
+      canvas.width = imgWidth;
+      canvas.height = imgHeight;
+      const ctx = canvas.getContext('2d');
+      if (!ctx) continue;
+      ctx.drawImage(imgEl, 0, 0);
+    }
+
+    const jpegDataUrl = canvas.toDataURL('image/jpeg', jpegQuality);
+    const base64 = jpegDataUrl.split(',')[1];
+    const bytes = Uint8Array.from(atob(base64), (c) => c.charCodeAt(0));
+
+    const embeddedImage = await pdfDoc.embedJpg(bytes);
+
     let drawW = usableW;
     let drawH = usableH;
     let drawX = marginPt;
     let drawY = marginPt;
 
-    if (!options.fit || options.fit === 'fit') {
-      const imgRatio = imgWidth / imgHeight;
+    if (options.fit === 'actual') {
+      // Draw at the image's native pixel size, centered on the page
+      drawW = sourceW;
+      drawH = sourceH;
+      drawX = (pageW - drawW) / 2;
+      drawY = (pageH - drawH) / 2;
+    } else if (options.fit === 'fill') {
+      // Stretch to exactly fill the usable page area
+      drawW = usableW;
+      drawH = usableH;
+      drawX = marginPt;
+      drawY = marginPt;
+    } else {
+      // 'fit' (contain, aspect preserved) and 'crop' (pre-cropped to page ratio) both fit the usable area
+      const fitW = options.fit === 'crop' ? sourceW : imgWidth;
+      const fitH = options.fit === 'crop' ? sourceH : imgHeight;
+      const imgRatio = fitW / fitH;
       const pageRatio = usableW / usableH;
       if (imgRatio > pageRatio) {
         drawW = usableW;

@@ -4,17 +4,16 @@ import React, { useState } from 'react';
 import { FileDropzone } from '@/components/FileDropzone';
 import { ProcessingModal } from '@/components/ProcessingModal';
 import { SuccessView } from '@/components/SuccessView';
+import { OrderedFileList } from '@/components/toolkit/OrderedFileList';
+import { FileNameInput } from '@/components/toolkit/FileNameInput';
+import { PdfPreviewModal } from '@/components/toolkit/PdfPreviewModal';
 import { mergePdfFiles, triggerDownload, formatBytes } from '@/lib/pdf-engine';
+import { ensurePdfExtension } from '@/lib/suggest-filename';
 import { addRecentJob } from '@/lib/recent-jobs';
 import { getPdfDocumentFromFile } from '@/lib/pdfjs-init';
 import {
   Layers,
-  ArrowUp,
-  ArrowDown,
-  Trash2,
-  FileText,
   AlertCircle,
-  Plus,
   ArrowRight,
   ShieldCheck,
 } from 'lucide-react';
@@ -23,10 +22,19 @@ interface FileItem {
   id: string;
   file: File;
   pageCount?: number;
+  subtitle?: string;
 }
+
+const DEFAULT_MERGE_NAME = 'PDFly_Merged';
 
 export const MergePdfWorkspace: React.FC = () => {
   const [items, setItems] = useState<FileItem[]>([]);
+  const [fileName, setFileName] = useState(DEFAULT_MERGE_NAME);
+  const [previewFileIndex, setPreviewFileIndex] = useState<number | null>(null);
+  const [previewFileUrl, setPreviewFileUrl] = useState<string | null>(null);
+  const [isResultPreviewOpen, setIsResultPreviewOpen] = useState(false);
+  const [resultBlobUrl, setResultBlobUrl] = useState<string | null>(null);
+
   const [isProcessing, setIsProcessing] = useState(false);
   const [processStep, setProcessStep] = useState('Preparing documents...');
   const [progressPct, setProgressPct] = useState(0);
@@ -48,34 +56,20 @@ export const MergePdfWorkspace: React.FC = () => {
       try {
         const pdfJsDoc = await getPdfDocumentFromFile(item.file);
         setItems((current) =>
-          current.map((it) => (it.id === item.id ? { ...it, pageCount: pdfJsDoc.numPages } : it))
+          current.map((it) =>
+            it.id === item.id
+              ? {
+                  ...it,
+                  pageCount: pdfJsDoc.numPages,
+                  subtitle: `${formatBytes(it.file.size)} • ${pdfJsDoc.numPages} pages`,
+                }
+              : it
+          )
         );
       } catch {
         // Continue gracefully
       }
     }
-  };
-
-  const moveUp = (index: number) => {
-    if (index === 0) return;
-    setItems((prev) => {
-      const copy = [...prev];
-      const temp = copy[index - 1];
-      copy[index - 1] = copy[index];
-      copy[index] = temp;
-      return copy;
-    });
-  };
-
-  const moveDown = (index: number) => {
-    if (index === items.length - 1) return;
-    setItems((prev) => {
-      const copy = [...prev];
-      const temp = copy[index + 1];
-      copy[index + 1] = copy[index];
-      copy[index] = temp;
-      return copy;
-    });
   };
 
   const removeItem = (id: string) => {
@@ -99,9 +93,10 @@ export const MergePdfWorkspace: React.FC = () => {
         setProgressPct(pct);
       });
 
-      const outName = `merged_${items[0].file.name.replace(/\.pdf$/i, '')}_pdfly.pdf`;
+      const outName = ensurePdfExtension(fileName);
       setResultBlob(outputBlob);
       setResultFileName(outName);
+      setResultBlobUrl(URL.createObjectURL(outputBlob));
 
       addRecentJob({
         toolId: 'merge-pdf',
@@ -126,25 +121,63 @@ export const MergePdfWorkspace: React.FC = () => {
     }
   };
 
+  const handleShare = async () => {
+    if (!resultBlob || !resultFileName) return;
+    try {
+      const file = new File([resultBlob], resultFileName, { type: 'application/pdf' });
+      if (navigator.share && (navigator as any).canShare?.({ files: [file] })) {
+        await navigator.share({ files: [file], title: resultFileName });
+      } else {
+        await navigator.share({ title: resultFileName, text: `${resultFileName} — merged with PDFly` });
+      }
+    } catch {
+      /* user cancelled share */
+    }
+  };
+
+  const handleRename = (newName: string) => {
+    setResultFileName(ensurePdfExtension(newName));
+  };
+
   const handleReset = () => {
     setItems([]);
     setResultBlob(null);
+    setResultBlobUrl((prev) => {
+      if (prev) URL.revokeObjectURL(prev);
+      return null;
+    });
     setResultFileName('');
+    setFileName(DEFAULT_MERGE_NAME);
+    setPreviewFileIndex(null);
+    setIsResultPreviewOpen(false);
     setErrorMessage(null);
   };
 
   if (resultBlob) {
     const totalPages = items.reduce((acc, it) => acc + (it.pageCount || 1), 0);
     return (
-      <SuccessView
-        fileName={resultFileName}
-        fileSize={resultBlob.size}
-        pageCount={totalPages}
-        downloadLabel="Download Merged PDF"
-        onDownload={handleDownload}
-        onReset={handleReset}
-        additionalNote="Combined successfully on your local device."
-      />
+      <>
+        <SuccessView
+          title="PDFs Merged"
+          fileName={resultFileName}
+          fileSize={resultBlob.size}
+          pageCount={totalPages}
+          downloadLabel="Download Merged PDF"
+          onDownload={handleDownload}
+          onReset={handleReset}
+          onPreview={() => setIsResultPreviewOpen(true)}
+          onShare={handleShare}
+          onRename={handleRename}
+          resetLabel="Merge Another"
+          additionalNote="Combined successfully on your local device."
+        />
+        <PdfPreviewModal
+          isOpen={isResultPreviewOpen}
+          onClose={() => setIsResultPreviewOpen(false)}
+          title={resultFileName}
+          blobUrl={resultBlobUrl || undefined}
+        />
+      </>
     );
   }
 
@@ -190,62 +223,44 @@ export const MergePdfWorkspace: React.FC = () => {
             </div>
           </div>
 
-          {/* Files List */}
-          <div className="space-y-2.5">
-            {items.map((item, idx) => (
-              <div
-                key={item.id}
-                className="flex items-center justify-between p-3.5 sm:p-4 rounded-2xl bg-white dark:bg-[#1E1A1B] border border-[#E5DFD4] dark:border-[#2E2729] shadow-xs group"
-              >
-                <div className="flex items-center gap-3 overflow-hidden">
-                  <span className="w-6 h-6 rounded-full bg-[#F7F3EC] dark:bg-[#141213] text-[#6D1F35] dark:text-[#C6A15B] text-xs font-bold flex items-center justify-center shrink-0 border border-[#E5DFD4] dark:border-[#2E2729]">
-                    {idx + 1}
-                  </span>
+          {/* Ordered file list */}
+          <div>
+            <div className="flex items-center justify-between mb-2.5 px-1">
+              <p className="text-xs font-semibold uppercase tracking-wider text-[#141213] dark:text-[#F5F0EB]">
+                Merge Order ({items.length})
+              </p>
+              <p className="text-[11px] text-[#5C554F] dark:text-[#A39991]">
+                Drag the handle to reorder documents
+              </p>
+            </div>
+            <OrderedFileList
+              items={items}
+              onReorder={setItems}
+              onRemove={removeItem}
+              onPreview={(idx) => {
+                const file = items[idx]?.file;
+                if (!file) return;
+                setPreviewFileUrl((prev) => {
+                  if (prev) URL.revokeObjectURL(prev);
+                  return URL.createObjectURL(file);
+                });
+                setPreviewFileIndex(idx);
+              }}
+              positionLabel="Document"
+            />
+          </div>
 
-                  <div className="w-8 h-8 rounded-lg bg-[#6D1F35]/10 dark:bg-[#C6A15B]/15 text-[#6D1F35] dark:text-[#C6A15B] flex items-center justify-center shrink-0">
-                    <FileText className="w-4 h-4" />
-                  </div>
-
-                  <div className="truncate">
-                    <p className="text-xs font-medium text-[#141213] dark:text-[#F5F0EB] truncate">
-                      {item.file.name}
-                    </p>
-                    <p className="text-[11px] text-[#5C554F] dark:text-[#A39991]">
-                      {formatBytes(item.file.size)}
-                      {item.pageCount !== undefined && ` • ${item.pageCount} pages`}
-                    </p>
-                  </div>
-                </div>
-
-                <div className="flex items-center gap-1 shrink-0 ml-2">
-                  <button
-                    onClick={() => moveUp(idx)}
-                    disabled={idx === 0}
-                    aria-label={`Move ${item.file.name} up`}
-                    className="p-1.5 rounded-lg text-[#5C554F] hover:text-[#141213] dark:text-[#A39991] dark:hover:text-[#F5F0EB] disabled:opacity-30 disabled:cursor-not-allowed hover:bg-black/5 dark:hover:bg-white/5 transition-colors"
-                  >
-                    <ArrowUp className="w-4 h-4" />
-                  </button>
-
-                  <button
-                    onClick={() => moveDown(idx)}
-                    disabled={idx === items.length - 1}
-                    aria-label={`Move ${item.file.name} down`}
-                    className="p-1.5 rounded-lg text-[#5C554F] hover:text-[#141213] dark:text-[#A39991] dark:hover:text-[#F5F0EB] disabled:opacity-30 disabled:cursor-not-allowed hover:bg-black/5 dark:hover:bg-white/5 transition-colors"
-                  >
-                    <ArrowDown className="w-4 h-4" />
-                  </button>
-
-                  <button
-                    onClick={() => removeItem(item.id)}
-                    aria-label={`Remove ${item.file.name}`}
-                    className="p-1.5 rounded-lg text-[#5C554F] hover:text-[#C94A4A] dark:text-[#A39991] dark:hover:text-[#C94A4A] hover:bg-[#C94A4A]/10 transition-colors"
-                  >
-                    <Trash2 className="w-4 h-4" />
-                  </button>
-                </div>
-              </div>
-            ))}
+          {/* File Name */}
+          <div className="p-5 rounded-2xl bg-white dark:bg-[#1E1A1B] border border-[#E5DFD4] dark:border-[#2E2729]">
+            <FileNameInput
+              label="Merged File Name"
+              value={fileName}
+              onChange={setFileName}
+              onSuggest={() =>
+                `Merged_${items[0]?.file.name.replace(/\.pdf$/i, '') || 'PDFs'}`
+              }
+              extension=".pdf"
+            />
           </div>
 
           {/* Sticky Bottom Action Bar */}
@@ -268,6 +283,20 @@ export const MergePdfWorkspace: React.FC = () => {
           </div>
         </div>
       )}
+
+      {/* Per-file preview */}
+      <PdfPreviewModal
+        isOpen={previewFileIndex !== null}
+        onClose={() => {
+          setPreviewFileIndex(null);
+          setPreviewFileUrl((prev) => {
+            if (prev) URL.revokeObjectURL(prev);
+            return null;
+          });
+        }}
+        title={previewFileIndex !== null ? items[previewFileIndex]?.file.name || 'Preview' : 'Preview'}
+        blobUrl={previewFileUrl || undefined}
+      />
 
       {/* Error display */}
       {errorMessage && (

@@ -5,6 +5,9 @@ import { FileDropzone } from '@/components/FileDropzone';
 import { ProcessingModal } from '@/components/ProcessingModal';
 import { compressPdf, triggerDownload, formatBytes } from '@/lib/pdf-engine';
 import { addRecentJob } from '@/lib/recent-jobs';
+import { FileNameInput } from '@/components/toolkit/FileNameInput';
+import { PdfPreviewModal } from '@/components/toolkit/PdfPreviewModal';
+import { ensurePdfExtension } from '@/lib/suggest-filename';
 import {
   Minimize2,
   TrendingDown,
@@ -16,11 +19,16 @@ import {
   RefreshCw,
   AlertCircle,
   FileCheck,
+  Eye,
+  Share2,
 } from 'lucide-react';
 import Link from 'next/link';
 
 export const CompressPdfWorkspace: React.FC = () => {
   const [file, setFile] = useState<File | null>(null);
+  const [fileName, setFileName] = useState('compressed');
+  const [isPreviewOpen, setIsPreviewOpen] = useState(false);
+  const [resultBlobUrl, setResultBlobUrl] = useState<string | null>(null);
   const [level, setLevel] = useState<'recommended' | 'extreme' | 'low'>('recommended');
   const [removeMetadata, setRemoveMetadata] = useState(true);
 
@@ -39,6 +47,7 @@ export const CompressPdfWorkspace: React.FC = () => {
   const handleFileSelected = (files: File[]) => {
     if (!files || files.length === 0) return;
     setFile(files[0]);
+    setFileName(`compressed_${files[0].name.replace(/\.pdf$/i, '')}`);
     setErrorMessage(null);
   };
 
@@ -62,10 +71,11 @@ export const CompressPdfWorkspace: React.FC = () => {
       );
 
       setResultData(result);
+      setResultBlobUrl(URL.createObjectURL(result.blob));
       addRecentJob({
         toolId: 'compress-pdf',
         toolName: 'Compress PDF',
-        fileName: `compressed_${file.name}`,
+        fileName: ensurePdfExtension(fileName),
         fileSize: result.newSize,
         status: 'completed',
       });
@@ -79,13 +89,19 @@ export const CompressPdfWorkspace: React.FC = () => {
 
   const handleDownload = () => {
     if (resultData && file) {
-      triggerDownload(resultData.blob, `compressed_${file.name}`);
+      triggerDownload(resultData.blob, ensurePdfExtension(fileName));
     }
   };
 
   const handleReset = () => {
     setFile(null);
     setResultData(null);
+    setResultBlobUrl((prev) => {
+      if (prev) URL.revokeObjectURL(prev);
+      return null;
+    });
+    setFileName('compressed');
+    setIsPreviewOpen(false);
     setErrorMessage(null);
   };
 
@@ -136,6 +152,16 @@ export const CompressPdfWorkspace: React.FC = () => {
           </div>
         </div>
 
+        <div className="mb-5 text-left">
+          <FileNameInput
+            label="File Name"
+            value={fileName}
+            onChange={setFileName}
+            onSuggest={() => `Compressed_${file.name.replace(/\.pdf$/i, '')}`}
+            extension=".pdf"
+          />
+        </div>
+
         <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
           <button
             onClick={handleDownload}
@@ -153,6 +179,40 @@ export const CompressPdfWorkspace: React.FC = () => {
             <span>Compress Another</span>
           </button>
         </div>
+
+        <div className="mt-3 flex flex-col sm:flex-row items-center justify-center gap-3">
+          <button
+            onClick={() => setIsPreviewOpen(true)}
+            className="w-full sm:w-auto px-5 py-2.5 rounded-xl border border-[#C9A15A]/40 bg-[#C9A15A]/10 text-[#8A6D2F] dark:text-[#C9A15A] text-xs font-bold inline-flex items-center justify-center gap-2 hover:bg-[#C9A15A]/20 transition-all"
+          >
+            <Eye className="w-4 h-4" />
+            <span>Preview PDF</span>
+          </button>
+          <button
+            onClick={async () => {
+              if (!resultData) return;
+              try {
+                const out = new File([resultData.blob], ensurePdfExtension(fileName), { type: 'application/pdf' });
+                if (navigator.share && (navigator as any).canShare?.({ files: [out] })) {
+                  await navigator.share({ files: [out], title: ensurePdfExtension(fileName) });
+                }
+              } catch {
+                /* user cancelled share */
+              }
+            }}
+            className="w-full sm:w-auto px-5 py-2.5 rounded-xl border border-[#E5DFD4] dark:border-[#2E2729] bg-white dark:bg-[#1E1A1B] text-xs font-bold text-[#141213] dark:text-[#F5F0EB] inline-flex items-center justify-center gap-2 hover:bg-black/5 dark:hover:bg-white/5 transition-all"
+          >
+            <Share2 className="w-4 h-4" />
+            <span>Share</span>
+          </button>
+        </div>
+
+        <PdfPreviewModal
+          isOpen={isPreviewOpen}
+          onClose={() => setIsPreviewOpen(false)}
+          title={ensurePdfExtension(fileName)}
+          blobUrl={resultBlobUrl || undefined}
+        />
       </div>
     );
   }

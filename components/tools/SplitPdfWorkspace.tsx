@@ -144,6 +144,27 @@ export const SplitPdfWorkspace: React.FC = () => {
     }
   };
 
+  const handleRename = (newName: string) => {
+    if (!resultData) return;
+    const ext = resultData.isZip ? '.zip' : '.pdf';
+    const cleaned = (newName || '').trim().replace(/\.(zip|pdf)$/i, '');
+    setResultData({ ...resultData, filename: cleaned ? `${cleaned}${ext}` : resultData.filename });
+  };
+
+  const handleShare = async () => {
+    if (!resultData) return;
+    try {
+      const out = new File([resultData.blob], resultData.filename, {
+        type: resultData.isZip ? 'application/zip' : 'application/pdf',
+      });
+      if (navigator.share && (navigator as any).canShare?.({ files: [out] })) {
+        await navigator.share({ files: [out], title: resultData.filename });
+      }
+    } catch {
+      /* user cancelled share */
+    }
+  };
+
   const handleReset = () => {
     setFile(null);
     setThumbnails([]);
@@ -159,6 +180,9 @@ export const SplitPdfWorkspace: React.FC = () => {
         downloadLabel={resultData.isZip ? 'Download ZIP Archive' : 'Download Extracted PDF'}
         onDownload={handleDownload}
         onReset={handleReset}
+        onShare={handleShare}
+        onRename={handleRename}
+        resetLabel="Split Another"
         additionalNote={`Split completed into ${resultData.count} ${resultData.count === 1 ? 'file' : 'files'} directly on your device.`}
       />
     );
