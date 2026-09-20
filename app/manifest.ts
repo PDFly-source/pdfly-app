@@ -3,9 +3,10 @@ import type { MetadataRoute } from 'next';
 export default function manifest(): MetadataRoute.Manifest {
   return {
     id: '/',
-    name: 'PDFly – Private, Powerful, Local PDF Toolkit',
+    name: 'PDFly',
     short_name: 'PDFly',
-    description: 'A private, local-first PDF workspace that processes your documents in your browser. Read, edit, convert, and protect documents securely.',
+    description:
+      'Private, powerful, local-first PDF toolkit for reading, editing, organizing, converting, protecting, and studying documents directly in your browser. No cloud uploads. No account required.',
     start_url: '/',
     scope: '/',
     display: 'standalone',
@@ -18,6 +19,12 @@ export default function manifest(): MetadataRoute.Manifest {
         sizes: '192x192',
         type: 'image/png',
         purpose: 'any',
+      },
+      {
+        src: '/pwa-maskable-192x192.png',
+        sizes: '192x192',
+        type: 'image/png',
+        purpose: 'maskable',
       },
       {
         src: '/pwa-512x512.png',

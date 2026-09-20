@@ -25,7 +25,6 @@ export const ThemeToggle: React.FC = () => {
   useEffect(() => {
     const saved =
       (localStorage.getItem('pdfly_theme') as 'light' | 'dark' | 'system') ||
-      (localStorage.getItem('pdfora_theme') as 'light' | 'dark' | 'system') ||
       'system';
     applyTheme(saved);
     const timer = setTimeout(() => {
@@ -52,6 +51,7 @@ export const ThemeToggle: React.FC = () => {
       aria-label={`Current theme: ${theme}. Click to change theme.`}
       className="p-2 rounded-lg text-[#5C554F] dark:text-[#A39991] hover:text-[#141213] dark:hover:text-[#F5F0EB] hover:bg-black/5 dark:hover:bg-white/5 transition-colors"
       title={`Theme: ${theme.toUpperCase()}`}
+      suppressHydrationWarning
     >
       {theme === 'light' && <Sun className="w-4 h-4 text-[#C6A15B]" />}
       {theme === 'dark' && <Moon className="w-4 h-4 text-[#C6A15B]" />}

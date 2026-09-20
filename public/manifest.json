@@ -2,7 +2,7 @@
   "id": "/",
   "name": "PDFly",
   "short_name": "PDFly",
-  "description": "Private. Powerful. Local.",
+  "description": "Private, powerful, local-first PDF toolkit for reading, editing, organizing, converting, protecting, and studying documents directly in your browser. No cloud uploads. No account required.",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",
@@ -21,6 +21,12 @@
       "purpose": "any"
     },
     {
+      "src": "/icons/icon-192-maskable.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
       "src": "/icons/icon-512.png",
       "sizes": "512x512",
       "type": "image/png",
@@ -37,6 +43,12 @@
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "any"
+    },
+    {
+      "src": "/pwa-maskable-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
     },
     {
       "src": "/pwa-512x512.png",

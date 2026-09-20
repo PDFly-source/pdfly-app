@@ -38,15 +38,9 @@ export default function AboutPage() {
 
         {/* Hero */}
         <div className="text-center max-w-2xl mx-auto mb-12">
-          <div className="flex justify-center mb-4">
-            <Logo size="xl" variant="icon" />
+          <div className="flex justify-center mb-6">
+            <Logo size="xl" variant="full" showTagline={true} href="" />
           </div>
-          <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-[#1A1416] dark:text-[#F7F1E8] mb-2 font-serif">
-            PDFly
-          </h1>
-          <p className="text-xs font-bold tracking-widest text-[#7A1635] dark:text-[#C9A15A] mb-4 uppercase">
-            PRIVATE. POWERFUL. LOCAL.
-          </p>
           <p className="text-sm sm:text-base text-[#5C5256] dark:text-[#AFA6A8] leading-relaxed">
             PDFly is built on an uncompromising principle: your files belong to you, and your browser is powerful enough to handle them without uploading them to remote servers.
           </p>

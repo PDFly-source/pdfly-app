@@ -134,6 +134,9 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenRecent }) => {
         {/* Mobile Drawer Menu */}
         {mobileMenuOpen && (
           <div className="md:hidden border-b border-[#E8DFD3] dark:border-[#2E2629] bg-[#F6EFE3] dark:bg-[#121012] px-4 py-4 space-y-3">
+            <div className="pb-3 border-b border-[#E8DFD3] dark:border-[#2E2629] flex items-center justify-between">
+              <Logo size="sm" variant="compact" showTagline={true} />
+            </div>
             <div className="space-y-1">
               {navLinks.map((link) => (
                 <Link

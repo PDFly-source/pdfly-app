@@ -3,7 +3,8 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePWAInstall } from '@/hooks/usePWAInstall';
-import { Download, X, Smartphone, Sparkles } from 'lucide-react';
+import { Download, X, Sparkles } from 'lucide-react';
+import { Logo } from '@/components/Logo';
 
 export const SmartInstallBanner: React.FC = () => {
   const { isInstallable, isInstalled, isIOS, install, hasDismissedBanner, dismissBanner } = usePWAInstall();
@@ -28,8 +29,8 @@ export const SmartInstallBanner: React.FC = () => {
       className="fixed bottom-4 left-4 right-4 sm:left-auto sm:right-6 sm:max-w-md z-40 p-4 rounded-3xl bg-[#FFFDF9]/95 dark:bg-[#1B1719]/95 backdrop-blur-md border border-[#E8DFD3] dark:border-[#2E2629] shadow-2xl transition-all animate-fade-in"
     >
       <div className="flex items-start gap-3.5">
-        <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-[#7A1635] to-[#4A0D20] text-[#C9A15A] flex items-center justify-center shrink-0 shadow-xs border border-[#C9A15A]/30">
-          <Smartphone className="w-5 h-5" />
+        <div className="shrink-0">
+          <Logo size="sm" variant="icon" />
         </div>
 
         <div className="flex-1 min-w-0 pr-1">

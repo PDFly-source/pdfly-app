@@ -35,7 +35,7 @@ export const GlobalSearchModal: React.FC<GlobalSearchModalProps> = ({
   const [recentSlugs, setRecentSlugs] = useState<string[]>(() => {
     if (typeof window === 'undefined') return [];
     try {
-      const stored = localStorage.getItem('pdfly_recent_tools') || localStorage.getItem('pdfora_recent_tools');
+      const stored = localStorage.getItem('pdfly_recent_tools');
       return stored ? JSON.parse(stored) : [];
     } catch {
       return [];
@@ -124,7 +124,7 @@ export const GlobalSearchModal: React.FC<GlobalSearchModalProps> = ({
   const handleSelectTool = (tool: ToolDefinition) => {
     // Save to recent tools in localStorage
     try {
-      const stored = localStorage.getItem('pdfly_recent_tools') || localStorage.getItem('pdfora_recent_tools');
+      const stored = localStorage.getItem('pdfly_recent_tools');
       let recents: string[] = stored ? JSON.parse(stored) : [];
       recents = [tool.slug, ...recents.filter((s) => s !== tool.slug)].slice(0, 5);
       localStorage.setItem('pdfly_recent_tools', JSON.stringify(recents));

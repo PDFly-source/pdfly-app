@@ -167,10 +167,8 @@ export function useTranslation() {
       if (e.detail) setLang(e.detail);
     };
     window.addEventListener('pdfly:lang_changed', handleLangChange);
-    window.addEventListener('pdfora:lang_changed', handleLangChange);
     return () => {
       window.removeEventListener('pdfly:lang_changed', handleLangChange);
-      window.removeEventListener('pdfora:lang_changed', handleLangChange);
     };
   }, []);
 

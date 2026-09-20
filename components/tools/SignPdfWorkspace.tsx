@@ -45,7 +45,7 @@ export const SignPdfWorkspace: React.FC = () => {
   const [rememberSignature, setRememberSignature] = useState(() => {
     if (typeof window === 'undefined') return false;
     try {
-      return Boolean(localStorage.getItem('pdfly_saved_signature') || localStorage.getItem('pdfora_saved_signature'));
+      return Boolean(localStorage.getItem('pdfly_saved_signature'));
     } catch {
       return false;
     }
@@ -53,7 +53,7 @@ export const SignPdfWorkspace: React.FC = () => {
   const [hasSavedSignature, setHasSavedSignature] = useState(() => {
     if (typeof window === 'undefined') return false;
     try {
-      return Boolean(localStorage.getItem('pdfly_saved_signature') || localStorage.getItem('pdfora_saved_signature'));
+      return Boolean(localStorage.getItem('pdfly_saved_signature'));
     } catch {
       return false;
     }
@@ -177,7 +177,7 @@ export const SignPdfWorkspace: React.FC = () => {
 
   const loadSavedSignature = () => {
     try {
-      const saved = localStorage.getItem('pdfly_saved_signature') || localStorage.getItem('pdfora_saved_signature');
+      const saved = localStorage.getItem('pdfly_saved_signature');
       if (saved) {
         setUploadedSignatureUrl(saved);
         setSignMode('upload');

@@ -184,10 +184,13 @@ export default function InstallPage() {
             <div className="absolute -bottom-20 -left-20 w-80 h-80 bg-[#7A1635]/40 rounded-full blur-2xl pointer-events-none" />
 
             <div className="relative z-10 max-w-2xl">
-              {/* Badge: ● PDFLY APP */}
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-black/40 border border-[#C9A15A]/40 text-[#C9A15A] text-xs font-bold uppercase tracking-wider mb-5 shadow-xs">
-                <span className="w-2 h-2 rounded-full bg-[#C9A15A] animate-pulse" />
-                <span>PDFly App</span>
+              {/* Official Master Logo & Badge */}
+              <div className="flex flex-wrap items-center gap-3 mb-6">
+                <Logo size="md" variant="compact" href="" />
+                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-black/40 border border-[#C9A15A]/40 text-[#C9A15A] text-xs font-bold uppercase tracking-wider shadow-xs">
+                  <span className="w-2 h-2 rounded-full bg-[#C9A15A] animate-pulse" />
+                  <span>Official PWA</span>
+                </div>
               </div>
 
               {/* Title */}

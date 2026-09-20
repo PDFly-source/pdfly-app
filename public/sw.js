@@ -1,20 +1,27 @@
 // PDFly Service Worker - High Performance Local-First PWA Cache
-const CACHE_NAME = 'pdfly-shell-v1';
+const CACHE_NAME = 'pdfly-shell-v6';
 
 // Core shell and assets to precache immediately on install
 const PRECACHE_ASSETS = [
   '/',
+  '/workspace',
   '/install',
   '/manifest.json',
   '/favicon.ico',
+  '/favicon.png',
   '/icon.svg',
   '/apple-touch-icon.png',
   '/icons/icon-192.png',
   '/icons/icon-512.png',
+  '/icons/icon-192-maskable.png',
   '/icons/icon-512-maskable.png',
   '/pwa-192x192.png',
   '/pwa-512x512.png',
-  '/pwa-maskable-512x512.png'
+  '/pwa-maskable-192x192.png',
+  '/pwa-maskable-512x512.png',
+  '/pdfly-mark.png',
+  '/pdfly-logo.png',
+  '/og-image.png'
 ];
 
 // Install: Pre-cache static assets
@@ -110,23 +117,44 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
-  // 2. Static Next.js chunks, fonts, images, scripts - Cache First with Network Fallback
-  const isStaticAsset =
-    url.pathname.startsWith('/_next/static/') ||
+  // 2. Next.js Script Chunks & Runtime: Network First with Cache Fallback
+  // Prevents hydration mismatches by ensuring client JavaScript matches server HTML when online
+  const isScriptOrChunk =
+    url.pathname.startsWith('/_next/') ||
+    url.pathname.endsWith('.js');
+
+  if (isScriptOrChunk) {
+    event.respondWith(
+      fetch(request)
+        .then((networkResponse) => {
+          if (networkResponse && networkResponse.status === 200) {
+            const copy = networkResponse.clone();
+            caches.open(CACHE_NAME).then((cache) => cache.put(request, copy));
+          }
+          return networkResponse;
+        })
+        .catch(async () => {
+          return caches.match(request);
+        })
+    );
+    return;
+  }
+
+  // 3. Static Media, Fonts, & Brand Assets - Cache First with Background Update
+  const isStaticMedia =
     url.pathname.startsWith('/icons/') ||
     url.pathname.startsWith('/fonts/') ||
     url.pathname.endsWith('.png') ||
     url.pathname.endsWith('.svg') ||
     url.pathname.endsWith('.ico') ||
     url.pathname.endsWith('.woff2') ||
-    url.pathname.endsWith('.js') ||
     url.pathname.endsWith('.css');
 
-  if (isStaticAsset) {
+  if (isStaticMedia) {
     event.respondWith(
       caches.match(request).then((cachedResponse) => {
         if (cachedResponse) {
-          // Stale-while-revalidate for static assets in background
+          // Stale-while-revalidate for static media in background
           fetch(request)
             .then((networkResponse) => {
               if (networkResponse && networkResponse.status === 200) {

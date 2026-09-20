@@ -20,10 +20,9 @@ export const PWARegister: React.FC = () => {
           scope: '/',
         });
 
-        // Check if there is already a waiting worker
+        // Check if there is already a waiting worker - immediately skip waiting
         if (registration.waiting) {
-          setUpdateWaiting(true);
-          setWaitingWorker(registration.waiting);
+          registration.waiting.postMessage({ type: 'SKIP_WAITING' });
           setGlobalSWRegistration(registration, true);
         }
 
@@ -33,13 +32,15 @@ export const PWARegister: React.FC = () => {
           if (!newWorker) return;
 
           newWorker.addEventListener('statechange', () => {
-            if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-              setUpdateWaiting(true);
-              setWaitingWorker(newWorker);
+            if (newWorker.state === 'installed') {
+              newWorker.postMessage({ type: 'SKIP_WAITING' });
               setGlobalSWRegistration(registration, true);
             }
           });
         });
+
+        // Check for updates immediately
+        registration.update().catch(() => {});
 
         setGlobalSWRegistration(registration, false);
       } catch (err) {

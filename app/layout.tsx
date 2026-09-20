@@ -16,12 +16,13 @@ export const viewport: Viewport = {
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://pdfly.app'),
+  applicationName: 'PDFly',
   title: {
     default: 'PDFly — Private PDF Tools | Powerful. Local. Secure.',
     template: '%s | PDFly',
   },
   description:
-    'PDFly is a modern, privacy-first PDF workspace for editing, converting, organizing and working with documents directly in your browser.',
+    'Private, powerful, local-first PDF toolkit for reading, editing, organizing, converting, protecting, and studying documents directly in your browser. No cloud uploads. No account required.',
   manifest: '/manifest.json',
   appleWebApp: {
     capable: true,
@@ -38,7 +39,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: 'PDFly — Private PDF Tools | Powerful. Local. Secure.',
     description:
-      'PDFly is a modern, privacy-first PDF workspace for editing, converting, organizing and working with documents directly in your browser.',
+      'Private, powerful, local-first PDF toolkit for reading, editing, organizing, converting, protecting, and studying documents directly in your browser. No cloud uploads. No account required.',
     url: 'https://pdfly.app',
     siteName: 'PDFly',
     images: [
@@ -56,7 +57,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: 'PDFly — Private PDF Tools | Powerful. Local. Secure.',
     description:
-      'A private, local-first PDF workspace that processes your documents in your browser. Fast, secure, and independent.',
+      'Private, powerful, local-first PDF toolkit for reading, editing, organizing, converting, protecting, and studying documents directly in your browser. No cloud uploads. No account required.',
     images: ['/og-image.png'],
   },
 };
@@ -87,8 +88,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                   if (oldVal && !newVal) {
                     localStorage.setItem(pair[1], oldVal);
                   }
+                  if (oldVal) {
+                    localStorage.removeItem(pair[0]);
+                  }
                 });
-                var theme = localStorage.getItem('pdfly_theme') || localStorage.getItem('pdfora_theme');
+                var theme = localStorage.getItem('pdfly_theme');
                 if (theme === 'dark' || (!theme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
                   document.documentElement.classList.add('dark');
                 } else {
@@ -98,7 +102,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             `,
           }}
         />
+        <title>PDFly — Private PDF Tools | Powerful. Local. Secure.</title>
         <link rel="manifest" href="/manifest.json" />
+        <meta name="application-name" content="PDFly" />
         <meta name="theme-color" content="#741B35" />
         <meta name="mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-capable" content="yes" />

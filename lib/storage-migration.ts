@@ -31,6 +31,9 @@ export function runStorageMigration(): void {
       if (oldValue && !newValue) {
         localStorage.setItem(newKey, oldValue);
       }
+      if (oldValue) {
+        localStorage.removeItem(oldKey);
+      }
     }
     migrated = true;
   } catch {
@@ -50,6 +53,7 @@ export function getStorageItem(newKey: string, oldKey?: string): string | null {
       const fallback = localStorage.getItem(oldKey);
       if (fallback !== null) {
         localStorage.setItem(newKey, fallback);
+        localStorage.removeItem(oldKey);
         return fallback;
       }
     }
@@ -60,14 +64,14 @@ export function getStorageItem(newKey: string, oldKey?: string): string | null {
 }
 
 /**
- * Safe local storage writer that writes to new key and maintains sync
+ * Safe local storage writer that writes to new key
  */
 export function setStorageItem(newKey: string, value: string, oldKey?: string): void {
   if (typeof window === 'undefined') return;
   try {
     localStorage.setItem(newKey, value);
     if (oldKey) {
-      localStorage.setItem(oldKey, value);
+      localStorage.removeItem(oldKey);
     }
   } catch {
     // Ignore storage write errors

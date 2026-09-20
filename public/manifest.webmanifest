@@ -2,7 +2,7 @@
   "id": "/",
   "name": "PDFly",
   "short_name": "PDFly",
-  "description": "Private. Powerful. Local.",
+  "description": "Private, powerful, local-first PDF toolkit for reading, editing, organizing, converting, protecting, and studying documents directly in your browser. No cloud uploads. No account required.",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",
