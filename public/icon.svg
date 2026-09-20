@@ -1,0 +1,106 @@
+
+<svg width="512" height="512" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- Background subtle gradient -->
+    <radialGradient id="bgGrad" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#FCF8F2" />
+      <stop offset="100%" stop-color="#F2E8DA" />
+    </radialGradient>
+
+    <!-- Burgundy Gradients -->
+    <linearGradient id="burgundyDeep" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#8F1D40" />
+      <stop offset="45%" stop-color="#6E132E" />
+      <stop offset="100%" stop-color="#3D0818" />
+    </linearGradient>
+
+    <linearGradient id="burgundyBack" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#7A1635" />
+      <stop offset="100%" stop-color="#4A0D20" />
+    </linearGradient>
+
+    <!-- Gold Foil Gradients -->
+    <linearGradient id="goldFoil" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#EED8A1" />
+      <stop offset="35%" stop-color="#D4AA5B" />
+      <stop offset="70%" stop-color="#BE9343" />
+      <stop offset="100%" stop-color="#8E6723" />
+    </linearGradient>
+
+    <linearGradient id="goldFoilLight" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#FFF2D4" />
+      <stop offset="50%" stop-color="#DFC17E" />
+      <stop offset="100%" stop-color="#A57D33" />
+    </linearGradient>
+
+    <!-- Soft Drop Shadow -->
+    <filter id="masterShadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="16" stdDeviation="20" flood-color="#2D0613" flood-opacity="0.32" />
+      <feDropShadow dx="0" dy="4" stdDeviation="6" flood-color="#000000" flood-opacity="0.18" />
+    </filter>
+
+    <filter id="pageShadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="3" dy="6" stdDeviation="7" flood-color="#3D0818" flood-opacity="0.25" />
+    </filter>
+  </defs>
+
+  
+
+  <!-- Master Stylized P Document Ribbon Emblem -->
+  <g filter="url(#masterShadow)">
+    <!-- 1. Outer Burgundy P Letter Arch -->
+    <path d="M178 78 
+             H306 
+             C372 78 418 118 418 184 
+             C418 248 372 288 306 288 
+             H238 
+             V434 
+             H178 
+             Z" 
+          fill="url(#burgundyDeep)" />
+
+    <!-- 2. Embedded Document Sheet -->
+    <g filter="url(#pageShadow)">
+      <!-- Sheet Body -->
+      <path d="M206 104 
+               H280 
+               L348 172 
+               V256 
+               C348 266 340 274 330 274 
+               H206 
+               Z" 
+            fill="#FFFDF9" />
+
+      <!-- Folded Top-Right Corner with Gold Foil Underbelly -->
+      <path d="M280 104 L348 172 H296 C287 172 280 165 280 156 Z" fill="url(#goldFoil)" />
+
+      <!-- Document Line Bars (Gold) -->
+      <rect x="224" y="196" width="76" height="9" rx="4.5" fill="url(#goldFoil)" />
+      <rect x="224" y="218" width="94" height="9" rx="4.5" fill="url(#goldFoil)" />
+      <rect x="224" y="240" width="60" height="9" rx="4.5" fill="url(#goldFoil)" />
+    </g>
+
+    <!-- 3. Lower 3D Ribbon Flourish (Curl looping at the base) -->
+    <!-- Gold Underbelly of Ribbon -->
+    <path d="M178 356 
+             C206 356 248 340 292 316 
+             C332 294 374 274 416 280 
+             C400 318 360 354 316 366 
+             C268 380 216 384 178 376 
+             Z" 
+          fill="url(#goldFoil)" />
+
+    <!-- Burgundy Ribbon Surface Front -->
+    <path d="M178 334 
+             C218 334 266 312 308 288 
+             C352 264 394 250 422 268 
+             C412 284 388 316 340 338 
+             C288 362 232 368 178 362 
+             Z" 
+          fill="url(#burgundyDeep)" />
+
+    <!-- Gold Edge Trim Ribbon Highlight -->
+    <path d="M178 334 C218 334 266 312 308 288 C352 264 394 250 422 268" 
+          stroke="url(#goldFoilLight)" stroke-width="4" stroke-linecap="round" />
+  </g>
+</svg>

@@ -1,0 +1,6 @@
+{
+  "name": "PDFly",
+  "description": "A private, local-first PDF workspace that processes your documents directly in your browser. Fast, secure, and independent with zero cloud uploads.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

@@ -1,0 +1,114 @@
+@import "tailwindcss";
+
+@theme {
+  --color-brand-burgundy: #7A1635;
+  --color-brand-burgundy-hover: #911B3F;
+  --color-brand-burgundy-deep: #4A0D20;
+  --color-brand-maroon: #350815;
+  --color-brand-cream: #F6EFE3;
+  --color-brand-cream-light: #FAF5EC;
+  --color-brand-gold: #C9A15A;
+  --color-brand-gold-hover: #DFBA6E;
+  --color-brand-charcoal: #121012;
+  --color-brand-surface: #1B1719;
+  --color-brand-surface-2: #241D20;
+  --color-brand-text-muted: #AFA6A8;
+  --color-brand-text-primary: #F7F1E8;
+  --color-brand-success: #35C98A;
+  --color-brand-error: #E36B6B;
+  --color-brand-border-dark: #2E2629;
+  --color-brand-border-light: #E8DFD3;
+}
+
+@layer base {
+  :root {
+    --bg-page: #F6EFE3;
+    --surface-page: #FFFDF9;
+    --surface-secondary: #FBF7F0;
+    --border-page: #E8DFD3;
+    --border-highlight: rgba(122, 22, 53, 0.2);
+    --text-main: #1A1416;
+    --text-muted: #5C5256;
+    --accent-gold: #C9A15A;
+    --accent-burgundy: #7A1635;
+  }
+
+  .dark {
+    --bg-page: #121012;
+    --surface-page: #1B1719;
+    --surface-secondary: #241D20;
+    --border-page: #2E2629;
+    --border-highlight: rgba(201, 161, 90, 0.25);
+    --text-main: #F7F1E8;
+    --text-muted: #AFA6A8;
+    --accent-gold: #C9A15A;
+    --accent-burgundy: #7A1635;
+  }
+
+  body {
+    background-color: var(--bg-page);
+    color: var(--text-main);
+    font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+    -webkit-font-smoothing: antialiased;
+  }
+}
+
+/* Subtle luxury parchment / document pattern */
+.bg-document-grid {
+  background-image: radial-gradient(rgba(122, 22, 53, 0.07) 1px, transparent 1px);
+  background-size: 24px 24px;
+}
+
+.dark .bg-document-grid {
+  background-image: radial-gradient(rgba(201, 161, 90, 0.08) 1px, transparent 1px);
+  background-size: 24px 24px;
+}
+
+/* Subtle gold foil glow effect */
+.gold-glow {
+  box-shadow: 0 0 35px -5px rgba(201, 161, 90, 0.22);
+}
+
+.burgundy-glow {
+  box-shadow: 0 0 35px -5px rgba(122, 22, 53, 0.25);
+}
+
+/* Custom subtle scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(122, 22, 53, 0.2);
+  border-radius: 9999px;
+}
+.dark ::-webkit-scrollbar-thumb {
+  background: rgba(201, 161, 90, 0.25);
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(122, 22, 53, 0.45);
+}
+.dark ::-webkit-scrollbar-thumb:hover {
+  background: rgba(201, 161, 90, 0.5);
+}
+
+/* Safe area bottom padding for modern phones */
+.safe-area-pb {
+  padding-bottom: env(safe-area-inset-bottom, 0.5rem);
+}
+
+/* Standalone Installed PWA adjustments */
+html.standalone-mode body {
+  padding-top: env(safe-area-inset-top, 0px);
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+  overscroll-behavior-y: none;
+}
+
+html.standalone-mode header,
+html.standalone-mode nav {
+  padding-top: max(0.5rem, env(safe-area-inset-top, 0px));
+}
+
