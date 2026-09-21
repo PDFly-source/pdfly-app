@@ -604,7 +604,7 @@ function evaluateCondition(cond: StepCondition | undefined, ctx: ConditionContex
 // 6. Rotation helper (absolute set, engine-level via pdf-lib)
 // -----------------------------------------------
 
-async function setPagesRotation(
+export async function setPagesRotation(
   file: File,
   mode: 'auto-fix' | 'all' | 'range',
   angle: number,

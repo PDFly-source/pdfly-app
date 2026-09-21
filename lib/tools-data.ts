@@ -46,6 +46,7 @@ export const ALL_TOOLS: ToolDefinition[] = [
     accepts: ['.pdf', 'application/pdf'],
     maxFiles: 1,
     outputExt: '.pdf',
+    supportsBatch: true,
     keywords: ['organize', 'rotate', 'reorder', 'duplicate', 'reverse', 'sort', 'pages'],
     seoTitle: 'Organize & Rotate PDF Pages Online | PDFMiniFly',
     seoDescription: 'Drag, reorder, rotate 90/180 degrees, duplicate, and delete pages from PDF files visually with local-first processing.'
@@ -147,6 +148,7 @@ export const ALL_TOOLS: ToolDefinition[] = [
     accepts: ['.pdf', 'application/pdf'],
     maxFiles: 1,
     outputExt: '.pdf',
+    supportsBatch: true,
     keywords: ['compress', 'reduce size', 'shrink', 'optimize', 'small pdf'],
     seoTitle: 'Compress PDF Locally – Fast, Secure Size Reducer | PDFMiniFly',
     seoDescription: 'Shrink PDF file sizes directly on your device with customizable compression ratios and local-first processing.'
@@ -162,6 +164,7 @@ export const ALL_TOOLS: ToolDefinition[] = [
     accepts: ['.pdf', 'application/pdf'],
     maxFiles: 1,
     outputExt: '.pdf',
+    supportsBatch: true,
     keywords: ['metadata', 'sanitize', 'properties', 'author', 'title'],
     seoTitle: 'PDF Metadata Viewer & Sanitizer | PDFMiniFly',
     seoDescription: 'View author, title, dates and remove privacy-sensitive metadata from your PDF files.'
@@ -298,6 +301,7 @@ export const ALL_TOOLS: ToolDefinition[] = [
     accepts: ['.pdf', 'application/pdf'],
     maxFiles: 1,
     outputExt: '.pdf',
+    supportsBatch: true,
     keywords: ['watermark', 'stamp', 'confidential', 'draft', 'overlay'],
     seoTitle: 'Watermark PDF Online – Add Text & Image Watermarks | PDFMiniFly',
     seoDescription: 'Protect confidential documents with diagonal or center text/image watermarks.'
@@ -313,6 +317,7 @@ export const ALL_TOOLS: ToolDefinition[] = [
     accepts: ['.pdf', 'application/pdf'],
     maxFiles: 1,
     outputExt: '.pdf',
+    supportsBatch: true,
     keywords: ['page numbers', 'numbering', 'header footer', 'pagination', 'bates'],
     seoTitle: 'Add Page Numbers to PDF Files Online | PDFMiniFly',
     seoDescription: 'Insert clean page numbers (Page 1 of N, etc.) in multiple positions across your PDF documents.'
@@ -652,6 +657,7 @@ export const ALL_TOOLS: ToolDefinition[] = [
     accepts: ['.pdf', 'application/pdf'],
     maxFiles: 1,
     outputExt: '.pdf',
+    supportsBatch: true,
     keywords: ['grayscale pdf', 'black and white pdf', 'ink saver', 'print cheaper', 'bw pdf'],
     seoTitle: 'Grayscale & Ink Saver PDF Converter | PDFMiniFly',
     seoDescription: 'Convert PDFs to grayscale, pure black & white, or ink-saving profiles with DPI control and live preview. 100% local.'
