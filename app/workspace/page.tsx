@@ -156,7 +156,7 @@ export default function WorkspacePage() {
               <div className="flex items-center gap-2 mb-2">
                 <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-[#7A1635]/10 dark:bg-[#C9A15A]/10 text-[#7A1635] dark:text-[#C9A15A]">
                   <FolderKanban className="w-3.5 h-3.5" />
-                  <span>PDFly Workspace</span>
+                  <span>PDFMiniFly Workspace</span>
                 </span>
                 <span className="inline-flex items-center gap-1 text-[11px] text-emerald-700 dark:text-emerald-400">
                   <ShieldCheck className="w-3.5 h-3.5" />

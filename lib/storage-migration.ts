@@ -1,9 +1,13 @@
 'use client';
 
 /**
- * PDFly Local Storage Migration Engine
- * Automatically migrates existing local PDFora keys to PDFly keys
+ * PDFMiniFly Local Storage Migration Engine
+ * Automatically migrates existing local PDFora keys to the current app keys
  * without data loss or breaking user histories.
+ *
+ * NOTE: the "pdfly_*" key names below are LEGACY TECHNICAL STORAGE
+ * IDENTIFIERS, intentionally preserved for backward compatibility with
+ * existing user data. They are never shown in the UI.
  */
 
 const MIGRATIONS: Array<{ oldKey: string; newKey: string }> = [

@@ -62,7 +62,7 @@ export default function SecurityCenterPage() {
           <div className="flex items-center gap-2 mb-3">
             <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-emerald-100 text-emerald-800 dark:bg-emerald-950/40 dark:text-emerald-400">
               <ShieldCheck className="w-3.5 h-3.5" />
-              <span>PDFly Security & Privacy Center</span>
+              <span>PDFMiniFly Security & Privacy Center</span>
             </span>
           </div>
           <h1 className="text-3xl sm:text-4xl font-bold tracking-tight text-[#141213] dark:text-[#F5F0EB]">
@@ -97,7 +97,7 @@ export default function SecurityCenterPage() {
               Permanent Destruction
             </h3>
             <p className="text-xs text-[#5C554F] dark:text-[#A39991] leading-relaxed">
-              Unlike superficial cosmetic black boxes that leave underlying streams selectable, PDFly redaction completely purges vectors and text objects.
+              Unlike superficial cosmetic black boxes that leave underlying streams selectable, PDFMiniFly redaction completely purges vectors and text objects.
             </p>
           </div>
 

@@ -30,7 +30,7 @@ function titleCase(token: string): string {
  *   random mix                                 -> Scanned_Documents_September_2026
  */
 export function suggestImagesToPdfName(files: File[]): string {
-  if (!files || files.length === 0) return 'PDFly_Images_to_PDF';
+  if (!files || files.length === 0) return 'PDFMiniFly_Images_to_PDF';
 
   const now = new Date();
   const month = MONTHS[now.getMonth()];
@@ -86,7 +86,7 @@ export function suggestImagesToPdfName(files: File[]): string {
 
 /** Ensures a file name ends with the .pdf extension (used at download time). */
 export function ensurePdfExtension(name: string): string {
-  const trimmed = (name || '').trim() || 'PDFly_Document';
+  const trimmed = (name || '').trim() || 'PDFMiniFly_Document';
   return /\.pdf$/i.test(trimmed) ? trimmed : `${trimmed}.pdf`;
 }
 

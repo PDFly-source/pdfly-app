@@ -104,7 +104,7 @@ export default function SettingsPage() {
                 Language & Regional Support
               </h2>
               <p className="text-xs text-[#5C554F] dark:text-[#A39991]">
-                PDFly supports Northeast India & South Asian languages natively.
+                PDFMiniFly supports Northeast India & South Asian languages natively.
               </p>
             </div>
           </div>
@@ -245,10 +245,10 @@ export default function SettingsPage() {
           </div>
         </div>
 
-        {/* 5. About PDFly */}
+        {/* 5. About PDFMiniFly */}
         <div className="p-6 rounded-3xl border border-[#E8DFD3] dark:border-[#2E2629] bg-[#FFFDF9] dark:bg-[#1B1719] shadow-xs text-center space-y-2">
           <h3 className="text-sm font-bold text-[#1A1416] dark:text-[#F7F1E8]">
-            PDFly — Private. Powerful. Local.
+            PDFMiniFly — Private. Powerful. Local.
           </h3>
           <p className="text-xs text-[#5C5256] dark:text-[#AFA6A8] max-w-lg mx-auto">
             Built as a private, client-first workspace for reading, studying, redacting, converting, and securing documents without relying on external cloud tracking.

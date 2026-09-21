@@ -141,7 +141,7 @@ export function usePWAInstall() {
         return true;
       }
     } catch (err) {
-      console.warn('[PDFly PWA] Installation prompt error:', err);
+      console.warn('[PDFMiniFly PWA] Installation prompt error:', err);
     } finally {
       setIsInstalling(false);
     }

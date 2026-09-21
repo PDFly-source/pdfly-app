@@ -14,7 +14,7 @@ export const Footer: React.FC = () => {
           <div className="space-y-4">
             <Logo size="md" variant="compact" showTagline={true} />
             <p className="text-xs leading-relaxed max-w-sm text-[#5C5256] dark:text-[#AFA6A8]">
-              PDFly is a private, local-first PDF workspace that processes your documents directly in your browser. Read, edit, convert, and protect documents securely without unnecessary cloud uploads.
+              PDFMiniFly is a private, local-first PDF workspace that processes your documents directly in your browser. Read, edit, convert, and protect documents securely without unnecessary cloud uploads.
             </p>
             <div className="flex items-center gap-1.5 text-xs text-[#35C98A] font-semibold pt-1">
               <ShieldCheck className="w-4 h-4" />
@@ -103,7 +103,7 @@ export const Footer: React.FC = () => {
             <ul className="space-y-2 text-xs">
               <li>
                 <Link href="/about" className="hover:text-[#7A1635] dark:hover:text-[#C9A15A] transition-colors">
-                  About PDFly
+                  About PDFMiniFly
                 </Link>
               </li>
               <li>
@@ -132,7 +132,7 @@ export const Footer: React.FC = () => {
 
         {/* Bottom Bar */}
         <div className="pt-8 border-t border-[#E8DFD3] dark:border-[#2E2629] flex flex-col sm:flex-row items-center justify-between gap-4 text-xs">
-          <p>© 2026 PDFly. All rights reserved.</p>
+          <p>© 2026 PDFMiniFly. All rights reserved.</p>
           <div className="flex items-center gap-2">
             <span className="inline-block w-2 h-2 rounded-full bg-[#35C98A]"></span>
             <span className="font-bold tracking-wider uppercase text-[11px] text-[#4A0D20] dark:text-[#C9A15A]">

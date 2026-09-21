@@ -39,7 +39,7 @@ const PAGE_PT: Record<string, [number, number]> = {
   legal: [612.0, 1008.0],
 };
 
-const DEFAULT_FILE_NAME = 'PDFly_Images_to_PDF';
+const DEFAULT_FILE_NAME = 'PDFMiniFly_Images_to_PDF';
 
 export const ImageToPdfWorkspace: React.FC = () => {
   const [items, setItems] = useState< OrderedListItem[] >([]);
@@ -192,7 +192,7 @@ export const ImageToPdfWorkspace: React.FC = () => {
       if (navigator.share && (navigator as any).canShare?.({ files: [file] })) {
         await navigator.share({ files: [file], title: resultFileName });
       } else {
-        await navigator.share({ title: resultFileName, text: `${resultFileName} — created with PDFly` });
+        await navigator.share({ title: resultFileName, text: `${resultFileName} — created with PDFMiniFly` });
       }
     } catch {
       /* user cancelled share */

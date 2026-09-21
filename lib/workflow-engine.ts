@@ -1,5 +1,5 @@
 // ==========================================
-// PDFly Workflow Engine — local-first automation core.
+// PDFMiniFly Workflow Engine — local-first automation core.
 // Reuses existing pdf-engine implementations; adds document analysis,
 // recommendations, validation, dry-run, and a sequential step pipeline.
 // No network calls. All processing in-browser.
@@ -1031,10 +1031,10 @@ export function buildOutputFileName(
       base = originalName.replace(/\.pdf$/i, '');
       break;
     case 'smart':
-      base = originalName.replace(/\.pdf$/i, '').replace(/[_\s]+/g, '_').slice(0, 48) || 'PDFly_Document';
+      base = originalName.replace(/\.pdf$/i, '').replace(/[_\s]+/g, '_').slice(0, 48) || 'PDFMiniFly_Document';
       break;
     case 'workflow':
-      base = workflowName.replace(/[^a-zA-Z0-9-_ ]/g, '').trim().replace(/\s+/g, '_') || 'PDFly_Workflow';
+      base = workflowName.replace(/[^a-zA-Z0-9-_ ]/g, '').trim().replace(/\s+/g, '_') || 'PDFMiniFly_Workflow';
       break;
     case 'date': {
       const d = new Date();
@@ -1043,7 +1043,7 @@ export function buildOutputFileName(
       break;
     }
     default:
-      base = custom.trim() || 'PDFly_Workflow_Output';
+      base = custom.trim() || 'PDFMiniFly_Workflow_Output';
   }
   if (mode !== 'date' && hasDate) {
     const d = new Date();

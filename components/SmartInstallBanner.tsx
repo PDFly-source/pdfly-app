@@ -24,7 +24,7 @@ export const SmartInstallBanner: React.FC = () => {
 
   return (
     <aside
-      aria-label="Install PDFly Application"
+      aria-label="Install PDFMiniFly Application"
       id="smart-pwa-install-banner"
       className="fixed bottom-4 left-4 right-4 sm:left-auto sm:right-6 sm:max-w-md z-40 p-4 rounded-3xl bg-[#FFFDF9]/95 dark:bg-[#1B1719]/95 backdrop-blur-md border border-[#E8DFD3] dark:border-[#2E2629] shadow-2xl transition-all animate-fade-in"
     >
@@ -36,7 +36,7 @@ export const SmartInstallBanner: React.FC = () => {
         <div className="flex-1 min-w-0 pr-1">
           <div className="flex items-center gap-1.5 mb-0.5">
             <span className="text-xs font-bold text-[#1A1416] dark:text-[#F7F1E8]">
-              Install PDFly
+              Install PDFMiniFly
             </span>
             <span className="inline-flex items-center gap-1 px-1.5 py-0.2 rounded-full text-[9px] font-bold bg-[#7A1635]/10 text-[#7A1635] dark:bg-[#C9A15A]/15 dark:text-[#C9A15A]">
               <Sparkles className="w-2.5 h-2.5" />
@@ -54,7 +54,7 @@ export const SmartInstallBanner: React.FC = () => {
                 className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-gradient-to-r from-[#7A1635] to-[#4A0D20] text-[#F7F1E8] text-xs font-bold hover:brightness-110 active:scale-95 transition-all shadow-xs border border-[#C9A15A]/40"
               >
                 <Download className="w-3.5 h-3.5 text-[#C9A15A]" />
-                <span>Install PDFly</span>
+                <span>Install PDFMiniFly</span>
               </button>
             ) : (
               <Link

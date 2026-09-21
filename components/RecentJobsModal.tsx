@@ -64,7 +64,7 @@ export const RecentJobsModal: React.FC<RecentJobsModalProps> = ({ isOpen, onClos
         {/* Privacy Note */}
         <div className="my-3 px-3 py-2 rounded-xl bg-[#F7F3EC] dark:bg-[#141213] border border-[#E5DFD4] dark:border-[#2E2729] flex items-center gap-2 text-[11px] text-[#5C554F] dark:text-[#A39991]">
           <ShieldCheck className="w-4 h-4 text-[#238B63] dark:text-[#2EB682] shrink-0" />
-          <span>PDFly never stores document contents. Only local filenames and timestamps are kept.</span>
+          <span>PDFMiniFly never stores document contents. Only local filenames and timestamps are kept.</span>
         </div>
 
         {/* Jobs List */}

@@ -14,9 +14,9 @@ import {
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'About PDFly | The Private, Client-Side PDF Toolkit',
+  title: 'About PDFMiniFly | The Private, Client-Side PDF Toolkit',
   description:
-    'Learn about PDFly’s mission to provide fast, private, browser-based PDF tools with zero unauthorized cloud uploads or paywalls.',
+    'Learn about PDFMiniFly’s mission to provide fast, private, browser-based PDF tools with zero unauthorized cloud uploads or paywalls.',
 };
 
 export default function AboutPage() {
@@ -42,20 +42,20 @@ export default function AboutPage() {
             <Logo size="xl" variant="full" showTagline={true} href="" />
           </div>
           <p className="text-sm sm:text-base text-[#5C5256] dark:text-[#AFA6A8] leading-relaxed">
-            PDFly is built on an uncompromising principle: your files belong to you, and your browser is powerful enough to handle them without uploading them to remote servers.
+            PDFMiniFly is built on an uncompromising principle: your files belong to you, and your browser is powerful enough to handle them without uploading them to remote servers.
           </p>
         </div>
 
         {/* Mission Statement */}
         <div className="p-8 rounded-3xl bg-[#FFFDF9] dark:bg-[#1B1719] border border-[#E8DFD3] dark:border-[#2E2629] shadow-xs mb-12 space-y-4">
           <h2 className="text-lg font-bold text-[#1A1416] dark:text-[#F7F1E8] font-serif">
-            Why We Built PDFly
+            Why We Built PDFMiniFly
           </h2>
           <p className="text-xs sm:text-sm text-[#5C5256] dark:text-[#AFA6A8] leading-relaxed">
             For years, performing basic operations like combining two PDFs, rotating a sideways scan, or removing page 4 meant uploading confidential contracts, tax returns, and identity documents to random third-party websites. Many of these sites require subscriptions, bombard users with intrusive ads, or retain user files on remote servers.
           </p>
           <p className="text-xs sm:text-sm text-[#5C5256] dark:text-[#AFA6A8] leading-relaxed">
-            With modern WebAssembly and HTML5 capabilities, browser engines can process documents in milliseconds. PDFly provides a suite of PDF utilities that look, feel, and perform like a premium desktop app—free of charge, without forced accounts or hidden fees.
+            With modern WebAssembly and HTML5 capabilities, browser engines can process documents in milliseconds. PDFMiniFly provides a suite of PDF utilities that look, feel, and perform like a premium desktop app—free of charge, without forced accounts or hidden fees.
           </p>
         </div>
 
@@ -102,7 +102,7 @@ export default function AboutPage() {
                 <h3 className="text-sm font-bold text-[#1A1416] dark:text-[#F7F1E8]">PWA & Offline Worker</h3>
               </div>
               <p className="text-xs text-[#5C5256] dark:text-[#AFA6A8] leading-relaxed">
-                Configured with service worker caching so you can install PDFly on iPhone, Android, Mac, or Windows and use supported tools offline anywhere.
+                Configured with service worker caching so you can install PDFMiniFly on iPhone, Android, Mac, or Windows and use supported tools offline anywhere.
               </p>
             </div>
           </div>
@@ -159,7 +159,7 @@ export default function AboutPage() {
 
           <div className="p-5 rounded-3xl bg-[#FFFDF9] dark:bg-[#1B1719] border border-[#E8DFD3] dark:border-[#2E2629] shadow-xs">
             <h3 className="text-sm font-bold text-[#1A1416] dark:text-[#F7F1E8] mb-1">
-              Is PDFly free to use?
+              Is PDFMiniFly free to use?
             </h3>
             <p className="text-xs text-[#5C5256] dark:text-[#AFA6A8] leading-relaxed">
               Yes, 100% free with no account required, no subscription paywalls, and no watermarks placed on your exported files.
@@ -179,10 +179,10 @@ export default function AboutPage() {
             We are dedicated to building the cleanest, most private PDF experience on the web.
           </p>
           <a
-            href="mailto:support@pdfly.local"
+            href="mailto:support@pdfminifly.local"
             className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-[#7A1635] to-[#4A0D20] text-[#F7F1E8] text-xs font-bold hover:brightness-110 transition-all border border-[#C9A15A]/40 shadow-xs"
           >
-            <span>support@pdfly.local</span>
+            <span>support@pdfminifly.local</span>
           </a>
         </section>
       </main>

@@ -160,7 +160,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenRecent }) => {
                 onClick={() => setMobileMenuOpen(false)}
                 className="block px-3 py-2 rounded-xl text-sm font-semibold text-[#1A1416] dark:text-[#F7F1E8] hover:bg-black/5 dark:hover:bg-white/5"
               >
-                About PDFly
+                About PDFMiniFly
               </Link>
             </div>
 

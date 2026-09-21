@@ -25,7 +25,7 @@ interface FileItem {
   subtitle?: string;
 }
 
-const DEFAULT_MERGE_NAME = 'PDFly_Merged';
+const DEFAULT_MERGE_NAME = 'PDFMiniFly_Merged';
 
 export const MergePdfWorkspace: React.FC = () => {
   const [items, setItems] = useState<FileItem[]>([]);
@@ -128,7 +128,7 @@ export const MergePdfWorkspace: React.FC = () => {
       if (navigator.share && (navigator as any).canShare?.({ files: [file] })) {
         await navigator.share({ files: [file], title: resultFileName });
       } else {
-        await navigator.share({ title: resultFileName, text: `${resultFileName} — merged with PDFly` });
+        await navigator.share({ title: resultFileName, text: `${resultFileName} — merged with PDFMiniFly` });
       }
     } catch {
       /* user cancelled share */

@@ -207,7 +207,7 @@ export default function HomePage() {
                           PDF
                         </div>
                         <div className="flex flex-col">
-                          <span className="text-xs font-black text-[#1A1416] dark:text-[#F7F1E8]">PDFly Sheet</span>
+                          <span className="text-xs font-black text-[#1A1416] dark:text-[#F7F1E8]">PDFMiniFly Sheet</span>
                           <span className="text-[10px] text-[#35C98A] font-bold">In-Memory Engine</span>
                         </div>
                       </div>
@@ -478,7 +478,7 @@ export default function HomePage() {
                 <span>Official Registry</span>
               </div>
               <h2 className="text-2xl sm:text-3xl font-black tracking-tight text-[#1A1416] dark:text-[#F7F1E8]">
-                All PDFly Tools{' '}
+                All PDFMiniFly Tools{' '}
                 <span className="text-sm font-bold text-[#7A1635] dark:text-[#C9A15A] ml-2 px-2.5 py-0.5 rounded-full bg-[#7A1635]/10 dark:bg-[#C9A15A]/15 border border-[#7A1635]/20 dark:border-[#C9A15A]/30">
                   {ALL_TOOLS.length} Tools
                 </span>
@@ -549,7 +549,7 @@ export default function HomePage() {
         </section>
 
         {/* ======================================================== */}
-        {/* WHY PDFLY IS DIFFERENT */}
+        {/* WHY PDFMINIFLY IS DIFFERENT */}
         {/* ======================================================== */}
         <section id="why-different" className="py-16 sm:py-20 bg-[#F2ECE3] dark:bg-[#0E0C0D] border-t border-b border-[#E8DFD3] dark:border-[#2E2629]">
           <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -559,7 +559,7 @@ export default function HomePage() {
                 <span>Architectural Standards</span>
               </div>
               <h2 className="text-2xl sm:text-3xl font-black tracking-tight text-[#1A1416] dark:text-[#F7F1E8] mb-3">
-                Why PDFly is Different
+                Why PDFMiniFly is Different
               </h2>
               <p className="text-xs sm:text-sm text-[#5C5256] dark:text-[#AFA6A8]">
                 Built with precision engineering, prioritizing privacy, performance, and transparency.
@@ -599,7 +599,7 @@ export default function HomePage() {
                   Offline-Ready PWA
                 </h3>
                 <p className="text-xs text-[#5C5256] dark:text-[#AFA6A8] leading-relaxed">
-                  Install PDFly onto your desktop or mobile device. Core PDF manipulation features continue working seamlessly without an active internet connection.
+                  Install PDFMiniFly onto your desktop or mobile device. Core PDF manipulation features continue working seamlessly without an active internet connection.
                 </p>
               </div>
 
@@ -653,10 +653,10 @@ export default function HomePage() {
                 <span>OFFLINE CAPABLE APPLICATION</span>
               </div>
               <h3 className="text-2xl sm:text-3xl font-black tracking-tight">
-                Install PDFly on Your Device
+                Install PDFMiniFly on Your Device
               </h3>
               <p className="text-xs sm:text-sm text-[#F6EFE3]/80 leading-relaxed">
-                Take PDFly everywhere. Install it as a standalone progressive web app on your laptop or phone for instant, offline document manipulation.
+                Take PDFMiniFly everywhere. Install it as a standalone progressive web app on your laptop or phone for instant, offline document manipulation.
               </p>
             </div>
 
@@ -678,7 +678,7 @@ export default function HomePage() {
               Frequently Asked Questions
             </h2>
             <p className="text-xs sm:text-sm text-[#5C5256] dark:text-[#AFA6A8]">
-              Everything you need to know about PDFly’s local-first architecture.
+              Everything you need to know about PDFMiniFly’s local-first architecture.
             </p>
           </div>
 
@@ -689,7 +689,7 @@ export default function HomePage() {
                 <span>Can I safely process confidential bank statements or contracts?</span>
               </h3>
               <p className="text-xs text-[#5C5256] dark:text-[#AFA6A8] leading-relaxed">
-                Yes. Because supported tools in PDFly process documents directly within your browser&apos;s local sandbox, your documents are edited on your machine. You can inspect your browser’s Network tab to confirm that no document bytes are transmitted during local tool execution.
+                Yes. Because supported tools in PDFMiniFly process documents directly within your browser&apos;s local sandbox, your documents are edited on your machine. You can inspect your browser’s Network tab to confirm that no document bytes are transmitted during local tool execution.
               </p>
             </div>
 
@@ -699,7 +699,7 @@ export default function HomePage() {
                 <span>How does the PWA / offline mode work?</span>
               </h3>
               <p className="text-xs text-[#5C5256] dark:text-[#AFA6A8] leading-relaxed">
-                You can click the <strong>Install App</strong> button in the navigation bar to add PDFly to your desktop dock or phone home screen. Once installed, service workers cache the application shell and core local processing modules, allowing you to edit PDFs even without internet access.
+                You can click the <strong>Install App</strong> button in the navigation bar to add PDFMiniFly to your desktop dock or phone home screen. Once installed, service workers cache the application shell and core local processing modules, allowing you to edit PDFs even without internet access.
               </p>
             </div>
 
@@ -709,7 +709,7 @@ export default function HomePage() {
                 <span>Are there limits on file sizes?</span>
               </h3>
               <p className="text-xs text-[#5C5256] dark:text-[#AFA6A8] leading-relaxed">
-                PDFly enforces no artificial paywall limits. The only constraint is your device’s available memory (RAM). For large files (&gt;100MB), the app will display a gentle advisory so your browser tab remains responsive.
+                PDFMiniFly enforces no artificial paywall limits. The only constraint is your device’s available memory (RAM). For large files (&gt;100MB), the app will display a gentle advisory so your browser tab remains responsive.
               </p>
             </div>
           </div>

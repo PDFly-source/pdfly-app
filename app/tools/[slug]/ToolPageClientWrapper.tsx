@@ -258,7 +258,7 @@ export const ToolPageClientWrapper: React.FC<ToolPageClientWrapperProps> = ({
                 Zero Cloud Uploads:
               </span>{' '}
               <span className="text-[#5C5256] dark:text-[#AFA6A8] leading-relaxed">
-                PDFly processes this document directly inside your browser using client-side WebAssembly and web workers. Your confidential data is never transmitted to or retained on any remote server.
+                PDFMiniFly processes this document directly inside your browser using client-side WebAssembly and web workers. Your confidential data is never transmitted to or retained on any remote server.
               </span>
             </div>
           </div>

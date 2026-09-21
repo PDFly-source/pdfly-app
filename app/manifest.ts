@@ -3,8 +3,8 @@ import type { MetadataRoute } from 'next';
 export default function manifest(): MetadataRoute.Manifest {
   return {
     id: '/',
-    name: 'PDFly',
-    short_name: 'PDFly',
+    name: 'PDFMiniFly',
+    short_name: 'PDFMiniFly',
     description:
       'Private, powerful, local-first PDF toolkit for reading, editing, organizing, converting, protecting, and studying documents directly in your browser. No cloud uploads. No account required.',
     start_url: '/',

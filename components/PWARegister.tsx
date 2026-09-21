@@ -44,7 +44,7 @@ export const PWARegister: React.FC = () => {
 
         setGlobalSWRegistration(registration, false);
       } catch (err) {
-        console.warn('[PDFly] Service worker registration notice:', err);
+        console.warn('[PDFMiniFly] Service worker registration notice:', err);
       }
     };
 
@@ -94,7 +94,7 @@ export const PWARegister: React.FC = () => {
             <Sparkles className="w-4 h-4" />
           </div>
           <div className="flex-1 min-w-0">
-            <p className="text-xs font-bold text-[#F7F1E8]">New PDFly Version Ready</p>
+            <p className="text-xs font-bold text-[#F7F1E8]">New PDFMiniFly Version Ready</p>
             <p className="text-[11px] text-[#AFA6A8]">Update to get the latest offline enhancements.</p>
           </div>
           <button
@@ -102,7 +102,7 @@ export const PWARegister: React.FC = () => {
             className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-gradient-to-r from-[#7A1635] to-[#4A0D20] text-[#F7F1E8] text-xs font-bold hover:brightness-110 active:scale-95 transition-all border border-[#C9A15A]/40 shrink-0"
           >
             <RefreshCw className="w-3.5 h-3.5 text-[#C9A15A]" />
-            <span>Update PDFly</span>
+            <span>Update PDFMiniFly</span>
           </button>
         </div>
       )}

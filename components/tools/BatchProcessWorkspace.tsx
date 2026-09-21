@@ -113,7 +113,7 @@ export const BatchProcessWorkspace: React.FC = () => {
       setCurrentFileLabel('Packaging ZIP archive...');
       setProgressPct(95);
       const zipBlob = await zip.generateAsync({ type: 'blob' });
-      const outZipName = `PDFly_Batch_${operation}_${files.length}_files.zip`;
+      const outZipName = `PDFMiniFly_Batch_${operation}_${files.length}_files.zip`;
 
       setResultZipBlob(zipBlob);
       setResultFileName(outZipName);

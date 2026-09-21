@@ -15,11 +15,11 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
-  metadataBase: new URL('https://pdfly.app'),
-  applicationName: 'PDFly',
+  metadataBase: new URL('https://pdfminifly.app'),
+  applicationName: 'PDFMiniFly',
   title: {
-    default: 'PDFly — Private PDF Tools | Powerful. Local. Secure.',
-    template: '%s | PDFly',
+    default: 'PDFMiniFly — Private PDF Tools | Powerful. Local. Secure.',
+    template: '%s | PDFMiniFly',
   },
   description:
     'Private, powerful, local-first PDF toolkit for reading, editing, organizing, converting, protecting, and studying documents directly in your browser. No cloud uploads. No account required.',
@@ -27,7 +27,7 @@ export const metadata: Metadata = {
   appleWebApp: {
     capable: true,
     statusBarStyle: 'black-translucent',
-    title: 'PDFly',
+    title: 'PDFMiniFly',
   },
   icons: {
     icon: [
@@ -37,17 +37,17 @@ export const metadata: Metadata = {
     apple: [{ url: '/apple-touch-icon.png', sizes: '180x180' }],
   },
   openGraph: {
-    title: 'PDFly — Private PDF Tools | Powerful. Local. Secure.',
+    title: 'PDFMiniFly — Private PDF Tools | Powerful. Local. Secure.',
     description:
       'Private, powerful, local-first PDF toolkit for reading, editing, organizing, converting, protecting, and studying documents directly in your browser. No cloud uploads. No account required.',
-    url: 'https://pdfly.app',
-    siteName: 'PDFly',
+    url: 'https://pdfminifly.app',
+    siteName: 'PDFMiniFly',
     images: [
       {
         url: '/og-image.png',
         width: 1200,
         height: 630,
-        alt: 'PDFly — Private. Powerful. Local.',
+        alt: 'PDFMiniFly — Private. Powerful. Local.',
       },
     ],
     locale: 'en_US',
@@ -55,7 +55,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'PDFly — Private PDF Tools | Powerful. Local. Secure.',
+    title: 'PDFMiniFly — Private PDF Tools | Powerful. Local. Secure.',
     description:
       'Private, powerful, local-first PDF toolkit for reading, editing, organizing, converting, protecting, and studying documents directly in your browser. No cloud uploads. No account required.',
     images: ['/og-image.png'],
@@ -102,14 +102,14 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             `,
           }}
         />
-        <title>PDFly — Private PDF Tools | Powerful. Local. Secure.</title>
+        <title>PDFMiniFly — Private PDF Tools | Powerful. Local. Secure.</title>
         <link rel="manifest" href="/manifest.json" />
-        <meta name="application-name" content="PDFly" />
+        <meta name="application-name" content="PDFMiniFly" />
         <meta name="theme-color" content="#741B35" />
         <meta name="mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-        <meta name="apple-mobile-web-app-title" content="PDFly" />
+        <meta name="apple-mobile-web-app-title" content="PDFMiniFly" />
         <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
       </head>
       <body suppressHydrationWarning className="antialiased min-h-screen">

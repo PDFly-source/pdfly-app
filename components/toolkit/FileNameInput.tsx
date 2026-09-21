@@ -63,7 +63,7 @@ export const FileNameInput: React.FC<FileNameInputProps> = ({
           type="text"
           value={value}
           onChange={(e) => onChange(e.target.value)}
-          placeholder="PDFly_Document"
+          placeholder="PDFMiniFly_Document"
           aria-label="Output file name"
           className="flex-1 min-w-0 bg-transparent text-xs font-medium text-[#141213] dark:text-[#F5F0EB] outline-none placeholder:text-[#A79B90]/60"
         />

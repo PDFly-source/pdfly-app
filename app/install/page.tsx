@@ -127,44 +127,44 @@ export default function InstallPage() {
 
   const faqs = [
     {
-      q: 'What is PDFly?',
-      a: 'PDFly is a private, modern, browser-based document workspace. It allows you to view, merge, split, rotate, convert, sign, and organize PDF documents locally on your device without sending your sensitive files to third-party cloud servers.',
+      q: 'What is PDFMiniFly?',
+      a: 'PDFMiniFly is a private, modern, browser-based document workspace. It allows you to view, merge, split, rotate, convert, sign, and organize PDF documents locally on your device without sending your sensitive files to third-party cloud servers.',
     },
     {
       q: 'What is a Progressive Web App (PWA)?',
       a: 'A Progressive Web App is a website built using modern browser APIs that can be installed on your phone, tablet, or computer. It launches in a dedicated fullscreen window, provides offline access to cached features, and feels just like a native app—without taking up gigabytes of disk space.',
     },
     {
-      q: 'Does installing PDFly upload my files to any cloud server?',
+      q: 'Does installing PDFMiniFly upload my files to any cloud server?',
       a: 'No, absolutely never. Installation is purely a browser convenience that creates an app launcher and caches the application interface. All document processing continues to happen locally in your browser memory via WebAssembly and JavaScript.',
     },
     {
-      q: 'Can I uninstall PDFly anytime?',
-      a: 'Yes, easily. On Android, press and hold the PDFly icon and tap "Uninstall". On iPhone/iPad, press and hold the icon and tap "Delete Bookmark". On Windows/Mac, open PDFly, click the three-dots menu in the title bar, and select "Uninstall PDFly".',
+      q: 'Can I uninstall PDFMiniFly anytime?',
+      a: 'Yes, easily. On Android, press and hold the PDFMiniFly icon and tap "Uninstall". On iPhone/iPad, press and hold the icon and tap "Delete Bookmark". On Windows/Mac, open PDFMiniFly, click the three-dots menu in the title bar, and select "Uninstall PDFMiniFly".',
     },
     {
-      q: 'Does PDFly work offline?',
+      q: 'Does PDFMiniFly work offline?',
       a: 'Yes! Once installed or loaded once, the core application shell and client-side processing tools (PDF Viewer, Merge, Split, Rotate, Organize, Fill & Sign, and Redact) run completely offline without an active internet connection. Features requiring AI (like the Gemini Document Assistant) require a network connection.',
     },
     {
-      q: 'How do I install PDFly on Android?',
-      a: 'Open PDFly in Google Chrome on your Android phone or tablet. Tap the "Install PDFly" button at the top of this page, or tap the three dots (⋮) in Chrome and select "Install app" or "Add to Home screen".',
+      q: 'How do I install PDFMiniFly on Android?',
+      a: 'Open PDFMiniFly in Google Chrome on your Android phone or tablet. Tap the "Install PDFMiniFly" button at the top of this page, or tap the three dots (⋮) in Chrome and select "Install app" or "Add to Home screen".',
     },
     {
-      q: 'How do I install PDFly on iPhone or iPad?',
-      a: 'Open PDFly in Apple Safari. Tap the Share button (square icon with an arrow pointing up) in Safari’s toolbar. Scroll down and tap "Add to Home Screen", then tap "Add" in the top-right corner. Apple only supports PWA installation via Safari.',
+      q: 'How do I install PDFMiniFly on iPhone or iPad?',
+      a: 'Open PDFMiniFly in Apple Safari. Tap the Share button (square icon with an arrow pointing up) in Safari’s toolbar. Scroll down and tap "Add to Home Screen", then tap "Add" in the top-right corner. Apple only supports PWA installation via Safari.',
     },
     {
-      q: 'How do I install PDFly on Windows?',
-      a: 'Open PDFly in Google Chrome or Microsoft Edge on your PC. Click the "Install" icon in the address bar (a computer monitor with a downward arrow), or select "Install PDFly" from the browser menu. You can then pin it to your Windows Taskbar or Start Menu.',
+      q: 'How do I install PDFMiniFly on Windows?',
+      a: 'Open PDFMiniFly in Google Chrome or Microsoft Edge on your PC. Click the "Install" icon in the address bar (a computer monitor with a downward arrow), or select "Install PDFMiniFly" from the browser menu. You can then pin it to your Windows Taskbar or Start Menu.',
     },
     {
-      q: 'How do I install PDFly on Mac?',
-      a: 'On macOS Sonoma (14+) with Safari, click File in the top menu bar and select "Add to Dock...". In Chrome or Edge on macOS, click the Install icon in the address bar. PDFly will appear in your Dock and Launchpad like any native Mac application.',
+      q: 'How do I install PDFMiniFly on Mac?',
+      a: 'On macOS Sonoma (14+) with Safari, click File in the top menu bar and select "Add to Dock...". In Chrome or Edge on macOS, click the Install icon in the address bar. PDFMiniFly will appear in your Dock and Launchpad like any native Mac application.',
     },
     {
-      q: 'Does PDFly require an account or subscription to install?',
-      a: 'No account, sign-up, email, or credit card is required. PDFly is completely free to install and use for all standard local document tasks.',
+      q: 'Does PDFMiniFly require an account or subscription to install?',
+      a: 'No account, sign-up, email, or credit card is required. PDFMiniFly is completely free to install and use for all standard local document tasks.',
     },
   ];
 
@@ -201,7 +201,7 @@ export default function InstallPage() {
 
               {/* Subtitle */}
               <p className="text-sm sm:text-base text-[#F7F1E8]/85 leading-relaxed mb-6 font-normal">
-                Process, edit and secure your documents with PDFly — fast, private, and local. No uploads, zero cloud latency.
+                Process, edit and secure your documents with PDFMiniFly — fast, private, and local. No uploads, zero cloud latency.
               </p>
 
               {/* 4 Value Checkmarks Row */}
@@ -243,7 +243,7 @@ export default function InstallPage() {
                 {isInstalled ? (
                   <>
                     <CheckCircle2 className="w-4 h-4 text-[#35C98A] shrink-0" />
-                    <span className="font-semibold">ALREADY INSTALLED — PDFly is active on this device.</span>
+                    <span className="font-semibold">ALREADY INSTALLED — PDFMiniFly is active on this device.</span>
                   </>
                 ) : isInstallable ? (
                   <>
@@ -286,7 +286,7 @@ export default function InstallPage() {
               </p>
               <p className="text-xs text-[#5C5256] dark:text-[#AFA6A8]">
                 {isInstalled
-                  ? 'PDFly is on this device.'
+                  ? 'PDFMiniFly is on this device.'
                   : isInstallable
                   ? 'Ready to install to Home Screen.'
                   : 'Full toolkit available in browser.'}
@@ -345,7 +345,7 @@ export default function InstallPage() {
                 Current
               </p>
               <p className="text-xs text-[#5C5256] dark:text-[#AFA6A8]">
-                PDFly v3.1 — application shell is up to date.
+                PDFMiniFly v3.1 — application shell is up to date.
               </p>
             </div>
 
@@ -487,7 +487,7 @@ export default function InstallPage() {
                       1
                     </div>
                     <p className="text-sm font-bold text-[#1A1416] dark:text-[#F7F1E8] mb-1">
-                      Tap &quot;Install PDFly&quot;
+                      Tap &quot;Install PDFMiniFly&quot;
                     </p>
                     <p className="text-xs text-[#5C5256] dark:text-[#AFA6A8]">
                       Tap the primary button on this page, or open Chrome&apos;s menu (three dots ⋮ in top-right) and tap <strong>&quot;Install app&quot;</strong> or <strong>&quot;Add to Home screen&quot;</strong>.
@@ -514,7 +514,7 @@ export default function InstallPage() {
                       Launch Standalone
                     </p>
                     <p className="text-xs text-[#5C5256] dark:text-[#AFA6A8]">
-                      Find the official PDFly icon on your Home Screen or App Drawer. Tap to open in true standalone mode with no browser address bar.
+                      Find the official PDFMiniFly icon on your Home Screen or App Drawer. Tap to open in true standalone mode with no browser address bar.
                     </p>
                   </div>
                 </div>
@@ -573,7 +573,7 @@ export default function InstallPage() {
                     </div>
                     <p className="text-sm font-bold text-[#1A1416] dark:text-[#F7F1E8] mb-1">Tap &quot;Add&quot;</p>
                     <p className="text-xs text-[#5C5256] dark:text-[#AFA6A8]">
-                      Tap <strong>&quot;Add&quot;</strong> in the top-right corner. PDFly will appear on your Home Screen.
+                      Tap <strong>&quot;Add&quot;</strong> in the top-right corner. PDFMiniFly will appear on your Home Screen.
                     </p>
                   </div>
                 </div>
@@ -602,7 +602,7 @@ export default function InstallPage() {
                     </div>
                     <p className="text-sm font-bold text-[#1A1416] dark:text-[#F7F1E8] mb-1">Click Install Button</p>
                     <p className="text-xs text-[#5C5256] dark:text-[#AFA6A8]">
-                      Click <strong>&quot;Install PDFly&quot;</strong> at the top of this page, or locate the install icon (monitor with arrow) in your browser address bar.
+                      Click <strong>&quot;Install PDFMiniFly&quot;</strong> at the top of this page, or locate the install icon (monitor with arrow) in your browser address bar.
                     </p>
                   </div>
 
@@ -622,7 +622,7 @@ export default function InstallPage() {
                     </div>
                     <p className="text-sm font-bold text-[#1A1416] dark:text-[#F7F1E8] mb-1">Standalone Window</p>
                     <p className="text-xs text-[#5C5256] dark:text-[#AFA6A8]">
-                      PDFly immediately opens in a dedicated window with no tabs, no address bar, and full local performance.
+                      PDFMiniFly immediately opens in a dedicated window with no tabs, no address bar, and full local performance.
                     </p>
                   </div>
                 </div>
@@ -651,7 +651,7 @@ export default function InstallPage() {
                     </div>
                     <p className="text-sm font-bold text-[#1A1416] dark:text-[#F7F1E8] mb-1">Open Edge or Chrome</p>
                     <p className="text-xs text-[#5C5256] dark:text-[#AFA6A8]">
-                      Click the Install icon in the address bar or tap the &quot;Install PDFly&quot; button above.
+                      Click the Install icon in the address bar or tap the &quot;Install PDFMiniFly&quot; button above.
                     </p>
                   </div>
 
@@ -661,7 +661,7 @@ export default function InstallPage() {
                     </div>
                     <p className="text-sm font-bold text-[#1A1416] dark:text-[#F7F1E8] mb-1">Pin to Taskbar / Start</p>
                     <p className="text-xs text-[#5C5256] dark:text-[#AFA6A8]">
-                      Windows will prompt you with checkboxes to pin PDFly to your Taskbar and Start Menu. Check both and confirm.
+                      Windows will prompt you with checkboxes to pin PDFMiniFly to your Taskbar and Start Menu. Check both and confirm.
                     </p>
                   </div>
 
@@ -671,7 +671,7 @@ export default function InstallPage() {
                     </div>
                     <p className="text-sm font-bold text-[#1A1416] dark:text-[#F7F1E8] mb-1">One-Click Launch</p>
                     <p className="text-xs text-[#5C5256] dark:text-[#AFA6A8]">
-                      Launch PDFly directly from your Windows taskbar like Microsoft Office or Adobe Acrobat.
+                      Launch PDFMiniFly directly from your Windows taskbar like Microsoft Office or Adobe Acrobat.
                     </p>
                   </div>
                 </div>
@@ -710,7 +710,7 @@ export default function InstallPage() {
                     </div>
                     <p className="text-sm font-bold text-[#1A1416] dark:text-[#F7F1E8] mb-1">In Chrome / Edge on Mac</p>
                     <p className="text-xs text-[#5C5256] dark:text-[#AFA6A8]">
-                      Click the Install icon in the address bar or tap &quot;Install PDFly&quot; above.
+                      Click the Install icon in the address bar or tap &quot;Install PDFMiniFly&quot; above.
                     </p>
                   </div>
 
@@ -720,7 +720,7 @@ export default function InstallPage() {
                     </div>
                     <p className="text-sm font-bold text-[#1A1416] dark:text-[#F7F1E8] mb-1">Native Dock Integration</p>
                     <p className="text-xs text-[#5C5256] dark:text-[#AFA6A8]">
-                      PDFly appears in your macOS Dock, Launchpad, and Application Switcher (⌘ + Tab).
+                      PDFMiniFly appears in your macOS Dock, Launchpad, and Application Switcher (⌘ + Tab).
                     </p>
                   </div>
                 </div>
@@ -816,7 +816,7 @@ export default function InstallPage() {
               Frequently Asked Questions
             </h2>
             <p className="text-sm text-[#5C5256] dark:text-[#AFA6A8]">
-              Everything you need to know about installing and running PDFly on your devices.
+              Everything you need to know about installing and running PDFMiniFly on your devices.
             </p>
           </div>
 

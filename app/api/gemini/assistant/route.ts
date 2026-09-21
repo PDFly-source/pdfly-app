@@ -26,7 +26,7 @@ export async function POST(req: NextRequest) {
     const truncatedText = text.slice(0, 45000);
     const langNote = language ? `Target response language: ${language}.` : 'Language: English.';
 
-    let systemInstruction = `You are the PDFly Document Intelligence Engine. You analyze provided PDF texts with precision, confidentiality, and high semantic clarity. ${langNote}`;
+    let systemInstruction = `You are the PDFMiniFly Document Intelligence Engine. You analyze provided PDF texts with precision, confidentiality, and high semantic clarity. ${langNote}`;
     let prompt = '';
 
     switch (action) {

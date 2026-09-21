@@ -278,8 +278,8 @@ export async function compressPdf(
     doc.setTitle('');
     doc.setAuthor('');
     doc.setSubject('');
-    doc.setProducer('PDFly Local Optimizer');
-    doc.setCreator('PDFly');
+    doc.setProducer('PDFMiniFly Local Optimizer');
+    doc.setCreator('PDFMiniFly');
     const bytes = await doc.save({ useObjectStreams: true });
     const newSize = bytes.length;
     onProgress?.('Complete!', 100);
@@ -1009,7 +1009,7 @@ export async function updateOrClearMetadata(
     pdfDoc.setSubject('');
     pdfDoc.setKeywords([]);
     pdfDoc.setCreator('');
-    pdfDoc.setProducer('PDFly Local Privacy Sanitizer');
+    pdfDoc.setProducer('PDFMiniFly Local Privacy Sanitizer');
   } else if (newMetadata) {
     if (newMetadata.title !== undefined) pdfDoc.setTitle(newMetadata.title);
     if (newMetadata.author !== undefined) pdfDoc.setAuthor(newMetadata.author);
@@ -1055,7 +1055,7 @@ export async function sanitizeMetadataFields(
   if (fields.subject) pdfDoc.setSubject('');
   if (fields.keywords) pdfDoc.setKeywords([]);
   if (fields.creator) pdfDoc.setCreator('');
-  if (fields.producer) pdfDoc.setProducer('PDFly Local Privacy Sanitizer');
+  if (fields.producer) pdfDoc.setProducer('PDFMiniFly Local Privacy Sanitizer');
   if (fields.creationDate) pdfDoc.setCreationDate(new Date(0));
   if (fields.modificationDate) pdfDoc.setModificationDate(new Date(0));
 
@@ -1083,7 +1083,7 @@ export async function protectPdf(
 
   // Standard encrypted container with user metadata note
   pdfDoc.setSubject(`[SECURED - Password Protected]`);
-  pdfDoc.setProducer('PDFly Local Security Guard');
+  pdfDoc.setProducer('PDFMiniFly Local Security Guard');
 
   onProgress?.('Applying encryption standard...', 80);
   const bytes = await pdfDoc.save();
@@ -1813,8 +1813,8 @@ export async function sanitizePdf(
     pdfDoc.setAuthor('');
     pdfDoc.setSubject('');
     pdfDoc.setKeywords([]);
-    pdfDoc.setProducer('PDFly Private Sanitizer');
-    pdfDoc.setCreator('PDFly Document Workspace');
+    pdfDoc.setProducer('PDFMiniFly Private Sanitizer');
+    pdfDoc.setCreator('PDFMiniFly Document Workspace');
     pdfDoc.setCreationDate(new Date(0));
     pdfDoc.setModificationDate(new Date(0));
   }
@@ -1889,7 +1889,7 @@ export async function pdfToMarkdown(file: File): Promise<string> {
   const totalPages = pdfJsDoc.numPages;
 
   let md = `# ${file.name.replace(/\.pdf$/i, '')}\n\n`;
-  md += `*Extracted locally via PDFly Private Workspace on ${new Date().toLocaleDateString()}*\n\n---\n\n`;
+  md += `*Extracted locally via PDFMiniFly Private Workspace on ${new Date().toLocaleDateString()}*\n\n---\n\n`;
 
   for (let i = 1; i <= totalPages; i++) {
     const page = await pdfJsDoc.getPage(i);
@@ -1990,7 +1990,7 @@ export async function pdfToHtml(file: File, mode: 'single' | 'pages' = 'pages'):
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>${file.name} - Converted by PDFly</title>
+  <title>${file.name} - Converted by PDFMiniFly</title>
   <style>
     body {
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
@@ -2014,7 +2014,7 @@ export async function pdfToHtml(file: File, mode: 'single' | 'pages' = 'pages'):
   <div class="wrapper">
     <div class="header">
       <h1>${file.name}</h1>
-      <p style="font-size: 0.85rem; color: #7A1635;">Generated locally via PDFly Private Document Workspace</p>
+      <p style="font-size: 0.85rem; color: #7A1635;">Generated locally via PDFMiniFly Private Document Workspace</p>
     </div>
     ${pagesHtml}
   </div>

@@ -98,7 +98,7 @@ export const DocumentAnalysisCard: React.FC<DocumentAnalysisCardProps> = ({
       <div className="p-4 rounded-2xl bg-gradient-to-br from-[#6D1F35]/5 to-[#C9A15A]/10 dark:from-[#C9A15A]/5 dark:to-[#6D1F35]/10 border border-[#C9A15A]/30">
         <p className="text-xs font-bold text-[#141213] dark:text-[#F5F0EB] inline-flex items-center gap-1.5 mb-2">
           <Sparkles className="w-3.5 h-3.5 text-[#8A6D2F] dark:text-[#C9A15A]" />
-          PDFly found:
+          PDFMiniFly found:
         </p>
         <ul className="space-y-1 mb-3">
           {recommendation.reasons.map((r) => (

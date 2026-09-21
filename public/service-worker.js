@@ -1,5 +1,5 @@
 // PDFly Service Worker - High Performance Local-First PWA Cache
-const CACHE_NAME = 'pdfly-shell-v10';
+const CACHE_NAME = 'pdfly-shell-v11';
 
 // Core shell and assets to precache immediately on install
 const PRECACHE_ASSETS = [

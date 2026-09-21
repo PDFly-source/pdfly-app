@@ -25,24 +25,24 @@ export async function generateMetadata({ params }: ToolPageProps): Promise<Metad
 
   if (!tool) {
     return {
-      title: 'Tool Not Found | PDFly',
+      title: 'Tool Not Found | PDFMiniFly',
       description: 'The requested PDF tool could not be found.',
     };
   }
 
   return {
-    title: `${tool.name} - Free & Private Local PDF Tool | PDFly`,
-    description: `${tool.description} Fast, secure, and processed 100% locally in your browser with PDFly.`,
-    keywords: [tool.name, ...(tool.keywords || []), 'PDFly', 'local PDF', 'private PDF tool', 'browser PDF editor'],
+    title: `${tool.name} - Free & Private Local PDF Tool | PDFMiniFly`,
+    description: `${tool.description} Fast, secure, and processed 100% locally in your browser with PDFMiniFly.`,
+    keywords: [tool.name, ...(tool.keywords || []), 'PDFMiniFly', 'local PDF', 'private PDF tool', 'browser PDF editor'],
     openGraph: {
-      title: `${tool.name} - PDFly`,
+      title: `${tool.name} - PDFMiniFly`,
       description: tool.description,
       type: 'website',
-      siteName: 'PDFly',
+      siteName: 'PDFMiniFly',
     },
     twitter: {
       card: 'summary_large_image',
-      title: `${tool.name} - PDFly`,
+      title: `${tool.name} - PDFMiniFly`,
       description: tool.description,
     },
   };
@@ -129,7 +129,7 @@ export default async function ToolPage({ params }: ToolPageProps) {
                 <span>Is {tool.name} safe to use for sensitive contracts or financial documents?</span>
               </h3>
               <p className="text-xs text-[#5C5256] dark:text-[#AFA6A8] leading-relaxed">
-                Yes, completely. Unlike conventional PDF websites that send your confidential documents to unknown remote servers, PDFly operates exclusively inside your browser sandbox using WebAssembly and client-side JavaScript. Your file data never leaves your device.
+                Yes, completely. Unlike conventional PDF websites that send your confidential documents to unknown remote servers, PDFMiniFly operates exclusively inside your browser sandbox using WebAssembly and client-side JavaScript. Your file data never leaves your device.
               </p>
             </div>
 
@@ -139,7 +139,7 @@ export default async function ToolPage({ params }: ToolPageProps) {
                 <span>Does this work offline?</span>
               </h3>
               <p className="text-xs text-[#5C5256] dark:text-[#AFA6A8] leading-relaxed">
-                Yes! Once PDFly is loaded or installed as a Progressive Web App (PWA), the PDF processing engine operates even when you have no internet connection.
+                Yes! Once PDFMiniFly is loaded or installed as a Progressive Web App (PWA), the PDF processing engine operates even when you have no internet connection.
               </p>
             </div>
 
@@ -149,7 +149,7 @@ export default async function ToolPage({ params }: ToolPageProps) {
                 <span>Are there any usage limits or paywalls?</span>
               </h3>
               <p className="text-xs text-[#5C5256] dark:text-[#AFA6A8] leading-relaxed">
-                No account, no subscriptions, and no intrusive ads. You can use PDFly as much as you need on your phone, tablet, or desktop.
+                No account, no subscriptions, and no intrusive ads. You can use PDFMiniFly as much as you need on your phone, tablet, or desktop.
               </p>
             </div>
           </div>

@@ -15,7 +15,7 @@ export const ALL_TOOLS: ToolDefinition[] = [
     maxFiles: 50,
     outputExt: '.pdf',
     keywords: ['merge', 'combine', 'join', 'append', 'bind'],
-    seoTitle: 'Merge PDF Online – Free & Private Local Tool | PDFly',
+    seoTitle: 'Merge PDF Online – Free & Private Local Tool | PDFMiniFly',
     seoDescription: 'Merge and combine multiple PDF files locally on your device. Fast, local-first processing, and with no mandatory file uploads.'
   },
   {
@@ -31,7 +31,7 @@ export const ALL_TOOLS: ToolDefinition[] = [
     maxFiles: 1,
     outputExt: '.zip',
     keywords: ['split', 'cut', 'separate', 'extract pages', 'divide'],
-    seoTitle: 'Split PDF Pages – Fast & Private In-Browser Tool | PDFly',
+    seoTitle: 'Split PDF Pages – Fast & Private In-Browser Tool | PDFMiniFly',
     seoDescription: 'Split PDF documents by page ranges or extract individual pages safely in your browser. Local-first processing.'
   },
   {
@@ -47,7 +47,7 @@ export const ALL_TOOLS: ToolDefinition[] = [
     maxFiles: 1,
     outputExt: '.pdf',
     keywords: ['organize', 'rotate', 'reorder', 'duplicate', 'reverse', 'sort', 'pages'],
-    seoTitle: 'Organize & Rotate PDF Pages Online | PDFly',
+    seoTitle: 'Organize & Rotate PDF Pages Online | PDFMiniFly',
     seoDescription: 'Drag, reorder, rotate 90/180 degrees, duplicate, and delete pages from PDF files visually with local-first processing.'
   },
   {
@@ -64,7 +64,7 @@ export const ALL_TOOLS: ToolDefinition[] = [
     maxFiles: 1,
     outputExt: '.pdf',
     keywords: ['remove blank', 'clean pages', 'empty pages', 'detect blank'],
-    seoTitle: 'Remove Blank Pages from PDF – Local Detection | PDFly',
+    seoTitle: 'Remove Blank Pages from PDF – Local Detection | PDFMiniFly',
     seoDescription: 'Automatically detect and remove blank pages from scanned PDFs locally in your browser before exporting.'
   },
   {
@@ -79,7 +79,7 @@ export const ALL_TOOLS: ToolDefinition[] = [
     maxFiles: 1,
     outputExt: '.pdf',
     keywords: ['extract', 'pages', 'select pages', 'pull pages'],
-    seoTitle: 'Extract PDF Pages Online – Fast & Private | PDFly',
+    seoTitle: 'Extract PDF Pages Online – Fast & Private | PDFMiniFly',
     seoDescription: 'Extract selected page subsets or individual leaves into clean new PDF files locally.'
   },
   {
@@ -95,7 +95,7 @@ export const ALL_TOOLS: ToolDefinition[] = [
     maxFiles: 1,
     outputExt: '.pdf',
     keywords: ['booklet', 'imposition', 'print booklet', '2-up', 'duplex', 'binding'],
-    seoTitle: 'PDF Booklet Maker – Printable 2-Up Imposition | PDFly',
+    seoTitle: 'PDF Booklet Maker – Printable 2-Up Imposition | PDFMiniFly',
     seoDescription: 'Create duplex printable booklets in A4, A5, and Letter sizes with left or right binding options.'
   },
 
@@ -114,7 +114,7 @@ export const ALL_TOOLS: ToolDefinition[] = [
     maxFiles: 1,
     outputExt: '.pdf',
     keywords: ['viewer', 'reader', 'view pdf', 'open pdf', 'search pdf', 'read'],
-    seoTitle: 'Online PDF Viewer & Reader – Private & Local | PDFly',
+    seoTitle: 'Online PDF Viewer & Reader – Private & Local | PDFMiniFly',
     seoDescription: 'Read and inspect PDF documents in your browser with text search, thumbnails, dark reading mode, and zero uploads.'
   },
   {
@@ -130,7 +130,7 @@ export const ALL_TOOLS: ToolDefinition[] = [
     maxFiles: 1,
     outputExt: '.txt',
     keywords: ['read aloud', 'tts', 'text to speech', 'listen to pdf', 'voice'],
-    seoTitle: 'Read Aloud PDF – In-Browser Audio Player | PDFly',
+    seoTitle: 'Read Aloud PDF – In-Browser Audio Player | PDFMiniFly',
     seoDescription: 'Listen to any PDF document using in-browser text-to-speech synthesis with variable speed and paragraph jumping.'
   },
 
@@ -148,7 +148,7 @@ export const ALL_TOOLS: ToolDefinition[] = [
     maxFiles: 1,
     outputExt: '.pdf',
     keywords: ['compress', 'reduce size', 'shrink', 'optimize', 'small pdf'],
-    seoTitle: 'Compress PDF Locally – Fast, Secure Size Reducer | PDFly',
+    seoTitle: 'Compress PDF Locally – Fast, Secure Size Reducer | PDFMiniFly',
     seoDescription: 'Shrink PDF file sizes directly on your device with customizable compression ratios and local-first processing.'
   },
   {
@@ -163,7 +163,7 @@ export const ALL_TOOLS: ToolDefinition[] = [
     maxFiles: 1,
     outputExt: '.pdf',
     keywords: ['metadata', 'sanitize', 'properties', 'author', 'title'],
-    seoTitle: 'PDF Metadata Viewer & Sanitizer | PDFly',
+    seoTitle: 'PDF Metadata Viewer & Sanitizer | PDFMiniFly',
     seoDescription: 'View author, title, dates and remove privacy-sensitive metadata from your PDF files.'
   },
 
@@ -182,7 +182,7 @@ export const ALL_TOOLS: ToolDefinition[] = [
     maxFiles: 1,
     outputExt: '.pdf',
     keywords: ['edit', 'annotate', 'draw', 'highlight', 'stamps', 'shapes', 'markup'],
-    seoTitle: 'Online PDF Editor – Annotate, Draw & Stamp | PDFly',
+    seoTitle: 'Online PDF Editor – Annotate, Draw & Stamp | PDFMiniFly',
     seoDescription: 'Lightweight, client-side PDF visual editor. Add text, highlights, shapes, stamps, and drawings directly in your browser.'
   },
   {
@@ -198,7 +198,7 @@ export const ALL_TOOLS: ToolDefinition[] = [
     maxFiles: 1,
     outputExt: '.pdf',
     keywords: ['sign', 'signature', 'draw signature', 'fill and sign', 'e-sign'],
-    seoTitle: 'Sign PDF Online Free – Private Document Signature Tool | PDFly',
+    seoTitle: 'Sign PDF Online Free – Private Document Signature Tool | PDFMiniFly',
     seoDescription: 'Sign PDF files by drawing, typing, or uploading your signature. Never uploads your sensitive documents.'
   },
   {
@@ -215,7 +215,7 @@ export const ALL_TOOLS: ToolDefinition[] = [
     maxFiles: 1,
     outputExt: '.pdf',
     keywords: ['fill form', 'interactive form', 'flatten form', 'pdf form', 'checkbox'],
-    seoTitle: 'Fill PDF Forms Online – Interactive Form Filler | PDFly',
+    seoTitle: 'Fill PDF Forms Online – Interactive Form Filler | PDFMiniFly',
     seoDescription: 'Fill out interactive PDF forms locally in your browser. Edit text fields, check boxes, and flatten permanently.'
   },
   {
@@ -232,7 +232,7 @@ export const ALL_TOOLS: ToolDefinition[] = [
     maxFiles: 1,
     outputExt: '.pdf',
     keywords: ['redact', 'blackout', 'sensitive data', 'sanitize', 'censor', 'pii'],
-    seoTitle: 'Smart PDF Redaction Tool – Permanent & Local | PDFly',
+    seoTitle: 'Smart PDF Redaction Tool – Permanent & Local | PDFMiniFly',
     seoDescription: 'Permanently redact sensitive PII, emails, phones, and custom boxes. Strips underlying text in the exported PDF.'
   },
   {
@@ -249,7 +249,7 @@ export const ALL_TOOLS: ToolDefinition[] = [
     maxFiles: 1,
     outputExt: '.json',
     keywords: ['health', 'inspect', 'diagnose', 'analyze', 'security check', 'audit'],
-    seoTitle: 'PDF Health Check & Diagnostic Tool – In-Depth Audit | PDFly',
+    seoTitle: 'PDF Health Check & Diagnostic Tool – In-Depth Audit | PDFMiniFly',
     seoDescription: 'Diagnose PDF file health, inspect hidden metadata, analyze security status, and optimize performance.'
   },
   {
@@ -266,7 +266,7 @@ export const ALL_TOOLS: ToolDefinition[] = [
     maxFiles: 1,
     outputExt: '.pdf',
     keywords: ['sanitize', 'purge metadata', 'strip info', 'clean pdf', 'remove javascript'],
-    seoTitle: 'Document Sanitizer – Strip Metadata & Private Traces | PDFly',
+    seoTitle: 'Document Sanitizer – Strip Metadata & Private Traces | PDFMiniFly',
     seoDescription: 'Sanitize confidential PDFs before distribution by removing embedded metadata, annotations, and tracking tags.'
   },
 
@@ -283,7 +283,7 @@ export const ALL_TOOLS: ToolDefinition[] = [
     maxFiles: 1,
     outputExt: '.pdf',
     keywords: ['protect', 'password', 'encrypt', 'unlock', 'decrypt'],
-    seoTitle: 'Protect & Unlock PDF Files Privately | PDFly',
+    seoTitle: 'Protect & Unlock PDF Files Privately | PDFMiniFly',
     seoDescription: 'Add password protection to secure sensitive PDFs or decrypt your protected files without server upload.'
   },
   {
@@ -299,7 +299,7 @@ export const ALL_TOOLS: ToolDefinition[] = [
     maxFiles: 1,
     outputExt: '.pdf',
     keywords: ['watermark', 'stamp', 'confidential', 'draft', 'overlay'],
-    seoTitle: 'Watermark PDF Online – Add Text & Image Watermarks | PDFly',
+    seoTitle: 'Watermark PDF Online – Add Text & Image Watermarks | PDFMiniFly',
     seoDescription: 'Protect confidential documents with diagonal or center text/image watermarks.'
   },
   {
@@ -314,7 +314,7 @@ export const ALL_TOOLS: ToolDefinition[] = [
     maxFiles: 1,
     outputExt: '.pdf',
     keywords: ['page numbers', 'numbering', 'header footer', 'pagination', 'bates'],
-    seoTitle: 'Add Page Numbers to PDF Files Online | PDFly',
+    seoTitle: 'Add Page Numbers to PDF Files Online | PDFMiniFly',
     seoDescription: 'Insert clean page numbers (Page 1 of N, etc.) in multiple positions across your PDF documents.'
   },
 
@@ -332,7 +332,7 @@ export const ALL_TOOLS: ToolDefinition[] = [
     maxFiles: 1,
     outputExt: '.zip',
     keywords: ['pdf to image', 'pdf to jpg', 'pdf to png', 'render pages'],
-    seoTitle: 'PDF to Image Converter (JPG, PNG, WebP) | PDFly',
+    seoTitle: 'PDF to Image Converter (JPG, PNG, WebP) | PDFMiniFly',
     seoDescription: 'Render and extract high quality images from PDF pages with selectable DPI and ZIP packaging.'
   },
   {
@@ -348,7 +348,7 @@ export const ALL_TOOLS: ToolDefinition[] = [
     maxFiles: 50,
     outputExt: '.pdf',
     keywords: ['image to pdf', 'jpg to pdf', 'png to pdf', 'photos to pdf'],
-    seoTitle: 'Convert Images to PDF Online (JPG, PNG, WebP) | PDFly',
+    seoTitle: 'Convert Images to PDF Online (JPG, PNG, WebP) | PDFMiniFly',
     seoDescription: 'Turn your photos and scans into a clean PDF with custom page sizes, margins, and reordering.'
   },
   {
@@ -364,7 +364,7 @@ export const ALL_TOOLS: ToolDefinition[] = [
     maxFiles: 1,
     outputExt: '.txt',
     keywords: ['extract text', 'pdf to text', 'copy text', 'txt export'],
-    seoTitle: 'Extract Text from PDF Online – Fast & Local | PDFly',
+    seoTitle: 'Extract Text from PDF Online – Fast & Local | PDFMiniFly',
     seoDescription: 'Extract text contents page-by-page or export full document to clean TXT file locally on your device.'
   },
   {
@@ -379,7 +379,7 @@ export const ALL_TOOLS: ToolDefinition[] = [
     maxFiles: 1,
     outputExt: '.zip',
     keywords: ['extract images', 'download images', 'pdf pictures', 'photos from pdf'],
-    seoTitle: 'Extract Images from PDF Online | PDFly',
+    seoTitle: 'Extract Images from PDF Online | PDFMiniFly',
     seoDescription: 'Extract embedded images and high-resolution page renders from PDFs into single images or a ZIP archive.'
   },
   {
@@ -396,7 +396,7 @@ export const ALL_TOOLS: ToolDefinition[] = [
     maxFiles: 1,
     outputExt: '.md',
     keywords: ['pdf to markdown', 'markdown export', 'convert md', 'extract markdown'],
-    seoTitle: 'Convert PDF to Markdown (.md) Online – Local & Private | PDFly',
+    seoTitle: 'Convert PDF to Markdown (.md) Online – Local & Private | PDFMiniFly',
     seoDescription: 'Turn PDF articles, manuals, and documents into clean Markdown files with headers and bullet lists locally.'
   },
   {
@@ -412,7 +412,7 @@ export const ALL_TOOLS: ToolDefinition[] = [
     maxFiles: 1,
     outputExt: '.html',
     keywords: ['pdf to html', 'web page', 'html convert', 'responsive html'],
-    seoTitle: 'Convert PDF to Responsive HTML Online | PDFly',
+    seoTitle: 'Convert PDF to Responsive HTML Online | PDFMiniFly',
     seoDescription: 'Convert PDF documents into clean, responsive HTML web pages with local browser processing.'
   },
 
@@ -431,7 +431,7 @@ export const ALL_TOOLS: ToolDefinition[] = [
     maxFiles: 1,
     outputExt: '.txt',
     keywords: ['ocr', 'scan to text', 'searchable pdf', 'hindi ocr', 'assamese ocr', 'bengali ocr'],
-    seoTitle: 'Free OCR PDF Online – English, Hindi, Bengali, Assamese | PDFly',
+    seoTitle: 'Free OCR PDF Online – English, Hindi, Bengali, Assamese | PDFMiniFly',
     seoDescription: 'Recognize scanned document text in your browser using local optical character recognition.'
   },
   {
@@ -448,7 +448,7 @@ export const ALL_TOOLS: ToolDefinition[] = [
     maxFiles: 2,
     outputExt: '.pdf',
     keywords: ['compare', 'diff', 'side by side', 'revisions', 'document changes'],
-    seoTitle: 'Compare PDFs Side-by-Side Online | PDFly',
+    seoTitle: 'Compare PDFs Side-by-Side Online | PDFMiniFly',
     seoDescription: 'Compare two versions of a PDF side-by-side with visual pixel diff overlay and text difference inspection.'
   },
   {
@@ -465,7 +465,7 @@ export const ALL_TOOLS: ToolDefinition[] = [
     maxFiles: 30,
     outputExt: '.zip',
     keywords: ['batch', 'bulk', 'multi-file', 'batch compress', 'batch watermark'],
-    seoTitle: 'Batch PDF Processing – Multi-File Operations | PDFly',
+    seoTitle: 'Batch PDF Processing – Multi-File Operations | PDFMiniFly',
     seoDescription: 'Compress, watermark, number, or sanitize dozens of PDFs at once and download as a combined ZIP.'
   },
   {
@@ -482,7 +482,7 @@ export const ALL_TOOLS: ToolDefinition[] = [
     maxFiles: 1,
     outputExt: '.pdf',
     keywords: ['workflow', 'automation', 'chain', 'pipeline', 'recipes', 'multi-step'],
-    seoTitle: 'PDF Workflow Builder – Chain Multiple PDF Operations | PDFly',
+    seoTitle: 'PDF Workflow Builder – Chain Multiple PDF Operations | PDFMiniFly',
     seoDescription: 'Build automated multi-step PDF transformation pipelines running locally in your browser.'
   },
   {
@@ -499,7 +499,7 @@ export const ALL_TOOLS: ToolDefinition[] = [
     maxFiles: 1,
     outputExt: '.txt',
     keywords: ['ai assistant', 'ask pdf', 'summarize', 'key points', 'explain', 'chat pdf'],
-    seoTitle: 'Ask Your PDF – Privacy-First Document Assistant | PDFly',
+    seoTitle: 'Ask Your PDF – Privacy-First Document Assistant | PDFMiniFly',
     seoDescription: 'Analyze documents with Mode 1 Local Heuristics or Mode 2 Cloud AI with transparent disclosure before processing.'
   },
   {
@@ -516,7 +516,7 @@ export const ALL_TOOLS: ToolDefinition[] = [
     maxFiles: 1,
     outputExt: '.json',
     keywords: ['study', 'flashcards', 'quiz', 'mcq', 'revision', 'notes'],
-    seoTitle: 'PDF to Study Tools – Notes, MCQs & Flashcards | PDFly',
+    seoTitle: 'PDF to Study Tools – Notes, MCQs & Flashcards | PDFMiniFly',
     seoDescription: 'Convert PDF slides and chapters into revision notes, interactive multiple-choice questions, and flip cards.'
   }
 ];

@@ -100,7 +100,7 @@ export const WorkflowBuilderWorkspace: React.FC = () => {
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
 
   const [nameMode, setNameMode] = useState<NameMode>('original');
-  const [customName, setCustomName] = useState('PDFly_Workflow_Output');
+  const [customName, setCustomName] = useState('PDFMiniFly_Workflow_Output');
   const [includeDate, setIncludeDate] = useState(false);
 
   const [saveSheetOpen, setSaveSheetOpen] = useState(false);
@@ -386,7 +386,7 @@ export const WorkflowBuilderWorkspace: React.FC = () => {
       if (navigator.share && (navigator as any).canShare?.({ files: [file] })) {
         await navigator.share({ files: [file], title: name });
       } else {
-        await navigator.share({ title: name, text: `${name} — processed locally with PDFly` });
+        await navigator.share({ title: name, text: `${name} — processed locally with PDFMiniFly` });
       }
     } catch {
       /* user cancelled */
@@ -405,7 +405,7 @@ export const WorkflowBuilderWorkspace: React.FC = () => {
       zip.file(name, o.blob);
     }
     const blob = await zip.generateAsync({ type: 'blob' });
-    triggerDownload(blob, 'PDFly_Workflow_Batch.zip');
+    triggerDownload(blob, 'PDFMiniFly_Workflow_Batch.zip');
   };
 
   // ============ RENDER ============

@@ -447,7 +447,7 @@ export const PdfViewerWorkspace: React.FC = () => {
               <Eye className="w-7 h-7" />
             </div>
             <h2 className="text-xl sm:text-2xl font-bold text-[#141213] dark:text-[#F5F0EB] mb-2">
-              PDFly Reader
+              PDFMiniFly Reader
             </h2>
             <p className="text-xs sm:text-sm text-[#5C554F] dark:text-[#A39991] mb-6 leading-relaxed">
               Read, search with match jumping, study with notes & bookmarks, listen with Read Aloud speech, and navigate table of contents with complete local privacy.

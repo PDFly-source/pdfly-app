@@ -6,9 +6,9 @@ import { ShieldCheck, Cpu, ServerOff, ChevronRight, HardDrive } from 'lucide-rea
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Privacy Policy & Local Processing Architecture | PDFly',
+  title: 'Privacy Policy & Local Processing Architecture | PDFMiniFly',
   description:
-    'Learn how PDFly guarantees document privacy by executing PDF operations locally in your browser sandbox with WebAssembly. Zero unauthorized file uploads.',
+    'Learn how PDFMiniFly guarantees document privacy by executing PDF operations locally in your browser sandbox with WebAssembly. Zero unauthorized file uploads.',
 };
 
 export default function PrivacyPage() {
@@ -38,7 +38,7 @@ export default function PrivacyPage() {
             Private, Local-First PDF Engineering.
           </h1>
           <p className="text-sm sm:text-base text-[#5C5256] dark:text-[#AFA6A8] leading-relaxed">
-            PDFly is architected local-first. Supported PDF utilities execute directly within your browser’s isolated JavaScript sandbox on your computer.
+            PDFMiniFly is architected local-first. Supported PDF utilities execute directly within your browser’s isolated JavaScript sandbox on your computer.
           </p>
         </div>
 
@@ -52,7 +52,7 @@ export default function PrivacyPage() {
               Zero Server Uploads
             </h3>
             <p className="text-xs text-[#5C5256] dark:text-[#AFA6A8] leading-relaxed">
-              When you drop a file into PDFly, it remains inside your browser&apos;s local memory. No backend server receives your document bytes for local operations.
+              When you drop a file into PDFMiniFly, it remains inside your browser&apos;s local memory. No backend server receives your document bytes for local operations.
             </p>
           </div>
 
@@ -88,7 +88,7 @@ export default function PrivacyPage() {
               1. What Information Do We Collect?
             </h2>
             <p>
-              We believe the best way to safeguard user data is <strong>to not collect it in the first place</strong>. PDFly does not collect, log, store, or inspect:
+              We believe the best way to safeguard user data is <strong>to not collect it in the first place</strong>. PDFMiniFly does not collect, log, store, or inspect:
             </p>
             <ul className="list-disc pl-5 mt-2 space-y-1">
               <li>The contents, text, images, or metadata of any files you process.</li>
@@ -105,7 +105,7 @@ export default function PrivacyPage() {
               Traditional PDF websites rely on cloud servers where your PDF is uploaded, saved to temporary disks, processed by a server script, and sent back. Even when servers claim to “delete files after 1 hour”, your private data traverses the public internet and sits in third-party storage.
             </p>
             <p className="mt-2">
-              PDFly uses high-performance modern web technologies (HTML5 Canvas, PDF-Lib, PDF.js, and Tesseract.js WebAssembly). The entire processing engine runs right inside the tab on your device. You can verify this anytime by inspecting your browser Network tab during file operations—you will notice 0 bytes of document payloads transmitted.
+              PDFMiniFly uses high-performance modern web technologies (HTML5 Canvas, PDF-Lib, PDF.js, and Tesseract.js WebAssembly). The entire processing engine runs right inside the tab on your device. You can verify this anytime by inspecting your browser Network tab during file operations—you will notice 0 bytes of document payloads transmitted.
             </p>
           </section>
 
@@ -114,7 +114,7 @@ export default function PrivacyPage() {
               3. Local Activity History
             </h2>
             <p>
-              PDFly includes a convenience “Recent Jobs” counter. This information is saved strictly to your local browser storage (<code className="font-mono bg-black/5 dark:bg-white/5 px-1 py-0.5 rounded">localStorage</code>) and only contains the filename, tool name, and completion timestamp. Document contents are never stored, and you can clear this history anytime with one click.
+              PDFMiniFly includes a convenience “Recent Jobs” counter. This information is saved strictly to your local browser storage (<code className="font-mono bg-black/5 dark:bg-white/5 px-1 py-0.5 rounded">localStorage</code>) and only contains the filename, tool name, and completion timestamp. Document contents are never stored, and you can clear this history anytime with one click.
             </p>
           </section>
 
@@ -123,7 +123,7 @@ export default function PrivacyPage() {
               4. Offline Capability & Data Isolation
             </h2>
             <p>
-              Because PDFly is designed as a Progressive Web App (PWA), the core application bundle is cached in your browser. Supported tools work offline without an active internet connection.
+              Because PDFMiniFly is designed as a Progressive Web App (PWA), the core application bundle is cached in your browser. Supported tools work offline without an active internet connection.
             </p>
           </section>
 

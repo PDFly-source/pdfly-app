@@ -37,8 +37,8 @@ export const PdfMetadataWorkspace: React.FC = () => {
       setAuthor(meta.author || '');
       setSubject(meta.subject || '');
       setKeywords(meta.keywords || '');
-      setProducer(meta.producer || 'PDFly Local Toolkit');
-      setCreator(meta.creator || 'PDFly');
+      setProducer(meta.producer || 'PDFMiniFly Local Toolkit');
+      setCreator(meta.creator || 'PDFMiniFly');
     } catch {
       // Continue gracefully
     }

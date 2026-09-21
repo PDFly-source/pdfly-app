@@ -1,5 +1,5 @@
 {
-  "name": "PDFly",
+  "name": "PDFMiniFly",
   "description": "Private, powerful, local-first PDF toolkit for reading, editing, organizing, converting, protecting, and studying documents directly in your browser. No cloud uploads. No account required.",
   "requestFramePermissions": [],
   "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
