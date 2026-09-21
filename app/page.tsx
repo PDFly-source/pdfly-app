@@ -322,6 +322,7 @@ export default function HomePage() {
           <div className="max-w-2xl mx-auto mt-6">
             {!quickDroppedFile ? (
               <div
+                data-tool-dropzone="true"
                 onDragOver={(e) => {
                   e.preventDefault();
                   setIsQuickDragOver(true);

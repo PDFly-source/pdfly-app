@@ -78,7 +78,7 @@ export const ToolCard: React.FC<ToolCardProps> = ({ tool }) => {
     <Link
       href={`/tools/${tool.slug}`}
       id={`tool-card-${tool.slug}`}
-      className="group relative flex flex-col justify-between p-5 rounded-2xl bg-[#FFFDF9] dark:bg-[#1B1719] border border-[#E8DFD3] dark:border-[#2E2629] hover:border-[#7A1635]/50 dark:hover:border-[#C9A15A]/60 shadow-2xs hover:shadow-md hover:-translate-y-1 transition-all duration-200"
+      className="group relative flex flex-col justify-between p-5 rounded-2xl bg-[#FFFDF9] dark:bg-[#1B1719] border border-[#E8DFD3] dark:border-[#2E2629] hover:border-[#7A1635]/50 dark:hover:border-[#C9A15A]/60 shadow-2xs hover:shadow-md hover:-translate-y-1 active:scale-[0.98] active:translate-y-0 transition-all duration-200 motion-reduce:transition-none motion-reduce:hover:translate-y-0 motion-reduce:active:scale-100"
     >
       <div>
         {/* Top bar with Icon and Local-First Badge */}

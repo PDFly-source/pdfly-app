@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
-import { ALL_TOOLS } from '@/lib/tools-data';
+import { ALL_TOOLS, TOOL_CATEGORIES } from '@/lib/tools-data';
 import { ToolDefinition } from '@/types/pdf';
 import {
   Search,
@@ -32,6 +32,7 @@ export const GlobalSearchModal: React.FC<GlobalSearchModalProps> = ({
     setSelectedIndex(0);
   }
 
+  const [activeCategory, setActiveCategory] = useState<string>('all');
   const [recentSlugs, setRecentSlugs] = useState<string[]>(() => {
     if (typeof window === 'undefined') return [];
     try {
@@ -42,13 +43,20 @@ export const GlobalSearchModal: React.FC<GlobalSearchModalProps> = ({
     }
   });
   const inputRef = useRef<HTMLInputElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const restoreFocusRef = useRef<HTMLElement | null>(null);
+  const listRef = useRef<HTMLDivElement>(null);
 
-  // Focus input when opened
+  // Focus management: focus input on open, restore focus on close
   useEffect(() => {
     if (isOpen) {
+      restoreFocusRef.current = document.activeElement as HTMLElement | null;
       setTimeout(() => {
         inputRef.current?.focus();
       }, 50);
+    } else if (restoreFocusRef.current) {
+      restoreFocusRef.current.focus?.();
+      restoreFocusRef.current = null;
     }
   }, [isOpen]);
 
@@ -66,6 +74,16 @@ export const GlobalSearchModal: React.FC<GlobalSearchModalProps> = ({
       }
       return ALL_TOOLS.slice(0, 8);
     }
+
+    // Fuzzy subsequence match (e.g. 'mg pdf' matches 'Merge PDF')
+    const fuzzyMatch = (text: string, q: string): boolean => {
+      let qi = 0;
+      const t = text.toLowerCase();
+      for (let i = 0; i < t.length && qi < q.length; i++) {
+        if (t[i] === q[qi]) qi += 1;
+      }
+      return qi === q.length;
+    };
 
     // Action keyword mapping
     const actionKeywords: Record<string, string[]> = {
@@ -99,12 +117,44 @@ export const GlobalSearchModal: React.FC<GlobalSearchModalProps> = ({
       const aliases = actionKeywords[tool.slug] || [];
       const matchAlias = aliases.some((a) => a.includes(q) || q.includes(a));
 
-      return matchName || matchDesc || matchCat || matchSlug || matchAlias;
-    }).slice(0, 8);
-  }, [query, recentSlugs]);
+      return (
+        matchName ||
+        matchDesc ||
+        matchCat ||
+        matchSlug ||
+        matchAlias ||
+        fuzzyMatch(tool.name, q)
+      );
+    })
+      .filter((tool) => activeCategory === 'all' || tool.category === activeCategory)
+      .slice(0, 8);
+  }, [query, recentSlugs, activeCategory]);
 
   // Keyboard navigation
   const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === 'Escape') {
+      e.preventDefault();
+      e.stopPropagation();
+      onClose();
+      return;
+    }
+    if (e.key === 'Tab' && containerRef.current) {
+      // Simple focus trap: keep focus inside the palette while open
+      const focusables = containerRef.current.querySelectorAll<HTMLElement>(
+        'button, input, [tabindex]:not([tabindex="-1"])'
+      );
+      if (focusables.length === 0) return;
+      const first = focusables[0];
+      const last = focusables[focusables.length - 1];
+      if (e.shiftKey && document.activeElement === first) {
+        e.preventDefault();
+        last.focus();
+      } else if (!e.shiftKey && document.activeElement === last) {
+        e.preventDefault();
+        first.focus();
+      }
+      return;
+    }
     if (e.key === 'ArrowDown') {
       e.preventDefault();
       setSelectedIndex((prev) => (prev + 1) % Math.max(1, filteredTools.length));
@@ -116,8 +166,6 @@ export const GlobalSearchModal: React.FC<GlobalSearchModalProps> = ({
       if (filteredTools[selectedIndex]) {
         handleSelectTool(filteredTools[selectedIndex]);
       }
-    } else if (e.key === 'Escape') {
-      onClose();
     }
   };
 
@@ -136,11 +184,28 @@ export const GlobalSearchModal: React.FC<GlobalSearchModalProps> = ({
     router.push(`/tools/${tool.slug}`);
   };
 
+  // Keep the highlighted row visible while keyboard navigating
+  useEffect(() => {
+    const list = listRef.current;
+    if (!list) return;
+    const el = list.querySelector(`[role="option"]:nth-of-type(${selectedIndex + 1})`);
+    el?.scrollIntoView({ block: 'nearest' });
+  }, [selectedIndex]);
+
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-start justify-center pt-16 sm:pt-24 p-4 bg-black/60 backdrop-blur-xs animate-in fade-in duration-150">
+    <div
+      className="fixed inset-0 z-50 flex items-start justify-center pt-16 sm:pt-24 p-4 bg-black/60 backdrop-blur-xs animate-in fade-in duration-150 motion-reduce:animate-none"
+      onClick={(e) => {
+        if (e.target === e.currentTarget) onClose();
+      }}
+    >
       <div
+        ref={containerRef}
+        role="dialog"
+        aria-modal="true"
+        aria-label="Search PDFMiniFly tools"
         className="w-full max-w-xl bg-white dark:bg-[#1E1A1B] rounded-2xl border border-[#E5DFD4] dark:border-[#2E2729] shadow-2xl overflow-hidden"
         onKeyDown={handleKeyDown}
       >
@@ -150,6 +215,11 @@ export const GlobalSearchModal: React.FC<GlobalSearchModalProps> = ({
           <input
             ref={inputRef}
             type="text"
+            role="combobox"
+            aria-expanded="true"
+            aria-controls="command-palette-results"
+            aria-autocomplete="list"
+            aria-label="Search tools"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder="Type a tool name or action (e.g., 'merge', 'shrink', 'scanned', 'quiz')..."
@@ -168,8 +238,37 @@ export const GlobalSearchModal: React.FC<GlobalSearchModalProps> = ({
           </kbd>
         </div>
 
+        {/* Category filter chips */}
+        <div
+          className="flex gap-1.5 px-4 py-2 border-b border-[#E5DFD4] dark:border-[#2E2729] overflow-x-auto"
+          role="tablist"
+          aria-label="Filter tools by category"
+        >
+          {TOOL_CATEGORIES.map((cat) => (
+            <button
+              key={cat.id}
+              role="tab"
+              aria-selected={activeCategory === cat.id}
+              onClick={() => setActiveCategory(cat.id)}
+              className={`px-2.5 py-1 rounded-full text-[11px] font-semibold whitespace-nowrap transition-colors ${
+                activeCategory === cat.id
+                  ? 'bg-[#6D1F35] text-white dark:bg-[#C6A15B] dark:text-[#141213]'
+                  : 'bg-[#FAF7F2] dark:bg-[#141213] text-[#5C554F] dark:text-[#A39991] hover:bg-[#6D1F35]/10 dark:hover:bg-[#C6A15B]/15'
+              }`}
+            >
+              {cat.label}
+            </button>
+          ))}
+        </div>
+
         {/* Results List */}
-        <div className="max-h-[380px] overflow-y-auto p-2">
+        <div
+          ref={listRef}
+          id="command-palette-results"
+          role="listbox"
+          aria-label="Tool results"
+          className="max-h-[380px] overflow-y-auto p-2"
+        >
           {!query && recentSlugs.length > 0 && (
             <div className="px-3 py-1.5 text-[11px] font-bold uppercase tracking-wider text-[#5C554F] dark:text-[#A39991] flex items-center gap-1.5">
               <Clock className="w-3 h-3" />
@@ -190,6 +289,8 @@ export const GlobalSearchModal: React.FC<GlobalSearchModalProps> = ({
                 return (
                   <div
                     key={tool.slug}
+                    role="option"
+                    aria-selected={isSelected}
                     onClick={() => handleSelectTool(tool)}
                     onMouseEnter={() => setSelectedIndex(idx)}
                     className={`flex items-center justify-between p-3 rounded-xl cursor-pointer transition-colors text-xs ${

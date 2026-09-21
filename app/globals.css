@@ -112,3 +112,54 @@ html.standalone-mode nav {
   padding-top: max(0.5rem, env(safe-area-inset-top, 0px));
 }
 
+
+/* ============================================================
+   Motion & micro-interaction policy (Phase 1 UX)
+   All animations respect prefers-reduced-motion globally.
+   ============================================================ */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Subtle press feedback for primary actions (motion-safe only) */
+@media (prefers-reduced-motion: no-preference) {
+  .pdfora-press {
+    transition: transform 120ms ease;
+  }
+  .pdfora-press:active {
+    transform: scale(0.97);
+  }
+}
+
+/* Honest loading shimmer for skeleton placeholders (motion-safe only) */
+@media (prefers-reduced-motion: no-preference) {
+  .pdfora-shimmer {
+    position: relative;
+    overflow: hidden;
+  }
+  .pdfora-shimmer::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    transform: translateX(-100%);
+    background: linear-gradient(
+      90deg,
+      transparent,
+      rgba(201, 161, 90, 0.12),
+      transparent
+    );
+    animation: pdfora-shimmer-slide 1.6s ease-in-out infinite;
+  }
+  @keyframes pdfora-shimmer-slide {
+    100% {
+      transform: translateX(100%);
+    }
+  }
+}

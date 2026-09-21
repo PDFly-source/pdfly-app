@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from 'next';
 import './globals.css';
 import { SITE_URL, SITE_DESCRIPTION, LOGO_URL } from '@/lib/site';
 import { JsonLd } from '@/components/JsonLd';
+import { SmartDropzone } from '@/components/SmartDropzone';
 import { PWARegister } from '@/components/PWARegister';
 import { SmartInstallBanner } from '@/components/SmartInstallBanner';
 import { PWASplashScreen } from '@/components/PWASplashScreen';
@@ -150,6 +151,7 @@ const webAppSchema = {
         <JsonLd data={websiteSchema} />
         <JsonLd data={organizationSchema} />
         <JsonLd data={webAppSchema} />
+        <SmartDropzone />
         <PWASplashScreen />
         <PWARegister />
         {children}
