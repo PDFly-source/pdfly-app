@@ -518,6 +518,143 @@ export const ALL_TOOLS: ToolDefinition[] = [
     keywords: ['study', 'flashcards', 'quiz', 'mcq', 'revision', 'notes'],
     seoTitle: 'PDF to Study Tools – Notes, MCQs & Flashcards | PDFMiniFly',
     seoDescription: 'Convert PDF slides and chapters into revision notes, interactive multiple-choice questions, and flip cards.'
+  },
+  // ===== ADVANCED DOCUMENT SUITE (all local, no new dependencies) =====
+  {
+    id: 'pdf-to-excel',
+    slug: 'pdf-to-excel',
+    name: 'PDF to Excel / CSV',
+    description: 'Detect tables inside PDFs and export them as editable Excel or CSV files.',
+    category: 'extract',
+    categoryLabel: 'Extract',
+    iconName: 'FileSpreadsheet',
+    badge: 'New',
+    popular: false,
+    accepts: ['.pdf', 'application/pdf'],
+    maxFiles: 1,
+    outputExt: '.xlsx',
+    keywords: ['pdf to excel', 'pdf to csv', 'table extraction', 'bank statement', 'invoice', 'marksheet', 'data extraction'],
+    seoTitle: 'PDF to Excel / CSV – Local Table Extraction | PDFMiniFly',
+    seoDescription: 'Detect and export tables from bank statements, invoices and marksheets to Excel or CSV. 100% local browser processing.'
+  },
+  {
+    id: 'docx-to-pdf',
+    slug: 'docx-to-pdf',
+    name: 'Word to PDF',
+    description: 'Convert Word (DOCX) documents to PDF with text, headings, lists and tables.',
+    category: 'convert',
+    categoryLabel: 'Convert',
+    iconName: 'FileType',
+    badge: 'New',
+    popular: false,
+    accepts: ['.docx', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'],
+    maxFiles: 1,
+    outputExt: '.pdf',
+    keywords: ['word to pdf', 'docx to pdf', 'doc to pdf', 'word converter'],
+    seoTitle: 'Word to PDF – Private Local DOCX Converter | PDFMiniFly',
+    seoDescription: 'Convert DOCX Word documents to PDF entirely in your browser. No uploads, no cloud, no conversion servers.'
+  },
+  {
+    id: 'pdf-to-docx',
+    slug: 'pdf-to-docx',
+    name: 'PDF to Word',
+    description: 'Reconstruct PDF text into an editable Word (DOCX) document with headings.',
+    category: 'convert',
+    categoryLabel: 'Convert',
+    iconName: 'FileDown',
+    badge: 'New',
+    popular: false,
+    accepts: ['.pdf', 'application/pdf'],
+    maxFiles: 1,
+    outputExt: '.docx',
+    keywords: ['pdf to word', 'pdf to docx', 'editable word', 'pdf converter'],
+    seoTitle: 'PDF to Word – Local DOCX Reconstruction | PDFMiniFly',
+    seoDescription: 'Turn PDFs into editable Word documents locally. Paragraphs, page breaks and headings are rebuilt on your device.'
+  },
+  {
+    id: 'compress-to-target-size',
+    slug: 'compress-to-target-size',
+    name: 'Compress to Target Size',
+    description: 'Hit an exact file size — 100 KB, 200 KB, 5 MB — with an intelligent local search.',
+    category: 'compress',
+    categoryLabel: 'Compress',
+    iconName: 'Target',
+    badge: 'New',
+    popular: false,
+    accepts: ['.pdf', 'application/pdf'],
+    maxFiles: 1,
+    outputExt: '.pdf',
+    keywords: ['compress to size', 'target size', 'reduce pdf size', '100 kb pdf', '200 kb pdf', 'portal upload'],
+    seoTitle: 'Compress PDF to Target Size (100KB–5MB) | PDFMiniFly',
+    seoDescription: 'Compress a PDF to an exact target size for portals and exams. Real iterative search, honest results, fully local.'
+  },
+  {
+    id: 'split-by-size',
+    slug: 'split-by-size',
+    name: 'Split by File Size',
+    description: 'Split a large PDF into size-accurate parts measured for real, never mid-page.',
+    category: 'organize',
+    categoryLabel: 'Organize PDF',
+    iconName: 'Package',
+    badge: 'New',
+    popular: false,
+    accepts: ['.pdf', 'application/pdf'],
+    maxFiles: 1,
+    outputExt: '.zip',
+    keywords: ['split by size', 'split pdf size', 'divide pdf', 'email size limit', 'part size'],
+    seoTitle: 'Split PDF by File Size – Real Measured Parts | PDFMiniFly',
+    seoDescription: 'Split large PDFs into parts that fit real size limits. Sizes are measured after building, and pages are never cut.'
+  },
+  {
+    id: 'crop-trim-pdf',
+    slug: 'crop-trim-pdf',
+    name: 'Crop & Auto-Trim PDF',
+    description: 'Crop pages visually with drag handles, or auto-remove white margins and scanner borders.',
+    category: 'edit',
+    categoryLabel: 'Edit',
+    iconName: 'Crop',
+    badge: 'New',
+    popular: false,
+    accepts: ['.pdf', 'application/pdf'],
+    maxFiles: 1,
+    outputExt: '.pdf',
+    keywords: ['crop pdf', 'trim pdf', 'remove white margins', 'auto crop', 'scanner border'],
+    seoTitle: 'Crop & Auto-Trim PDF Pages – Visual Editor | PDFMiniFly',
+    seoDescription: 'Visually crop PDF pages or auto-trim white margins and black scanner borders. Before/after preview, fully local.'
+  },
+  {
+    id: 'nup-pdf',
+    slug: 'nup-pdf',
+    name: 'N-Up PDF',
+    description: 'Place 2, 4, 6 or 9 pages per sheet to cut printing costs for notes and handouts.',
+    category: 'organize',
+    categoryLabel: 'Organize PDF',
+    iconName: 'LayoutGrid',
+    badge: 'New',
+    popular: false,
+    accepts: ['.pdf', 'application/pdf'],
+    maxFiles: 1,
+    outputExt: '.pdf',
+    keywords: ['n-up', 'multiple pages per sheet', '2 up', '4 up', 'print handout', 'notes printing'],
+    seoTitle: 'N-Up PDF – Multiple Pages Per Sheet (2/4/6/9) | PDFMiniFly',
+    seoDescription: 'Impose PDF pages 2-up, 4-up, 6-up or 9-up with margins, gutters and borders. Live preview, all local.'
+  },
+  {
+    id: 'grayscale-ink-saver',
+    slug: 'grayscale-ink-saver',
+    name: 'Grayscale / Ink Saver',
+    description: 'Convert PDFs to grayscale, pure black & white, or ink-saving output with live preview.',
+    category: 'edit',
+    categoryLabel: 'Edit',
+    iconName: 'Droplets',
+    badge: 'New',
+    popular: false,
+    accepts: ['.pdf', 'application/pdf'],
+    maxFiles: 1,
+    outputExt: '.pdf',
+    keywords: ['grayscale pdf', 'black and white pdf', 'ink saver', 'print cheaper', 'bw pdf'],
+    seoTitle: 'Grayscale & Ink Saver PDF Converter | PDFMiniFly',
+    seoDescription: 'Convert PDFs to grayscale, pure black & white, or ink-saving profiles with DPI control and live preview. 100% local.'
   }
 ];
 
@@ -539,16 +676,16 @@ export const TOOL_CATEGORIES: { id: string; label: string }[] = [
 export function toolMatchesCategory(tool: ToolDefinition, catId: string): boolean {
   if (catId === 'all') return true;
   if (catId === 'organize') {
-    return ['merge-pdf', 'split-pdf', 'organize-pdf', 'remove-blank-pages', 'booklet-maker'].includes(tool.slug);
+    return ['merge-pdf', 'split-pdf', 'organize-pdf', 'remove-blank-pages', 'booklet-maker', 'split-by-size', 'nup-pdf'].includes(tool.slug);
   }
   if (catId === 'compress') {
-    return tool.slug === 'compress-pdf';
+    return ['compress-pdf', 'compress-to-target-size'].includes(tool.slug);
   }
   if (catId === 'edit') {
-    return ['edit-pdf', 'sign-pdf', 'fill-form', 'watermark-pdf', 'page-numbers', 'pdf-metadata'].includes(tool.slug);
+    return ['edit-pdf', 'sign-pdf', 'fill-form', 'watermark-pdf', 'page-numbers', 'pdf-metadata', 'crop-trim-pdf', 'grayscale-ink-saver'].includes(tool.slug);
   }
   if (catId === 'convert') {
-    return ['pdf-to-image', 'image-to-pdf', 'pdf-to-markdown', 'pdf-to-html'].includes(tool.slug);
+    return ['pdf-to-image', 'image-to-pdf', 'pdf-to-markdown', 'pdf-to-html', 'docx-to-pdf', 'pdf-to-docx'].includes(tool.slug);
   }
   if (catId === 'security') {
     return ['protect-pdf', 'redact-pdf', 'pdf-sanitizer'].includes(tool.slug);
@@ -557,7 +694,7 @@ export function toolMatchesCategory(tool: ToolDefinition, catId: string): boolea
     return tool.slug === 'ocr-pdf';
   }
   if (catId === 'extract') {
-    return ['extract-text', 'extract-images', 'extract-pages'].includes(tool.slug);
+    return ['extract-text', 'extract-images', 'extract-pages', 'pdf-to-excel'].includes(tool.slug);
   }
   if (catId === 'ai') {
     return ['pdf-assistant', 'pdf-to-study'].includes(tool.slug);

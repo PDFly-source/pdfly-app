@@ -69,6 +69,13 @@ import { PdfHealthWorkspace } from '@/components/tools/PdfHealthWorkspace';
 import { PdfSanitizerWorkspace } from '@/components/tools/PdfSanitizerWorkspace';
 import { PdfToMarkdownWorkspace } from '@/components/tools/PdfToMarkdownWorkspace';
 import { PdfToHtmlWorkspace } from '@/components/tools/PdfToHtmlWorkspace';
+import { PdfToExcelWorkspace } from '@/components/tools/PdfToExcelWorkspace';
+import { DocxConverterWorkspace } from '@/components/tools/DocxConverterWorkspace';
+import { CompressTargetWorkspace } from '@/components/tools/CompressTargetWorkspace';
+import { SplitBySizeWorkspace } from '@/components/tools/SplitBySizeWorkspace';
+import { CropTrimWorkspace } from '@/components/tools/CropTrimWorkspace';
+import { NupWorkspace } from '@/components/tools/NupWorkspace';
+import { GrayscaleWorkspace } from '@/components/tools/GrayscaleWorkspace';
 
 const ICON_MAP: Record<string, React.ElementType> = {
   Layers,
@@ -188,6 +195,22 @@ export const ToolPageClientWrapper: React.FC<ToolPageClientWrapperProps> = ({
         return <PdfToMarkdownWorkspace />;
       case 'pdf-to-html':
         return <PdfToHtmlWorkspace />;
+      case 'pdf-to-excel':
+        return <PdfToExcelWorkspace />;
+      case 'docx-to-pdf':
+        return <DocxConverterWorkspace mode="docx-to-pdf" />;
+      case 'pdf-to-docx':
+        return <DocxConverterWorkspace mode="pdf-to-docx" />;
+      case 'compress-to-target-size':
+        return <CompressTargetWorkspace />;
+      case 'split-by-size':
+        return <SplitBySizeWorkspace />;
+      case 'crop-trim-pdf':
+        return <CropTrimWorkspace />;
+      case 'nup-pdf':
+        return <NupWorkspace />;
+      case 'grayscale-ink-saver':
+        return <GrayscaleWorkspace />;
       default:
         return <MergePdfWorkspace />;
     }
