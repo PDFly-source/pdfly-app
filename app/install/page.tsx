@@ -378,7 +378,7 @@ export default function InstallPage() {
 
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3.5">
             <Link
-              href="/tools/merge"
+              href="/tools/merge-pdf"
               className="p-4 rounded-2xl bg-[#FFFDF9] dark:bg-[#1B1719] border border-[#E8DFD3] dark:border-[#2E2629] hover:border-[#7A1635]/40 dark:hover:border-[#C9A15A]/40 transition-all shadow-xs group"
             >
               <div className="w-9 h-9 rounded-xl bg-[#7A1635]/10 dark:bg-[#7A1635]/20 text-[#7A1635] dark:text-[#C9A15A] flex items-center justify-center mb-3 group-hover:scale-105 transition-transform">
@@ -389,7 +389,7 @@ export default function InstallPage() {
             </Link>
 
             <Link
-              href="/tools/split"
+              href="/tools/split-pdf"
               className="p-4 rounded-2xl bg-[#FFFDF9] dark:bg-[#1B1719] border border-[#E8DFD3] dark:border-[#2E2629] hover:border-[#7A1635]/40 dark:hover:border-[#C9A15A]/40 transition-all shadow-xs group"
             >
               <div className="w-9 h-9 rounded-xl bg-[#7A1635]/10 dark:bg-[#7A1635]/20 text-[#7A1635] dark:text-[#C9A15A] flex items-center justify-center mb-3 group-hover:scale-105 transition-transform">
@@ -400,7 +400,7 @@ export default function InstallPage() {
             </Link>
 
             <Link
-              href="/tools/compress"
+              href="/tools/compress-pdf"
               className="p-4 rounded-2xl bg-[#FFFDF9] dark:bg-[#1B1719] border border-[#E8DFD3] dark:border-[#2E2629] hover:border-[#7A1635]/40 dark:hover:border-[#C9A15A]/40 transition-all shadow-xs group"
             >
               <div className="w-9 h-9 rounded-xl bg-[#7A1635]/10 dark:bg-[#7A1635]/20 text-[#7A1635] dark:text-[#C9A15A] flex items-center justify-center mb-3 group-hover:scale-105 transition-transform">
