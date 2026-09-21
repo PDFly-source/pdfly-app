@@ -306,7 +306,7 @@ export const RedactPdfWorkspace: React.FC = () => {
                       <ShieldAlert className="w-4 h-4 text-[#6D1F35] dark:text-[#C6A15B]" />
                       <span>Pattern Detection ({detectedPatterns.length})</span>
                     </span>
-                    <span className="text-[10px] text-gray-500 font-mono">Local Scan</span>
+                    <span className="text-[11px] text-gray-500 font-mono">Local Scan</span>
                   </div>
 
                   {detectedPatterns.length === 0 ? (
@@ -331,12 +331,12 @@ export const RedactPdfWorkspace: React.FC = () => {
                             }`}
                           >
                             <div className="truncate pr-2">
-                              <span className="font-bold text-[10px] text-[#6D1F35] dark:text-[#C6A15B] mr-1.5 uppercase">
+                              <span className="font-bold text-[11px] text-[#6D1F35] dark:text-[#C6A15B] mr-1.5 uppercase">
                                 {p.type}:
                               </span>
                               <span className="font-mono text-[11px] truncate">{p.value}</span>
                             </div>
-                            <span className="text-[10px] text-gray-500 shrink-0">P.{p.page}</span>
+                            <span className="text-[11px] text-gray-500 shrink-0">P.{p.page}</span>
                           </div>
                         );
                       })}

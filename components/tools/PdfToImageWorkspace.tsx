@@ -208,7 +208,7 @@ export const PdfToImageWorkspace: React.FC = () => {
                     }`}
                   >
                     <p className="text-xs font-semibold text-[#141213] dark:text-[#F5F0EB]">{q.label}</p>
-                    <p className="text-[10px] text-[#5C554F] dark:text-[#A39991] mt-0.5">{q.sub}</p>
+                    <p className="text-[11px] text-[#5C554F] dark:text-[#A39991] mt-0.5">{q.sub}</p>
                   </button>
                 ))}
               </div>

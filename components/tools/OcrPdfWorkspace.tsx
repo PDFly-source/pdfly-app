@@ -160,7 +160,7 @@ export const OcrPdfWorkspace: React.FC = () => {
                     onChange={(e) => setMaxPagesToScan(parseInt(e.target.value, 10) || 1)}
                     className="w-full px-3 py-2 rounded-xl border border-[#E5DFD4] dark:border-[#383033] bg-white dark:bg-[#141213] text-xs font-medium"
                   />
-                  <span className="text-[10px] text-[#5C554F] dark:text-[#A39991] mt-1 block">
+                  <span className="text-[11px] text-[#5C554F] dark:text-[#A39991] mt-1 block">
                     OCR runs via local WebAssembly and consumes device CPU.
                   </span>
                 </div>

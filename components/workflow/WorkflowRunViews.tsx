@@ -30,12 +30,12 @@ export const DryRunModal: React.FC<{
       <div className="p-5 space-y-4">
         <div className="grid grid-cols-2 gap-3">
           <div className="p-3 rounded-xl bg-[#F7F3EC] dark:bg-[#141213] border border-[#E5DFD4] dark:border-[#2E2729]">
-            <p className="text-[10px] font-semibold uppercase tracking-wider text-[#5C554F] dark:text-[#A39991]">Input</p>
+            <p className="text-[11px] font-semibold uppercase tracking-wider text-[#5C554F] dark:text-[#A39991]">Input</p>
             <p className="text-sm font-bold text-[#141213] dark:text-[#F5F0EB]">{report.pageCountBefore} pages</p>
             <p className="text-[11px] text-[#5C554F] dark:text-[#A39991]">{formatBytes(report.sizeBefore)}</p>
           </div>
           <div className="p-3 rounded-xl bg-[#35C98A]/10 border border-[#35C98A]/25">
-            <p className="text-[10px] font-semibold uppercase tracking-wider text-[#258B5C]">Estimated output</p>
+            <p className="text-[11px] font-semibold uppercase tracking-wider text-[#258B5C]">Estimated output</p>
             <p className="text-sm font-bold text-[#258B5C]">{report.estimatedPages} pages</p>
             <p className="text-[11px] text-[#258B5C]/80">{formatBytes(report.estimatedSize)}</p>
           </div>
@@ -244,7 +244,7 @@ export const WorkflowResultView: React.FC<{
 
       {/* Privacy audit */}
       <div className="mb-6 p-4 rounded-2xl bg-[#35C98A]/5 border border-[#35C98A]/25">
-        <p className="text-[10px] font-bold uppercase tracking-wider text-[#258B5C] mb-1.5">Privacy check</p>
+        <p className="text-[11px] font-bold uppercase tracking-wider text-[#258B5C] mb-1.5">Privacy check</p>
         <ul className="grid grid-cols-1 sm:grid-cols-2 gap-1">
           {[
             'No cloud upload',
@@ -313,7 +313,7 @@ export const WorkflowResultView: React.FC<{
 
 const Stat: React.FC<{ label: string; value: string; small?: boolean; accent?: boolean; icon?: React.ReactNode }> = ({ label, value, small, accent, icon }) => (
   <div className={`p-3 rounded-xl border ${accent ? 'bg-[#35C98A]/10 border-[#35C98A]/25' : 'bg-[#F7F3EC] dark:bg-[#141213] border-[#E5DFD4] dark:border-[#2E2729]'}`}>
-    <p className="text-[10px] font-semibold uppercase tracking-wider text-[#5C554F] dark:text-[#A39991] flex items-center gap-1">
+    <p className="text-[11px] font-semibold uppercase tracking-wider text-[#5C554F] dark:text-[#A39991] flex items-center gap-1">
       {icon}
       {label}
     </p>

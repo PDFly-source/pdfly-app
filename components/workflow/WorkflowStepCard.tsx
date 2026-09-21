@@ -122,7 +122,7 @@ export const WorkflowStepCard: React.FC<WorkflowStepCardProps> = ({
         >
           <GripVertical className="w-4 h-4" />
         </span>
-        <span className="w-6 h-6 rounded-full bg-[#6D1F35]/10 dark:bg-[#C9A15A]/10 text-[#6D1F35] dark:text-[#C9A15A] text-[10px] font-bold flex items-center justify-center">
+        <span className="w-6 h-6 rounded-full bg-[#6D1F35]/10 dark:bg-[#C9A15A]/10 text-[#6D1F35] dark:text-[#C9A15A] text-[11px] font-bold flex items-center justify-center">
           {index + 1}
         </span>
       </div>
@@ -137,7 +137,7 @@ export const WorkflowStepCard: React.FC<WorkflowStepCardProps> = ({
             <button
               onClick={() => onSetCondition(step.id)}
               title="Conditional execution"
-              className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-[#C9A15A]/10 border border-[#C9A15A]/30 text-[#8A6D2F] dark:text-[#C9A15A] text-[10px] font-bold"
+              className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-[#C9A15A]/10 border border-[#C9A15A]/30 text-[#8A6D2F] dark:text-[#C9A15A] text-[11px] font-bold"
             >
               <GitBranch className="w-2.5 h-2.5" />
               <span>If</span>

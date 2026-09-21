@@ -1,12 +1,21 @@
 'use client';
 
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { FileDropzone } from '@/components/FileDropzone';
 import { ProcessingModal } from '@/components/ProcessingModal';
 import { SuccessView } from '@/components/SuccessView';
 import { getPdfDocumentFromFile } from '@/lib/pdfjs-init';
 import { triggerDownload, formatBytes } from '@/lib/pdf-engine';
 import { addRecentJob } from '@/lib/recent-jobs';
+import { useUndoRedo, useUndoRedoShortcuts } from '@/lib/undo-redo';
+import {
+  getRecoverySession,
+  saveRecoverySession,
+  deleteRecoverySession,
+  type RecoverySession,
+} from '@/lib/recovery-db';
+import { UndoRedoBar } from '@/components/UndoRedoBar';
+import { RecoveryPrompt } from '@/components/RecoveryPrompt';
 import { PDFDocument, rgb } from 'pdf-lib';
 import { safeDrawText } from '@/lib/font-safe';
 import {
@@ -20,6 +29,7 @@ import {
   ZoomOut,
   Download,
   AlertCircle,
+  Redo2,
   Undo2,
   Trash2,
 } from 'lucide-react';
@@ -44,7 +54,25 @@ export const PdfEditorWorkspace: React.FC = () => {
 
   // Active Tool: 'select' | 'text' | 'rect' | 'redact' | 'highlight'
   const [activeTool, setActiveTool] = useState<'text' | 'rect' | 'redact' | 'highlight'>('text');
-  const [annotations, setAnnotations] = useState<AnnotationItem[]>([]);
+  const {
+    state: annotations,
+    commit: commitAnnotations,
+    reset: resetAnnotations,
+    undo: undoAnnotations,
+    redo: redoAnnotations,
+    canUndo,
+    canRedo,
+    clearHistory: clearAnnotationHistory,
+  } = useUndoRedo<AnnotationItem[]>([]);
+
+  // ---- Local auto-recovery (IndexedDB, device-only) ----
+  const [recoverySession, setRecoverySession] = useState<RecoverySession<{
+    annotations: AnnotationItem[];
+    currentPage: number;
+  }> | null>(null);
+  const [recoveryOpen, setRecoveryOpen] = useState(false);
+  const TOOL_SLUG = 'edit-pdf';
+  const saveTimerRef = useRef<number | null>(null);
   const [textInput, setTextInput] = useState('Added Note');
 
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -98,7 +126,7 @@ export const PdfEditorWorkspace: React.FC = () => {
     if (!files || files.length === 0) return;
     setFile(files[0]);
     setCurrentPage(1);
-    setAnnotations([]);
+    resetAnnotations([]);
     setErrorMessage(null);
   };
 
@@ -118,11 +146,11 @@ export const PdfEditorWorkspace: React.FC = () => {
       text: activeTool === 'text' ? textInput : undefined,
     };
 
-    setAnnotations((prev) => [...prev, newAnnot]);
+    commitAnnotations((prev) => [...prev, newAnnot]);
   };
 
   const handleUndo = () => {
-    setAnnotations((prev) => prev.slice(0, -1));
+    undoAnnotations();
   };
 
   const handleSave = async () => {
@@ -203,6 +231,10 @@ export const PdfEditorWorkspace: React.FC = () => {
         fileSize: outBlob.size,
         status: 'completed',
       });
+
+      // Session completed: drop the recovery record and undo history
+      void deleteRecoverySession(TOOL_SLUG);
+      clearAnnotationHistory();
     } catch (err: any) {
       console.error(err);
       setErrorMessage(err?.message || 'Failed to save edited PDF.');
@@ -217,12 +249,92 @@ export const PdfEditorWorkspace: React.FC = () => {
     }
   };
 
+  // Undo/redo keyboard shortcuts while a document is open
+  useUndoRedoShortcuts({
+    onUndo: undoAnnotations,
+    onRedo: redoAnnotations,
+    enabled: !!file && !isProcessing && !resultBlob,
+  });
+
+  // ---- Auto-recovery: offer an explicit restore of previous annotations ----
+  useEffect(() => {
+    let active = true;
+    (async () => {
+      const rec = await getRecoverySession<{
+        annotations: AnnotationItem[];
+        currentPage: number;
+      }>(TOOL_SLUG);
+      if (!active || !rec || !rec.file) return;
+      const recAnnots = rec.payload?.annotations;
+      if (!Array.isArray(recAnnots)) return;
+      setRecoverySession(rec as RecoverySession<{
+        annotations: AnnotationItem[];
+        currentPage: number;
+      }>);
+      setRecoveryOpen(true);
+    })();
+    return () => {
+      active = false;
+    };
+  }, []);
+
+  const restoreSession = () => {
+    const rec = recoverySession;
+    setRecoveryOpen(false);
+    if (!rec?.file) return;
+    try {
+      const restoredFile =
+        rec.file instanceof File ? rec.file : new File([rec.file], 'recovered.pdf', { type: 'application/pdf' });
+      setFile(restoredFile);
+      setErrorMessage(null);
+      setResultBlob(null);
+      setCurrentPage(rec.payload.currentPage || 1);
+      resetAnnotations(rec.payload.annotations);
+    } catch {
+      setErrorMessage('Could not restore the previous session.');
+    } finally {
+      setRecoverySession(null);
+    }
+  };
+
+  const discardSession = () => {
+    setRecoveryOpen(false);
+    setRecoverySession(null);
+    void deleteRecoverySession(TOOL_SLUG);
+  };
+
+  // ---- Auto-recovery: debounced save of the working state ----
+  const saveRecovery = useCallback(() => {
+    if (!file || resultBlob) return;
+    if (annotations.length === 0) return; // nothing meaningful to recover
+    void saveRecoverySession(TOOL_SLUG, file, {
+      annotations,
+      currentPage,
+    });
+  }, [file, annotations, currentPage, resultBlob]);
+
+  useEffect(() => {
+    if (saveTimerRef.current) window.clearTimeout(saveTimerRef.current);
+    saveTimerRef.current = window.setTimeout(saveRecovery, 1500);
+    return () => {
+      if (saveTimerRef.current) window.clearTimeout(saveTimerRef.current);
+    };
+  }, [saveRecovery]);
+
+  useEffect(() => {
+    const handler = () => saveRecovery();
+    window.addEventListener('pagehide', handler);
+    return () => window.removeEventListener('pagehide', handler);
+  }, [saveRecovery]);
+
   const handleReset = () => {
     setFile(null);
-    setAnnotations([]);
+    resetAnnotations([]);
+    clearAnnotationHistory();
     setResultBlob(null);
     setResultFileName('');
     setErrorMessage(null);
+    void deleteRecoverySession(TOOL_SLUG);
   };
 
   if (resultBlob && file) {
@@ -240,6 +352,21 @@ export const PdfEditorWorkspace: React.FC = () => {
 
   return (
     <div className="w-full max-w-5xl mx-auto">
+      <RecoveryPrompt
+        isOpen={recoveryOpen}
+        savedWhen={recoverySession ? new Date(recoverySession.savedAt).toLocaleString() : ''}
+        onRestore={restoreSession}
+        onDiscard={discardSession}
+      />
+      {file && !resultBlob && (
+        <UndoRedoBar
+          canUndo={canUndo}
+          canRedo={canRedo}
+          onUndo={undoAnnotations}
+          onRedo={redoAnnotations}
+          label="annotation changes"
+        />
+      )}
       {!file ? (
         <FileDropzone
           onFilesSelected={handleFileSelected}
@@ -354,12 +481,22 @@ export const PdfEditorWorkspace: React.FC = () => {
               </div>
 
               <button
-                onClick={handleUndo}
-                disabled={annotations.length === 0}
-                className="p-1.5 rounded-lg text-[#5C554F] hover:text-[#141213] disabled:opacity-20"
-                title="Undo last annotation"
+                onClick={undoAnnotations}
+                disabled={!canUndo}
+                aria-label="Undo last annotation"
+                className="p-1.5 min-w-[44px] min-h-[44px] flex items-center justify-center rounded-lg text-[#5C554F] hover:text-[#141213] disabled:opacity-40 disabled:cursor-not-allowed transition-opacity"
+                title="Undo (Ctrl/Cmd+Z)"
               >
                 <Undo2 className="w-4 h-4" />
+              </button>
+              <button
+                onClick={redoAnnotations}
+                disabled={!canRedo}
+                aria-label="Redo annotation"
+                className="p-1.5 min-w-[44px] min-h-[44px] flex items-center justify-center rounded-lg text-[#5C554F] hover:text-[#141213] disabled:opacity-40 disabled:cursor-not-allowed transition-opacity"
+                title="Redo (Ctrl/Cmd+Shift+Z)"
+              >
+                <Redo2 className="w-4 h-4" />
               </button>
 
               <button

@@ -208,7 +208,7 @@ export default function HomePage() {
                         </div>
                         <div className="flex flex-col">
                           <span className="text-xs font-black text-[#1A1416] dark:text-[#F7F1E8]">PDFMiniFly Sheet</span>
-                          <span className="text-[10px] text-[#35C98A] font-bold">In-Memory Engine</span>
+                          <span className="text-[11px] text-[#35C98A] font-bold">In-Memory Engine</span>
                         </div>
                       </div>
                     </div>
@@ -364,7 +364,7 @@ export default function HomePage() {
                       <p className="text-xs font-bold text-[#1A1416] dark:text-[#F7F1E8] truncate">
                         {quickDroppedFile.name}
                       </p>
-                      <p className="text-[10px] text-[#5C5256] dark:text-[#AFA6A8]">
+                      <p className="text-[11px] text-[#5C5256] dark:text-[#AFA6A8]">
                         {formatBytes(quickDroppedFile.size)} • Ready for local operations
                       </p>
                     </div>

@@ -242,7 +242,7 @@ export const SplitPdfWorkspace: React.FC = () => {
                   }`}
                 >
                   <p className="text-xs font-semibold text-[#141213] dark:text-[#F5F0EB]">{opt.label}</p>
-                  <p className="text-[10px] text-[#5C554F] dark:text-[#A39991] mt-0.5">{opt.desc}</p>
+                  <p className="text-[11px] text-[#5C554F] dark:text-[#A39991] mt-0.5">{opt.desc}</p>
                 </button>
               ))}
             </div>
@@ -336,7 +336,7 @@ export const SplitPdfWorkspace: React.FC = () => {
                         className="w-full h-full object-contain"
                       />
                     ) : (
-                      <span className="text-[10px] text-[#5C554F]">Page {t.pageNumber}</span>
+                      <span className="text-[11px] text-[#5C554F]">Page {t.pageNumber}</span>
                     )}
                   </div>
 

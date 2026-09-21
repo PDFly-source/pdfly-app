@@ -307,7 +307,7 @@ export const CompressPdfWorkspace: React.FC = () => {
                     <p className="text-[11px] font-medium text-[#6D1F35] dark:text-[#C6A15B]">
                       {opt.sub}
                     </p>
-                    <p className="text-[10px] text-[#5C554F] dark:text-[#A39991] mt-1 leading-normal">
+                    <p className="text-[11px] text-[#5C554F] dark:text-[#A39991] mt-1 leading-normal">
                       {opt.detail}
                     </p>
                   </button>

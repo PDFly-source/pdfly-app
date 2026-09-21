@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { FileDropzone } from '@/components/FileDropzone';
 import { ProcessingModal } from '@/components/ProcessingModal';
 import { SuccessView } from '@/components/SuccessView';
@@ -8,6 +8,16 @@ import { PDFDocument, rgb } from 'pdf-lib';
 import { triggerDownload, formatBytes } from '@/lib/pdf-engine';
 import { getPdfDocumentFromFile, renderPageThumbnail } from '@/lib/pdfjs-init';
 import { addRecentJob } from '@/lib/recent-jobs';
+import { useUndoRedo, useUndoRedoShortcuts } from '@/lib/undo-redo';
+import {
+  getRecoverySession,
+  saveRecoverySession,
+  deleteRecoverySession,
+  purgeExpiredRecoverySessions,
+  type RecoverySession,
+} from '@/lib/recovery-db';
+import { UndoRedoBar } from '@/components/UndoRedoBar';
+import { RecoveryPrompt } from '@/components/RecoveryPrompt';
 import {
   RotateCw,
   RotateCcw,
@@ -44,7 +54,17 @@ interface VisualPageItem {
 export const OrganizePdfWorkspace: React.FC = () => {
   const [primaryFile, setPrimaryFile] = useState<File | null>(null);
   const [loadedFiles, setLoadedFiles] = useState<File[]>([]);
-  const [pages, setPages] = useState<VisualPageItem[]>([]);
+  const {
+    state: pages,
+    commit: commitPages,
+    reset: resetPages,
+    patch: patchPages,
+    undo: undoPages,
+    redo: redoPages,
+    canUndo,
+    canRedo,
+    clearHistory: clearPagesHistory,
+  } = useUndoRedo<VisualPageItem[]>([]);
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
 
   // Drag-and-drop state
@@ -60,6 +80,103 @@ export const OrganizePdfWorkspace: React.FC = () => {
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   const importFileInputRef = useRef<HTMLInputElement | null>(null);
+
+  // ---- Local auto-recovery (IndexedDB, device-only) ----
+  const [recoverySession, setRecoverySession] = useState<RecoverySession<{
+    pages: VisualPageItem[];
+  }> | null>(null);
+  const [recoveryOpen, setRecoveryOpen] = useState(false);
+
+  const TOOL_SLUG = 'organize-pdf';
+  const saveTimerRef = useRef<number | null>(null);
+
+  // Undo/redo keyboard shortcuts (only while a document is being edited)
+  useUndoRedoShortcuts({
+    onUndo: undoPages,
+    onRedo: redoPages,
+    enabled: !!primaryFile && !isProcessing && !resultBlob,
+  });
+
+  // ---- Auto-recovery: offer an explicit restore of previous work ----
+  useEffect(() => {
+    let active = true;
+    (async () => {
+      const rec = await getRecoverySession<{ pages: VisualPageItem[] }>(TOOL_SLUG);
+      if (!active || !rec || !rec.file) return;
+      const recPages = rec.payload?.pages;
+      if (!Array.isArray(recPages) || recPages.length === 0) return;
+      setRecoverySession(rec as RecoverySession<{ pages: VisualPageItem[] }>);
+      setRecoveryOpen(true);
+    })();
+    return () => {
+      active = false;
+    };
+  }, []);
+
+  const restoreSession = async () => {
+    const rec = recoverySession;
+    setRecoveryOpen(false);
+    if (!rec?.file) return;
+    try {
+      const restoredFile =
+        rec.file instanceof File ? rec.file : new File([rec.file], 'recovered.pdf', { type: 'application/pdf' });
+      setPrimaryFile(restoredFile);
+      setLoadedFiles([restoredFile]);
+      setSelectedIds(new Set());
+      setErrorMessage(null);
+      setResultBlob(null);
+      resetPages(rec.payload.pages);
+
+      // Thumbnails are not persisted — re-render them locally
+      const pdfJsDoc = await getPdfDocumentFromFile(restoredFile);
+      const pageNumbers = rec.payload.pages
+        .filter((p) => p.sourceDocIndex === 0)
+        .map((p) => p.originalPageNumber)
+        .slice(0, 50);
+      for (const pno of pageNumbers) {
+        const dataUrl = await renderPageThumbnail(pdfJsDoc, pno, 200);
+        patchPages((prev) =>
+          prev.map((it) =>
+            it.sourceDocIndex === 0 && it.originalPageNumber === pno ? { ...it, dataUrl } : it
+          )
+        );
+      }
+    } catch (err) {
+      console.error(err);
+      setErrorMessage('Could not restore the previous session.');
+    } finally {
+      setRecoverySession(null);
+    }
+  };
+
+  const discardSession = () => {
+    setRecoveryOpen(false);
+    setRecoverySession(null);
+    void deleteRecoverySession(TOOL_SLUG);
+  };
+
+  // ---- Auto-recovery: debounced save of the working state ----
+  const saveRecovery = useCallback(() => {
+    if (!primaryFile || pages.length === 0 || resultBlob) return;
+    // Thumbnails are re-renderable; don't persist heavy data URLs
+    const lightPages = pages.map((p) => ({ ...p, dataUrl: undefined }));
+    void saveRecoverySession(TOOL_SLUG, primaryFile, { pages: lightPages });
+  }, [primaryFile, pages, resultBlob]);
+
+  useEffect(() => {
+    if (saveTimerRef.current) window.clearTimeout(saveTimerRef.current);
+    saveTimerRef.current = window.setTimeout(saveRecovery, 1500);
+    return () => {
+      if (saveTimerRef.current) window.clearTimeout(saveTimerRef.current);
+    };
+  }, [saveRecovery]);
+
+  // Best-effort immediate save when leaving the page
+  useEffect(() => {
+    const handler = () => saveRecovery();
+    window.addEventListener('pagehide', handler);
+    return () => window.removeEventListener('pagehide', handler);
+  }, [saveRecovery]);
 
   const handleFileSelected = async (files: File[]) => {
     if (!files || files.length === 0) return;
@@ -81,12 +198,12 @@ export const OrganizePdfWorkspace: React.FC = () => {
         rotation: 0,
         sourceName: selected.name,
       }));
-      setPages(initialPages);
+      resetPages(initialPages);
 
       // Render previews
       for (let p = 1; p <= Math.min(numPages, 50); p++) {
         const dataUrl = await renderPageThumbnail(pdfJsDoc, p, 200);
-        setPages((prev) =>
+        patchPages((prev) =>
           prev.map((it) =>
             it.sourceDocIndex === 0 && it.originalPageNumber === p ? { ...it, dataUrl } : it
           )
@@ -120,12 +237,12 @@ export const OrganizePdfWorkspace: React.FC = () => {
         sourceName: newFile.name,
       }));
 
-      setPages((prev) => [...prev, ...newPages]);
+      commitPages((prev) => [...prev, ...newPages]);
 
       // Render thumbnails for imported pages
       for (let p = 1; p <= Math.min(numPages, 30); p++) {
         const dataUrl = await renderPageThumbnail(pdfJsDoc, p, 200);
-        setPages((prev) =>
+        patchPages((prev) =>
           prev.map((it) =>
             it.sourceDocIndex === docIndex && it.originalPageNumber === p ? { ...it, dataUrl } : it
           )
@@ -161,7 +278,7 @@ export const OrganizePdfWorkspace: React.FC = () => {
   // Reorder & Mutations
   const rotateSelected = (deg: number) => {
     const targets = selectedIds.size > 0 ? selectedIds : new Set(pages.map((p) => p.id));
-    setPages((prev) =>
+    commitPages((prev) =>
       prev.map((p) => (targets.has(p.id) ? { ...p, rotation: (p.rotation + deg + 360) % 360 } : p))
     );
   };
@@ -173,7 +290,7 @@ export const OrganizePdfWorkspace: React.FC = () => {
       setErrorMessage('Document must contain at least 1 page.');
       return;
     }
-    setPages((prev) => prev.filter((p) => !targets.has(p.id)));
+    commitPages((prev) => prev.filter((p) => !targets.has(p.id)));
     setSelectedIds(new Set());
   };
 
@@ -191,11 +308,11 @@ export const OrganizePdfWorkspace: React.FC = () => {
         });
       }
     });
-    setPages(newPages);
+    commitPages(newPages);
   };
 
   const reversePages = () => {
-    setPages((prev) => [...prev].reverse());
+    commitPages((prev) => [...prev].reverse());
   };
 
   const insertBlankPage = (afterIndex?: number) => {
@@ -210,21 +327,21 @@ export const OrganizePdfWorkspace: React.FC = () => {
     };
     const next = [...pages];
     next.splice(idx, 0, blankItem);
-    setPages(next);
+    commitPages(next);
   };
 
   const moveSelectedToFirst = () => {
     if (selectedIds.size === 0) return;
     const selected = pages.filter((p) => selectedIds.has(p.id));
     const remaining = pages.filter((p) => !selectedIds.has(p.id));
-    setPages([...selected, ...remaining]);
+    commitPages([...selected, ...remaining]);
   };
 
   const moveSelectedToLast = () => {
     if (selectedIds.size === 0) return;
     const selected = pages.filter((p) => selectedIds.has(p.id));
     const remaining = pages.filter((p) => !selectedIds.has(p.id));
-    setPages([...remaining, ...selected]);
+    commitPages([...remaining, ...selected]);
   };
 
   // Drag and drop handler
@@ -254,7 +371,7 @@ export const OrganizePdfWorkspace: React.FC = () => {
     const [moved] = next.splice(fromIndex, 1);
     next.splice(toIndex, 0, moved);
 
-    setPages(next);
+    commitPages(next);
     setDraggedId(null);
     setDragOverId(null);
   };
@@ -328,6 +445,10 @@ export const OrganizePdfWorkspace: React.FC = () => {
         timestamp: Date.now(),
         status: 'completed',
       });
+
+      // Session completed: drop the recovery record and the undo history
+      void deleteRecoverySession(TOOL_SLUG);
+      clearPagesHistory();
     } catch (err: any) {
       console.error(err);
       setErrorMessage('Failed to assemble new PDF: ' + (err?.message || 'Unknown error'));
@@ -338,6 +459,12 @@ export const OrganizePdfWorkspace: React.FC = () => {
 
   return (
     <div className="rounded-2xl border border-[#E5DFD4] dark:border-[#2E2729] bg-white dark:bg-[#1A1718] p-6 sm:p-8 shadow-sm">
+      <RecoveryPrompt
+        isOpen={recoveryOpen}
+        savedWhen={recoverySession ? new Date(recoverySession.savedAt).toLocaleString() : ''}
+        onRestore={restoreSession}
+        onDiscard={discardSession}
+      />
       {!primaryFile ? (
         <div className="max-w-xl mx-auto text-center">
           <div className="w-14 h-14 rounded-2xl bg-[#6D1F35]/10 dark:bg-[#C6A15B]/10 text-[#6D1F35] dark:text-[#C6A15B] flex items-center justify-center mx-auto mb-4">
@@ -367,13 +494,23 @@ export const OrganizePdfWorkspace: React.FC = () => {
           onReset={() => {
             setResultBlob(null);
             setPrimaryFile(null);
-            setPages([]);
+            resetPages([]);
+            clearPagesHistory();
             setSelectedIds(new Set());
+            void deleteRecoverySession(TOOL_SLUG);
           }}
           additionalNote={`Exported ${pages.length} pages (${formatBytes(resultBlob.size)}). Ready for download.`}
         />
       ) : (
         <div className="space-y-6">
+          <UndoRedoBar
+            canUndo={canUndo}
+            canRedo={canRedo}
+            onUndo={undoPages}
+            onRedo={redoPages}
+            label="page changes"
+          />
+
           {/* Header Action Toolbar */}
           <div className="flex flex-wrap items-center justify-between gap-3 pb-4 border-b border-[#E5DFD4] dark:border-[#2E2729]">
             <div className="flex items-center gap-2">
@@ -550,7 +687,7 @@ export const OrganizePdfWorkspace: React.FC = () => {
 
                   {/* Rotation Indicator */}
                   {p.rotation !== 0 && (
-                    <div className="absolute top-3 right-3 z-10 px-1.5 py-0.5 rounded bg-black/60 text-white text-[10px] font-mono">
+                    <div className="absolute top-3 right-3 z-10 px-1.5 py-0.5 rounded bg-black/60 text-white text-[11px] font-mono">
                       {p.rotation}°
                     </div>
                   )}
@@ -560,7 +697,7 @@ export const OrganizePdfWorkspace: React.FC = () => {
                     {p.isBlank ? (
                       <div className="text-center p-2">
                         <FileText className="w-6 h-6 mx-auto mb-1 text-gray-400" />
-                        <span className="text-[10px] text-gray-400 font-medium">Blank Page</span>
+                        <span className="text-[11px] text-gray-400 font-medium">Blank Page</span>
                       </div>
                     ) : p.dataUrl ? (
                       <img
@@ -580,11 +717,11 @@ export const OrganizePdfWorkspace: React.FC = () => {
                       Page {index + 1}
                     </span>
 
-                    <div className="opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-1">
+                    <div className="opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity flex items-center gap-1">
                       <button
                         onClick={(e) => {
                           e.stopPropagation();
-                          setPages((prev) =>
+                          commitPages((prev) =>
                             prev.map((item) =>
                               item.id === p.id
                                 ? { ...item, rotation: (item.rotation + 90) % 360 }
@@ -592,7 +729,8 @@ export const OrganizePdfWorkspace: React.FC = () => {
                             )
                           );
                         }}
-                        className="p-1 hover:text-[#6D1F35]"
+                        className="p-1.5 min-w-[44px] min-h-[44px] flex items-center justify-center hover:text-[#6D1F35] rounded-lg"
+                        aria-label="Rotate page 90 degrees"
                         title="Rotate 90°"
                       >
                         <RotateCw className="w-3 h-3" />
@@ -602,9 +740,10 @@ export const OrganizePdfWorkspace: React.FC = () => {
                         onClick={(e) => {
                           e.stopPropagation();
                           if (pages.length <= 1) return;
-                          setPages((prev) => prev.filter((item) => item.id !== p.id));
+                          commitPages((prev) => prev.filter((item) => item.id !== p.id));
                         }}
-                        className="p-1 hover:text-red-600"
+                        className="p-1.5 min-w-[44px] min-h-[44px] flex items-center justify-center hover:text-red-600 rounded-lg"
+                        aria-label="Delete page"
                         title="Delete page"
                       >
                         <Trash2 className="w-3 h-3" />

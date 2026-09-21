@@ -5,7 +5,8 @@ import Link from 'next/link';
 import { getRecentJobs, clearRecentJobs } from '@/lib/recent-jobs';
 import { RecentJob } from '@/types/pdf';
 import { formatBytes } from '@/lib/pdf-engine';
-import { X, History, Trash2, Clock, ShieldCheck, ArrowRight, FileText } from 'lucide-react';
+import { Trash2, Clock, ShieldCheck, ArrowRight, FileText } from 'lucide-react';
+import { BottomSheet } from './ui/BottomSheet';
 
 interface RecentJobsModalProps {
   isOpen: boolean;
@@ -32,34 +33,17 @@ export const RecentJobsModal: React.FC<RecentJobsModalProps> = ({ isOpen, onClos
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-xs p-4 animate-in fade-in duration-200">
-      <div
-        id="recent-jobs-modal"
-        className="w-full max-w-lg rounded-2xl bg-white dark:bg-[#1E1A1B] border border-[#E5DFD4] dark:border-[#383033] p-6 shadow-2xl flex flex-col max-h-[85vh]"
-      >
-        {/* Header */}
-        <div className="flex items-center justify-between pb-4 border-b border-[#E5DFD4] dark:border-[#2E2729]">
-          <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-lg bg-[#6D1F35]/10 dark:bg-[#C6A15B]/15 text-[#6D1F35] dark:text-[#C6A15B] flex items-center justify-center">
-              <History className="w-4 h-4" />
-            </div>
-            <div>
-              <h3 className="text-sm font-semibold text-[#141213] dark:text-[#F5F0EB]">
-                Recent Local Activity
-              </h3>
-              <p className="text-[11px] text-[#5C554F] dark:text-[#A39991]">
-                Stored only in your browser session
-              </p>
-            </div>
-          </div>
-
-          <button
-            onClick={onClose}
-            className="p-1 rounded-lg text-[#5C554F] hover:text-[#141213] dark:text-[#A39991] dark:hover:text-[#F5F0EB]"
-          >
-            <X className="w-5 h-5" />
-          </button>
-        </div>
+    <BottomSheet
+      isOpen={isOpen}
+      onClose={onClose}
+      label="Recent local activity"
+      title="Recent Local Activity"
+    >
+      <div id="recent-jobs-modal" className="flex flex-col">
+        {/* Subtitle note — the sheet header provides the title + close */}
+        <p className="text-[11px] text-[#5C5256] dark:text-[#AFA6A8] pb-2">
+          Stored only in your browser session
+        </p>
 
         {/* Privacy Note */}
         <div className="my-3 px-3 py-2 rounded-xl bg-[#F7F3EC] dark:bg-[#141213] border border-[#E5DFD4] dark:border-[#2E2729] flex items-center gap-2 text-[11px] text-[#5C554F] dark:text-[#A39991]">
@@ -89,7 +73,7 @@ export const RecentJobsModal: React.FC<RecentJobsModalProps> = ({ isOpen, onClos
                     <p className="font-medium text-[#141213] dark:text-[#F5F0EB] truncate">
                       {job.fileName}
                     </p>
-                    <p className="text-[10px] text-[#5C554F] dark:text-[#A39991]">
+                    <p className="text-[11px] text-[#5C554F] dark:text-[#A39991]">
                       {job.toolName} • {formatBytes(job.fileSize)} • {new Date(job.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                     </p>
                   </div>
@@ -127,6 +111,6 @@ export const RecentJobsModal: React.FC<RecentJobsModalProps> = ({ isOpen, onClos
           </div>
         )}
       </div>
-    </div>
+    </BottomSheet>
   );
 };

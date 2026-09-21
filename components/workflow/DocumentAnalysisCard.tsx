@@ -40,7 +40,7 @@ export const DocumentAnalysisCard: React.FC<DocumentAnalysisCardProps> = ({
           <FileSearch className="w-4 h-4 text-[#6D1F35] dark:text-[#C9A15A]" />
           Document Analysis
         </h3>
-        <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-[#35C98A]/10 border border-[#35C98A]/25 text-[#258B5C] dark:text-[#35C98A] text-[10px] font-bold uppercase tracking-wider">
+        <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-[#35C98A]/10 border border-[#35C98A]/25 text-[#258B5C] dark:text-[#35C98A] text-[11px] font-bold uppercase tracking-wider">
           <ShieldCheck className="w-3 h-3" />
           <span>Analyzed locally</span>
         </span>
@@ -56,7 +56,7 @@ export const DocumentAnalysisCard: React.FC<DocumentAnalysisCardProps> = ({
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 mb-4">
         {stats.map((s) => (
           <div key={s.label} className="p-2.5 rounded-xl bg-[#F7F3EC] dark:bg-[#141213] border border-[#E5DFD4] dark:border-[#2E2729]">
-            <p className="text-[10px] font-semibold uppercase tracking-wider text-[#5C554F] dark:text-[#A39991]">{s.label}</p>
+            <p className="text-[11px] font-semibold uppercase tracking-wider text-[#5C554F] dark:text-[#A39991]">{s.label}</p>
             <p className="text-xs font-bold text-[#141213] dark:text-[#F5F0EB] truncate">{s.value}</p>
           </div>
         ))}
@@ -111,7 +111,7 @@ export const DocumentAnalysisCard: React.FC<DocumentAnalysisCardProps> = ({
 
         {recommendation.steps.length > 0 ? (
           <>
-            <p className="text-[10px] font-bold uppercase tracking-wider text-[#5C554F] dark:text-[#A39991] mb-1.5">Recommended workflow</p>
+            <p className="text-[11px] font-bold uppercase tracking-wider text-[#5C554F] dark:text-[#A39991] mb-1.5">Recommended workflow</p>
             <ol className="mb-4 space-y-1">
               {recommendation.steps.map((s, i) => (
                 <li key={i} className="text-[11px] font-semibold text-[#141213] dark:text-[#F5F0EB]">

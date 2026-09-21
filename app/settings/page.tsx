@@ -220,25 +220,25 @@ export default function SettingsPage() {
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
             <div className="flex items-center justify-between p-2.5 rounded-lg bg-[#FAF7F2] dark:bg-[#141213] border border-[#E5DFD4] dark:border-[#2E2729]">
               <span className="text-[#5C554F] dark:text-[#A39991]">Global Command Palette</span>
-              <kbd className="font-mono text-[10px] px-2 py-0.5 rounded border border-black/20 bg-white dark:bg-[#1E1A1B]">
+              <kbd className="font-mono text-[11px] px-2 py-0.5 rounded border border-black/20 bg-white dark:bg-[#1E1A1B]">
                 Ctrl / ⌘ + K
               </kbd>
             </div>
             <div className="flex items-center justify-between p-2.5 rounded-lg bg-[#FAF7F2] dark:bg-[#141213] border border-[#E5DFD4] dark:border-[#2E2729]">
               <span className="text-[#5C554F] dark:text-[#A39991]">Reader Next Page</span>
-              <kbd className="font-mono text-[10px] px-2 py-0.5 rounded border border-black/20 bg-white dark:bg-[#1E1A1B]">
+              <kbd className="font-mono text-[11px] px-2 py-0.5 rounded border border-black/20 bg-white dark:bg-[#1E1A1B]">
                 → / Right Arrow
               </kbd>
             </div>
             <div className="flex items-center justify-between p-2.5 rounded-lg bg-[#FAF7F2] dark:bg-[#141213] border border-[#E5DFD4] dark:border-[#2E2729]">
               <span className="text-[#5C554F] dark:text-[#A39991]">Reader Previous Page</span>
-              <kbd className="font-mono text-[10px] px-2 py-0.5 rounded border border-black/20 bg-white dark:bg-[#1E1A1B]">
+              <kbd className="font-mono text-[11px] px-2 py-0.5 rounded border border-black/20 bg-white dark:bg-[#1E1A1B]">
                 ← / Left Arrow
               </kbd>
             </div>
             <div className="flex items-center justify-between p-2.5 rounded-lg bg-[#FAF7F2] dark:bg-[#141213] border border-[#E5DFD4] dark:border-[#2E2729]">
               <span className="text-[#5C554F] dark:text-[#A39991]">Close Dialog / Modal</span>
-              <kbd className="font-mono text-[10px] px-2 py-0.5 rounded border border-black/20 bg-white dark:bg-[#1E1A1B]">
+              <kbd className="font-mono text-[11px] px-2 py-0.5 rounded border border-black/20 bg-white dark:bg-[#1E1A1B]">
                 Escape
               </kbd>
             </div>

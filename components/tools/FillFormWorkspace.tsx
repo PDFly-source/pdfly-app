@@ -171,7 +171,7 @@ export const FillFormWorkspace: React.FC = () => {
                           <label className="font-bold text-[#141213] dark:text-[#F5F0EB]">
                             {f.name}
                           </label>
-                          <span className="text-[10px] uppercase font-mono px-1.5 py-0.5 rounded bg-gray-100 dark:bg-gray-800 text-gray-500">
+                          <span className="text-[11px] uppercase font-mono px-1.5 py-0.5 rounded bg-gray-100 dark:bg-gray-800 text-gray-500">
                             {f.type}
                           </span>
                         </div>

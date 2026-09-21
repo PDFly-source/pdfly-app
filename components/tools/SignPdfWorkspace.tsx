@@ -592,7 +592,7 @@ export const SignPdfWorkspace: React.FC = () => {
                     alt="Page preview"
                     className="max-h-full max-w-full object-contain"
                   />
-                  <div className="absolute top-2 left-2 text-[10px] px-2 py-0.5 rounded-md bg-black/70 text-white font-mono">
+                  <div className="absolute top-2 left-2 text-[11px] px-2 py-0.5 rounded-md bg-black/70 text-white font-mono">
                     Page {selectedPage}
                   </div>
                 </div>

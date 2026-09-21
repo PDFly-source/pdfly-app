@@ -345,7 +345,7 @@ export const PdfAssistantWorkspace: React.FC = () => {
                   <Sparkles className="w-4 h-4 text-[#6D1F35] dark:text-[#C6A15B]" />
                   <span>Assistant Response</span>
                   {mode === 'cloud' && (
-                    <span className="text-[10px] px-1.5 py-0.5 rounded bg-blue-100 dark:bg-blue-900/40 text-blue-700 dark:text-blue-300 font-normal">
+                    <span className="text-[11px] px-1.5 py-0.5 rounded bg-blue-100 dark:bg-blue-900/40 text-blue-700 dark:text-blue-300 font-normal">
                       Gemini 3.8 Flash
                     </span>
                   )}

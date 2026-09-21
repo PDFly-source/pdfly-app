@@ -133,7 +133,7 @@ export default function SecurityCenterPage() {
                       <div className="w-10 h-10 rounded-xl bg-[#6D1F35]/10 dark:bg-[#C6A15B]/10 text-[#6D1F35] dark:text-[#C6A15B] flex items-center justify-center group-hover:scale-105 transition-transform">
                         <Icon className="w-5 h-5" />
                       </div>
-                      <span className="px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-black/5 dark:bg-white/5 text-[#5C554F] dark:text-[#A39991]">
+                      <span className="px-2 py-0.5 rounded-full text-[11px] font-bold uppercase tracking-wider bg-black/5 dark:bg-white/5 text-[#5C554F] dark:text-[#A39991]">
                         {tool.badge}
                       </span>
                     </div>

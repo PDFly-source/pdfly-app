@@ -349,7 +349,7 @@ export const PdfToStudyWorkspace: React.FC = () => {
                       onClick={() => setIsFlipped(!isFlipped)}
                       className="aspect-[4/3] rounded-2xl border-2 border-[#6D1F35]/30 dark:border-[#C6A15B]/30 bg-white dark:bg-[#1E1A1B] p-8 flex flex-col items-center justify-center cursor-pointer shadow-md hover:shadow-lg transition-all select-none"
                     >
-                      <span className="text-[10px] font-bold uppercase tracking-wider text-gray-400 mb-2">
+                      <span className="text-[11px] font-bold uppercase tracking-wider text-gray-400 mb-2">
                         {isFlipped ? 'Answer (Click to Flip)' : 'Question / Concept (Click to Flip)'}
                       </span>
                       <p className="text-sm sm:text-base font-bold text-[#141213] dark:text-[#F5F0EB]">

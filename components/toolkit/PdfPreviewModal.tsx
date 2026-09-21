@@ -108,7 +108,7 @@ export const PdfPreviewModal: React.FC<PdfPreviewModalProps> = ({
                   className="w-full h-full object-contain"
                   draggable={false}
                 />
-                <span className="absolute bottom-2 right-2 px-2 py-0.5 rounded-md bg-black/50 text-white text-[10px] font-bold">
+                <span className="absolute bottom-2 right-2 px-2 py-0.5 rounded-md bg-black/50 text-white text-[11px] font-bold">
                   {pageIdx + 1}
                 </span>
               </div>

@@ -49,7 +49,7 @@ export const ThemeToggle: React.FC = () => {
       id="theme-toggle-btn"
       onClick={cycleTheme}
       aria-label={`Current theme: ${theme}. Click to change theme.`}
-      className="p-2 rounded-lg text-[#5C554F] dark:text-[#A39991] hover:text-[#141213] dark:hover:text-[#F5F0EB] hover:bg-black/5 dark:hover:bg-white/5 transition-colors"
+      className="p-2 min-w-[44px] min-h-[44px] flex items-center justify-center rounded-lg text-[#5C554F] dark:text-[#A39991] hover:text-[#141213] dark:hover:text-[#F5F0EB] hover:bg-black/5 dark:hover:bg-white/5 transition-colors"
       title={`Theme: ${theme.toUpperCase()}`}
       suppressHydrationWarning
     >

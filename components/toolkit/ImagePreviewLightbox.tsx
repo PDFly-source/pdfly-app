@@ -168,7 +168,7 @@ export const ImagePreviewLightbox: React.FC<ImagePreviewLightboxProps> = ({
 
       {/* Bottom privacy strip */}
       <div className="flex items-center justify-center gap-2 px-4 py-3 shrink-0">
-        <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#35C98A]/15 border border-[#35C98A]/25 text-[#35C98A] text-[10px] font-bold uppercase tracking-wider">
+        <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#35C98A]/15 border border-[#35C98A]/25 text-[#35C98A] text-[11px] font-bold uppercase tracking-wider">
           <ShieldCheck className="w-3 h-3" />
           <span>Preview stays on your device</span>
         </span>

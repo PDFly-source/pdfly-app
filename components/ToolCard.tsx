@@ -78,7 +78,7 @@ export const ToolCard: React.FC<ToolCardProps> = ({ tool }) => {
     <Link
       href={`/tools/${tool.slug}`}
       id={`tool-card-${tool.slug}`}
-      className="group relative flex flex-col justify-between p-5 rounded-2xl bg-[#FFFDF9] dark:bg-[#1B1719] border border-[#E8DFD3] dark:border-[#2E2629] hover:border-[#7A1635]/50 dark:hover:border-[#C9A15A]/60 shadow-2xs hover:shadow-md hover:-translate-y-1 active:scale-[0.98] active:translate-y-0 transition-all duration-200 motion-reduce:transition-none motion-reduce:hover:translate-y-0 motion-reduce:active:scale-100"
+      className="group relative flex flex-col justify-between p-5 rounded-2xl bg-[#FFFDF9] dark:bg-[#1B1719] border border-[#E8DFD3] dark:border-[#2E2629] hover:border-[#7A1635]/50 dark:hover:border-[#C9A15A]/60 shadow-2xs hover:shadow-[0_10px_30px_-10px_rgba(122,22,53,0.25)] dark:hover:shadow-[0_10px_30px_-10px_rgba(201,161,90,0.18)] hover:-translate-y-1 active:scale-[0.98] active:translate-y-0 transition-all duration-200 motion-reduce:transition-none motion-reduce:hover:translate-y-0 motion-reduce:active:scale-100"
     >
       <div>
         {/* Top bar with Icon and Local-First Badge */}
@@ -89,7 +89,7 @@ export const ToolCard: React.FC<ToolCardProps> = ({ tool }) => {
 
           <div className="flex items-center gap-1.5">
             {tool.badge ? (
-              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-[#7A1635]/10 text-[#7A1635] dark:bg-[#C9A15A]/15 dark:text-[#C9A15A]">
+              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-bold bg-[#7A1635]/10 text-[#7A1635] dark:bg-[#C9A15A]/15 dark:text-[#C9A15A]">
                 <Sparkles className="w-2.5 h-2.5" />
                 {tool.badge}
               </span>

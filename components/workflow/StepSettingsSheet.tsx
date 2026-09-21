@@ -319,7 +319,7 @@ const OrganizeSettings: React.FC<SettingsProps> = ({ step, analysis, onChange })
             <span className="p-1 rounded-lg text-[#A79B90] cursor-grab active:cursor-grabbing" title="Drag to reorder page">
               ⠿
             </span>
-            <span className="w-6 h-6 shrink-0 rounded-full bg-[#6D1F35]/10 dark:bg-[#C9A15A]/10 text-[#6D1F35] dark:text-[#C9A15A] text-[10px] font-bold flex items-center justify-center">
+            <span className="w-6 h-6 shrink-0 rounded-full bg-[#6D1F35]/10 dark:bg-[#C9A15A]/10 text-[#6D1F35] dark:text-[#C9A15A] text-[11px] font-bold flex items-center justify-center">
               {idx + 1}
             </span>
             {it.thumbnail ? (
@@ -438,7 +438,7 @@ const CompressSettings: React.FC<SettingsProps> = ({ step, analysis, onChange })
               }`}
             >
               <p className="text-xs font-bold text-[#141213] dark:text-[#F5F0EB]">{m.l}</p>
-              <p className="text-[10px] text-[#5C554F] dark:text-[#A39991]">{m.d}</p>
+              <p className="text-[11px] text-[#5C554F] dark:text-[#A39991]">{m.d}</p>
             </button>
           ))}
         </div>
@@ -455,7 +455,7 @@ const CompressSettings: React.FC<SettingsProps> = ({ step, analysis, onChange })
       </label>
 
       <div className="p-3.5 rounded-xl bg-[#F7F3EC] dark:bg-[#141213] border border-[#E5DFD4] dark:border-[#2E2729]">
-        <p className="text-[10px] font-semibold uppercase tracking-wider text-[#5C554F] dark:text-[#A39991] mb-1">Estimated result</p>
+        <p className="text-[11px] font-semibold uppercase tracking-wider text-[#5C554F] dark:text-[#A39991] mb-1">Estimated result</p>
         <div className="flex items-center gap-3 text-xs">
           <span className="text-[#5C554F] dark:text-[#A39991] line-through">
             {(analysis.fileSize / 1024 / 1024).toFixed(1)} MB
@@ -465,7 +465,7 @@ const CompressSettings: React.FC<SettingsProps> = ({ step, analysis, onChange })
             {est ? `~${(est.estimatedBytes / 1024 / 1024).toFixed(1)} MB` : 'not reliably estimable'}
           </span>
         </div>
-        <p className="text-[10px] text-[#5C554F] dark:text-[#A39991] mt-1">
+        <p className="text-[11px] text-[#5C554F] dark:text-[#A39991] mt-1">
           {est
             ? `Measured from ${est.sampledPages} sampled page(s) — actual result may vary.`
             : 'No estimate shown because this document does not appear to be image-dominant; the real savings are measured after execution.'}
@@ -636,7 +636,7 @@ const WatermarkSettings: React.FC<StepSettingsSheetProps> = ({ step, analysis, f
                     ...(normPos === 'diagonal' ? { rotation: 45 } : {}),
                   })
                 }
-                className={`px-2 py-2 rounded-lg text-[10px] font-bold border transition-all ${
+                className={`px-2 py-2 rounded-lg text-[11px] font-bold border transition-all ${
                   o.position === normPos
                     ? 'border-[#6D1F35] bg-[#6D1F35]/10 text-[#6D1F35] dark:text-[#C9A15A]'
                     : 'border-[#E5DFD4] dark:border-[#2E2729] text-[#5C554F] dark:text-[#A39991] hover:border-[#6D1F35]/40'
@@ -740,7 +740,7 @@ const WatermarkSettings: React.FC<StepSettingsSheetProps> = ({ step, analysis, f
             />
           )}
         </div>
-        <p className="text-[10px] text-[#5C554F] dark:text-[#A39991] mt-1.5 text-center">
+        <p className="text-[11px] text-[#5C554F] dark:text-[#A39991] mt-1.5 text-center">
           Preview renders page 1 of your actual document locally. Drag the watermark or use the position presets.
         </p>
       </div>
@@ -769,7 +769,7 @@ const PageNumbersSettings: React.FC<SettingsProps> = ({ step, analysis, onChange
             <button
               key={pos}
               onClick={() => set(onChange, o, { position: pos })}
-              className={`px-2 py-2.5 rounded-lg text-[10px] font-bold border transition-all ${
+              className={`px-2 py-2.5 rounded-lg text-[11px] font-bold border transition-all ${
                 o.position === pos
                   ? 'border-[#6D1F35] bg-[#6D1F35]/10 text-[#6D1F35] dark:text-[#C9A15A]'
                   : 'border-[#E5DFD4] dark:border-[#2E2729] text-[#5C554F] dark:text-[#A39991] hover:border-[#6D1F35]/40'
@@ -830,7 +830,7 @@ const PageNumbersSettings: React.FC<SettingsProps> = ({ step, analysis, onChange
       <div>
         <label className={labelCls}>Preview</label>
         <div className="relative mx-auto w-[180px] h-[240px] rounded-xl border border-[#E5DFD4] dark:border-[#2E2729] bg-white dark:bg-[#1E1A1B]">
-          <span className="absolute text-[10px] font-semibold text-[#141213] dark:text-[#F5F0EB]" style={numStyle(o.position, o.margin)}>
+          <span className="absolute text-[11px] font-semibold text-[#141213] dark:text-[#F5F0EB]" style={numStyle(o.position, o.margin)}>
             {renderNumPreview(o.format, o.startNumber || 1, analysis.pageCount)}
           </span>
           <span className="absolute inset-x-0 top-1/2 text-center text-[9px] text-[#A79B90]">Page 1</span>

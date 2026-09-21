@@ -531,7 +531,7 @@ export default function WorkspacePage() {
                   <div className="text-xs font-bold text-[#141213] dark:text-[#F5F0EB] truncate">
                     {t.name}
                   </div>
-                  <div className="text-[10px] text-[#7A7067] truncate">{t.categoryLabel}</div>
+                  <div className="text-[11px] text-[#7A7067] truncate">{t.categoryLabel}</div>
                 </Link>
               ))}
             </div>

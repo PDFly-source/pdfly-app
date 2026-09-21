@@ -228,7 +228,7 @@ export const ReadAloudWorkspace: React.FC = () => {
                         : 'border-[#E5DFD4] dark:border-[#2E2729] bg-white dark:bg-[#1E1A1B] hover:border-[#6D1F35]/40 opacity-75'
                     }`}
                   >
-                    <div className="flex items-center justify-between text-[10px] text-gray-400 font-mono mb-1">
+                    <div className="flex items-center justify-between text-[11px] text-gray-400 font-mono mb-1">
                       <span>Paragraph {i + 1}</span>
                       {isActive && isPlaying && (
                         <span className="text-[#6D1F35] dark:text-[#C6A15B] font-bold uppercase animate-pulse">

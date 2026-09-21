@@ -715,7 +715,7 @@ export const WorkflowBuilderWorkspace: React.FC = () => {
 
         {/* Add step */}
         <div className="mt-4 pt-4 border-t border-[#E5DFD4] dark:border-[#2E2729]">
-          <p className="text-[10px] font-bold uppercase tracking-wider text-[#5C554F] dark:text-[#A39991] mb-2 inline-flex items-center gap-1.5">
+          <p className="text-[11px] font-bold uppercase tracking-wider text-[#5C554F] dark:text-[#A39991] mb-2 inline-flex items-center gap-1.5">
             <Plus className="w-3 h-3" />
             Add step
           </p>
@@ -904,7 +904,7 @@ const SaveNameSheet: React.FC<{ initial: string; onSave: (name: string) => void;
         >
           Save to this device
         </button>
-        <p className="mt-2 text-[10px] text-[#5C554F] dark:text-[#A39991]">
+        <p className="mt-2 text-[11px] text-[#5C554F] dark:text-[#A39991]">
           Stored locally in your browser. Never uploaded.
         </p>
       </div>

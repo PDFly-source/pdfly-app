@@ -94,7 +94,7 @@ export const RecipesPanel: React.FC<RecipesPanelProps> = ({ onLoadSteps, refresh
                   <p className="text-xs font-bold text-[#141213] dark:text-[#F5F0EB] mb-0.5">
                     {t.emoji} {t.name}
                   </p>
-                  <p className="text-[10px] text-[#5C554F] dark:text-[#A39991] mb-2.5 leading-relaxed">{t.description}</p>
+                  <p className="text-[11px] text-[#5C554F] dark:text-[#A39991] mb-2.5 leading-relaxed">{t.description}</p>
                   <button
                     onClick={() => onLoadSteps(t.steps(), `${t.emoji} ${t.name}`)}
                     className="w-full px-3 py-2 rounded-lg bg-[#6D1F35] hover:bg-[#58182a] text-white text-[11px] font-bold inline-flex items-center justify-center gap-1.5 transition-all"
@@ -149,7 +149,7 @@ export const RecipesPanel: React.FC<RecipesPanelProps> = ({ onLoadSteps, refresh
                       <>
                         <div className="flex-1 min-w-0">
                           <p className="text-xs font-bold text-[#141213] dark:text-[#F5F0EB] truncate">{r.name}</p>
-                          <p className="text-[10px] text-[#5C554F] dark:text-[#A39991]">
+                          <p className="text-[11px] text-[#5C554F] dark:text-[#A39991]">
                             {r.steps.length} step(s) · {new Date(r.createdAt).toLocaleDateString()}
                           </p>
                         </div>
@@ -215,7 +215,7 @@ export const RecipesPanel: React.FC<RecipesPanelProps> = ({ onLoadSteps, refresh
                         <p className="text-xs font-bold text-[#141213] dark:text-[#F5F0EB] truncate">
                           {h.workflowName} <span className="text-[#5C554F] dark:text-[#A39991] font-medium">· {h.fileName}</span>
                         </p>
-                        <p className="text-[10px] text-[#5C554F] dark:text-[#A39991]">
+                        <p className="text-[11px] text-[#5C554F] dark:text-[#A39991]">
                           {h.pagesBefore} → {h.pagesAfter} pages · {formatBytes(h.sizeBefore)} → {formatBytes(h.sizeAfter)} · {(h.durationMs / 1000).toFixed(1)}s · {new Date(h.timestamp).toLocaleString()}
                         </p>
                       </div>
@@ -235,7 +235,7 @@ export const RecipesPanel: React.FC<RecipesPanelProps> = ({ onLoadSteps, refresh
             )
           )}
 
-          <p className="mt-4 text-[10px] text-[#5C554F] dark:text-[#A39991] italic">
+          <p className="mt-4 text-[11px] text-[#5C554F] dark:text-[#A39991] italic">
             Workflows and history are stored only in this browser (localStorage). Nothing is uploaded.
           </p>
         </div>
@@ -350,7 +350,7 @@ export const ConditionSheet: React.FC<{
           >
             Save Condition
           </button>
-          <p className="text-[10px] text-[#5C554F] dark:text-[#A39991]">
+          <p className="text-[11px] text-[#5C554F] dark:text-[#A39991]">
             Conditions are evaluated live before the step runs. Unmet conditions skip the step and it appears as “skipped” in the results.
           </p>
         </div>

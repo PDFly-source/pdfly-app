@@ -196,7 +196,7 @@ export const GlobalSearchModal: React.FC<GlobalSearchModalProps> = ({
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-start justify-center pt-16 sm:pt-24 p-4 bg-black/60 backdrop-blur-xs animate-in fade-in duration-150 motion-reduce:animate-none"
+      className="fixed inset-0 z-50 flex flex-col justify-end sm:block sm:pt-16 sm:p-4 sm:pt-24 bg-black/60 backdrop-blur-xs animate-in fade-in duration-150 motion-reduce:animate-none"
       onClick={(e) => {
         if (e.target === e.currentTarget) onClose();
       }}
@@ -206,9 +206,14 @@ export const GlobalSearchModal: React.FC<GlobalSearchModalProps> = ({
         role="dialog"
         aria-modal="true"
         aria-label="Search PDFMiniFly tools"
-        className="w-full max-w-xl bg-white dark:bg-[#1E1A1B] rounded-2xl border border-[#E5DFD4] dark:border-[#2E2729] shadow-2xl overflow-hidden"
+        className="w-full sm:max-w-xl sm:mx-auto bg-white dark:bg-[#1E1A1B] rounded-t-3xl sm:rounded-2xl border-t sm:border border-[#E5DFD4] dark:border-[#2E2729] shadow-2xl overflow-hidden animate-in slide-in-from-bottom-2 sm:animate-none"
         onKeyDown={handleKeyDown}
       >
+        {/* Mobile drag handle */}
+        <div className="sm:hidden pt-3 pb-1 flex justify-center">
+          <div className="w-10 h-1.5 rounded-full bg-[#E8DFD3] dark:bg-[#3D3035]" aria-hidden="true" />
+        </div>
+
         {/* Search Input Bar */}
         <div className="flex items-center gap-3 px-4 py-3.5 border-b border-[#E5DFD4] dark:border-[#2E2729]">
           <Search className="w-5 h-5 text-[#5C554F] dark:text-[#A39991] shrink-0" />
@@ -223,7 +228,7 @@ export const GlobalSearchModal: React.FC<GlobalSearchModalProps> = ({
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder="Type a tool name or action (e.g., 'merge', 'shrink', 'scanned', 'quiz')..."
-            className="flex-1 bg-transparent text-sm text-[#141213] dark:text-[#F5F0EB] placeholder:text-[#5C554F]/60 dark:placeholder:text-[#A39991]/60 focus:outline-none"
+            className="flex-1 bg-transparent text-sm text-[#141213] dark:text-[#F5F0EB] placeholder:text-[#5C554F]/80 dark:placeholder:text-[#A39991]/80 focus:outline-none"
           />
           {query && (
             <button
@@ -233,7 +238,7 @@ export const GlobalSearchModal: React.FC<GlobalSearchModalProps> = ({
               <X className="w-4 h-4" />
             </button>
           )}
-          <kbd className="hidden sm:inline-flex items-center gap-0.5 px-2 py-0.5 text-[10px] font-mono bg-[#FAF7F2] dark:bg-[#141213] text-[#5C554F] dark:text-[#A39991] rounded border border-[#E5DFD4] dark:border-[#2E2729]">
+          <kbd className="hidden sm:inline-flex items-center gap-0.5 px-2 py-0.5 text-[11px] font-mono bg-[#FAF7F2] dark:bg-[#141213] text-[#5C554F] dark:text-[#A39991] rounded border border-[#E5DFD4] dark:border-[#2E2729]">
             ESC
           </kbd>
         </div>
@@ -267,7 +272,7 @@ export const GlobalSearchModal: React.FC<GlobalSearchModalProps> = ({
           id="command-palette-results"
           role="listbox"
           aria-label="Tool results"
-          className="max-h-[380px] overflow-y-auto p-2"
+          className="max-h-[45vh] sm:max-h-[380px] overflow-y-auto p-2"
         >
           {!query && recentSlugs.length > 0 && (
             <div className="px-3 py-1.5 text-[11px] font-bold uppercase tracking-wider text-[#5C554F] dark:text-[#A39991] flex items-center gap-1.5">
@@ -307,7 +312,7 @@ export const GlobalSearchModal: React.FC<GlobalSearchModalProps> = ({
                         <div className="flex items-center gap-2">
                           <span className="font-semibold">{tool.name}</span>
                           {isRecent && (
-                            <span className="text-[10px] px-1.5 py-0.2 rounded bg-amber-100 text-amber-800 dark:bg-amber-900/40 dark:text-amber-300">
+                            <span className="text-[11px] px-1.5 py-0.2 rounded bg-amber-100 text-amber-800 dark:bg-amber-900/40 dark:text-amber-300">
                               Recent
                             </span>
                           )}
@@ -319,7 +324,7 @@ export const GlobalSearchModal: React.FC<GlobalSearchModalProps> = ({
                     </div>
 
                     <div className="flex items-center gap-2 text-gray-400 shrink-0">
-                      <span className="text-[10px] uppercase font-mono px-1.5 py-0.5 rounded border border-[#E5DFD4] dark:border-[#2E2729]">
+                      <span className="text-[11px] uppercase font-mono px-1.5 py-0.5 rounded border border-[#E5DFD4] dark:border-[#2E2729]">
                         {tool.category}
                       </span>
                       <ArrowRight className="w-3.5 h-3.5" />
@@ -335,16 +340,16 @@ export const GlobalSearchModal: React.FC<GlobalSearchModalProps> = ({
         <div className="flex items-center justify-between px-4 py-2.5 bg-[#FAF7F2] dark:bg-[#141213] border-t border-[#E5DFD4] dark:border-[#2E2729] text-[11px] text-[#5C554F] dark:text-[#A39991]">
           <div className="flex items-center gap-3">
             <span>
-              <kbd className="px-1 py-0.5 bg-white dark:bg-[#1E1A1B] border rounded font-mono text-[10px]">
+              <kbd className="px-1 py-0.5 bg-white dark:bg-[#1E1A1B] border rounded font-mono text-[11px]">
                 ↑
               </kbd>{' '}
-              <kbd className="px-1 py-0.5 bg-white dark:bg-[#1E1A1B] border rounded font-mono text-[10px]">
+              <kbd className="px-1 py-0.5 bg-white dark:bg-[#1E1A1B] border rounded font-mono text-[11px]">
                 ↓
               </kbd>{' '}
               to navigate
             </span>
             <span>
-              <kbd className="px-1.5 py-0.5 bg-white dark:bg-[#1E1A1B] border rounded font-mono text-[10px]">
+              <kbd className="px-1.5 py-0.5 bg-white dark:bg-[#1E1A1B] border rounded font-mono text-[11px]">
                 ↵
               </kbd>{' '}
               to open

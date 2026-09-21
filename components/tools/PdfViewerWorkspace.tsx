@@ -844,7 +844,7 @@ export const PdfViewerWorkspace: React.FC = () => {
                                 {thumb ? (
                                   <img src={thumb} alt={`Page ${pNum}`} className="w-full h-full object-contain" />
                                 ) : (
-                                  <span className="text-[10px] text-gray-400 font-mono">P.{pNum}</span>
+                                  <span className="text-[11px] text-gray-400 font-mono">P.{pNum}</span>
                                 )}
                               </div>
                               <div className="text-center mt-1 text-[11px] font-medium text-[#5C554F] dark:text-[#A39991]">

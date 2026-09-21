@@ -163,3 +163,37 @@ html.standalone-mode nav {
     }
   }
 }
+
+/* ============================================================
+   Design tokens & accessibility polish (Phase 2 UX)
+   PRIVATE. POWERFUL. LOCAL.
+   ============================================================ */
+:root {
+  /* Focus ring: burgundy on light surfaces (7:1 on cream) */
+  --pdfora-focus-ring: #7A1635;
+}
+.dark {
+  /* Focus ring: elegant gold on charcoal (~7:1) */
+  --pdfora-focus-ring: #C9A15A;
+}
+
+/* Every interactive control gets a clearly visible keyboard focus ring.
+   Never rely on color alone: ring + offset separates it from borders. */
+:focus-visible {
+  outline: 2px solid var(--pdfora-focus-ring);
+  outline-offset: 2px;
+  border-radius: inherit;
+}
+
+/* Inputs and textareas keep a visible focus even with their own borders */
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible {
+  outline: 2px solid var(--pdfora-focus-ring);
+  outline-offset: 1px;
+}
+
+/* Disabled controls must look disabled but never fall below legibility */
+:disabled {
+  opacity: 0.45;
+}

@@ -206,7 +206,7 @@ export const RemoveBlankPagesWorkspace: React.FC = () => {
                             <span className="font-bold text-[#141213] dark:text-[#F5F0EB]">
                               Page {b.pageNumber}
                             </span>
-                            <span className="text-[10px] text-red-600 font-medium">
+                            <span className="text-[11px] text-red-600 font-medium">
                               {((1 - b.nonWhiteRatio) * 100).toFixed(1)}% Empty
                             </span>
                           </div>

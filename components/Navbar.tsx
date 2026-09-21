@@ -7,6 +7,7 @@ import { Logo } from './Logo';
 import { ThemeToggle } from './ThemeToggle';
 import { PWAInstallButton } from './PWAInstallButton';
 import { GlobalSearchModal } from './GlobalSearchModal';
+import { BottomSheet } from './ui/BottomSheet';
 import { Menu, X, History, Search, ArrowRight, ShieldCheck } from 'lucide-react';
 
 interface NavbarProps {
@@ -78,7 +79,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenRecent }) => {
             >
               <Search className="w-3.5 h-3.5 text-[#7A1635] dark:text-[#C9A15A]" />
               <span className="text-xs">Search tools...</span>
-              <kbd className="font-mono text-[10px] px-1.5 py-0.5 bg-[#F6EFE3] dark:bg-[#241D20] text-[#7A1635] dark:text-[#C9A15A] rounded border border-[#E8DFD3] dark:border-[#3D3035] font-semibold">
+              <kbd className="font-mono text-[11px] px-1.5 py-0.5 bg-[#F6EFE3] dark:bg-[#241D20] text-[#7A1635] dark:text-[#C9A15A] rounded border border-[#E8DFD3] dark:border-[#3D3035] font-semibold">
                 ⌘K
               </kbd>
             </button>
@@ -112,7 +113,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenRecent }) => {
           <div className="flex md:hidden items-center gap-1">
             <button
               onClick={() => setSearchOpen(true)}
-              className="p-2 text-[#5C5256] dark:text-[#AFA6A8] hover:text-[#7A1635] dark:hover:text-[#C9A15A]"
+              className="p-2 min-w-[44px] min-h-[44px] flex items-center justify-center rounded-xl text-[#5C5256] dark:text-[#AFA6A8] hover:text-[#7A1635] dark:hover:text-[#C9A15A] transition-colors"
               aria-label="Search"
             >
               <Search className="w-5 h-5" />
@@ -123,7 +124,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenRecent }) => {
             <button
               id="mobile-menu-toggle-btn"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="p-2 rounded-xl text-[#5C5256] dark:text-[#AFA6A8] hover:text-[#1A1416] dark:hover:text-[#F7F1E8]"
+              className="p-2 min-w-[44px] min-h-[44px] flex items-center justify-center rounded-xl text-[#5C5256] dark:text-[#AFA6A8] hover:text-[#1A1416] dark:hover:text-[#F7F1E8] transition-colors"
               aria-label="Toggle mobile menu"
             >
               {mobileMenuOpen ? <X className="w-5 h-5 text-[#7A1635] dark:text-[#C9A15A]" /> : <Menu className="w-5 h-5" />}
@@ -131,57 +132,60 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenRecent }) => {
           </div>
         </div>
 
-        {/* Mobile Drawer Menu */}
-        {mobileMenuOpen && (
-          <div className="md:hidden border-b border-[#E8DFD3] dark:border-[#2E2629] bg-[#F6EFE3] dark:bg-[#121012] px-4 py-4 space-y-3">
-            <div className="pb-3 border-b border-[#E8DFD3] dark:border-[#2E2629] flex items-center justify-between">
-              <Logo size="sm" variant="compact" showTagline={true} />
-            </div>
-            <div className="space-y-1">
-              {navLinks.map((link) => (
-                <Link
-                  key={link.name}
-                  href={link.href}
-                  onClick={() => setMobileMenuOpen(false)}
-                  className="block px-3 py-2 rounded-xl text-sm font-semibold text-[#1A1416] dark:text-[#F7F1E8] hover:bg-black/5 dark:hover:bg-white/5"
-                >
-                  {link.name}
-                </Link>
-              ))}
-              <Link
-                href="/settings"
-                onClick={() => setMobileMenuOpen(false)}
-                className="block px-3 py-2 rounded-xl text-sm font-semibold text-[#1A1416] dark:text-[#F7F1E8] hover:bg-black/5 dark:hover:bg-white/5"
-              >
-                Settings
-              </Link>
-              <Link
-                href="/about"
-                onClick={() => setMobileMenuOpen(false)}
-                className="block px-3 py-2 rounded-xl text-sm font-semibold text-[#1A1416] dark:text-[#F7F1E8] hover:bg-black/5 dark:hover:bg-white/5"
-              >
-                About PDFMiniFly
-              </Link>
-            </div>
-
-            <div className="pt-3 border-t border-[#E8DFD3] dark:border-[#2E2629] flex items-center justify-between">
-              <PWAInstallButton variant="nav" />
-              {onOpenRecent && (
-                <button
-                  onClick={() => {
-                    setMobileMenuOpen(false);
-                    onOpenRecent();
-                  }}
-                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold text-[#7A1635] dark:text-[#C9A15A]"
-                >
-                  <History className="w-3.5 h-3.5" />
-                  <span>Recent Jobs</span>
-                </button>
-              )}
-            </div>
-          </div>
-        )}
       </header>
+
+      {/* Mobile Menu — native-style bottom sheet for one-handed reach */}
+      <div className="md:hidden">
+        <BottomSheet
+          isOpen={mobileMenuOpen}
+          onClose={() => setMobileMenuOpen(false)}
+          label="Site menu"
+          title="Menu"
+        >
+          <nav className="space-y-1" aria-label="Site">
+            {navLinks.map((link) => (
+              <Link
+                key={link.name}
+                href={link.href}
+                onClick={() => setMobileMenuOpen(false)}
+                className="flex min-h-[48px] items-center px-3 rounded-xl text-sm font-semibold text-[#1A1416] dark:text-[#F7F1E8] hover:bg-black/5 dark:hover:bg-white/5 active:scale-[0.99] motion-reduce:active:scale-100 transition-transform"
+              >
+                {link.name}
+              </Link>
+            ))}
+            <Link
+              href="/settings"
+              onClick={() => setMobileMenuOpen(false)}
+              className="flex min-h-[48px] items-center px-3 rounded-xl text-sm font-semibold text-[#1A1416] dark:text-[#F7F1E8] hover:bg-black/5 dark:hover:bg-white/5 active:scale-[0.99] motion-reduce:active:scale-100 transition-transform"
+            >
+              Settings
+            </Link>
+            <Link
+              href="/about"
+              onClick={() => setMobileMenuOpen(false)}
+              className="flex min-h-[48px] items-center px-3 rounded-xl text-sm font-semibold text-[#1A1416] dark:text-[#F7F1E8] hover:bg-black/5 dark:hover:bg-white/5 active:scale-[0.99] motion-reduce:active:scale-100 transition-transform"
+            >
+              About PDFMiniFly
+            </Link>
+          </nav>
+
+          <div className="mt-3 pt-3 border-t border-[#E8DFD3] dark:border-[#2E2629] flex items-center justify-between gap-3">
+            <PWAInstallButton variant="nav" />
+            {onOpenRecent && (
+              <button
+                onClick={() => {
+                  setMobileMenuOpen(false);
+                  onOpenRecent();
+                }}
+                className="inline-flex min-h-[44px] items-center gap-1.5 px-3 rounded-xl text-xs font-semibold text-[#7A1635] dark:text-[#C9A15A]"
+              >
+                <History className="w-3.5 h-3.5" />
+                <span>Recent Jobs</span>
+              </button>
+            )}
+          </div>
+        </BottomSheet>
+      </div>
 
       {/* Global Command Search Modal */}
       <GlobalSearchModal isOpen={searchOpen} onClose={() => setSearchOpen(false)} />

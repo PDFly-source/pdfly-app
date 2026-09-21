@@ -59,7 +59,7 @@ export const MobileBottomNav: React.FC<Props> = ({ onOpenRecent }) => {
           <div className="w-11 h-11 rounded-full bg-[#6D1F35] text-white flex items-center justify-center shadow-md group-hover:scale-105 transition-transform">
             <PlusCircle className="w-6 h-6" />
           </div>
-          <span className="text-[10px] font-bold text-[#6D1F35] dark:text-[#C6A15B] mt-0.5">
+          <span className="text-[11px] font-bold text-[#6D1F35] dark:text-[#C6A15B] mt-0.5">
             Create
           </span>
         </Link>

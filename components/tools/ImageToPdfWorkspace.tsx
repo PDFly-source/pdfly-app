@@ -428,13 +428,13 @@ export const ImageToPdfWorkspace: React.FC = () => {
             </div>
 
             <div className="flex flex-col justify-center px-3 py-2 rounded-xl bg-[#F7F3EC] dark:bg-[#141213] border border-[#E5DFD4] dark:border-[#2E2729]">
-              <span className="text-[10px] font-semibold uppercase tracking-wider text-[#5C554F] dark:text-[#A39991]">
+              <span className="text-[11px] font-semibold uppercase tracking-wider text-[#5C554F] dark:text-[#A39991]">
                 Estimated PDF size
               </span>
               <span className="text-sm font-bold text-[#141213] dark:text-[#F5F0EB] tabular-nums">
                 ~{formatBytes(estimatedSize)}
               </span>
-              <span className="text-[10px] text-[#5C554F] dark:text-[#A39991]">
+              <span className="text-[11px] text-[#5C554F] dark:text-[#A39991]">
                 Local estimate · actual size may vary
               </span>
             </div>
