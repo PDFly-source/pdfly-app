@@ -2,6 +2,8 @@ import type { MetadataRoute } from 'next';
 import { ALL_TOOLS } from '@/lib/tools-data';
 import { SITE_URL } from '@/lib/site';
 
+export const dynamic = 'force-static'; // Required for static export (output: 'export').
+
 /**
  * Framework-native XML sitemap.
  * Public, indexable pages only: homepage, tools index, every tool landing
