@@ -1,6 +1,8 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import dynamic from 'next/dynamic';
+import { recordRecentTool } from '@/lib/recent-tools';
 import Link from 'next/link';
 import { ToolDefinition } from '@/types/pdf';
 import { Navbar } from '@/components/Navbar';
@@ -42,47 +44,182 @@ import {
 } from 'lucide-react';
 
 // Workspaces
-import { MergePdfWorkspace } from '@/components/tools/MergePdfWorkspace';
-import { SplitPdfWorkspace } from '@/components/tools/SplitPdfWorkspace';
-import { OrganizePdfWorkspace } from '@/components/tools/OrganizePdfWorkspace';
-import { CompressPdfWorkspace } from '@/components/tools/CompressPdfWorkspace';
-import { PdfToImageWorkspace } from '@/components/tools/PdfToImageWorkspace';
-import { ImageToPdfWorkspace } from '@/components/tools/ImageToPdfWorkspace';
-import { PdfEditorWorkspace } from '@/components/tools/PdfEditorWorkspace';
-import { SignPdfWorkspace } from '@/components/tools/SignPdfWorkspace';
-import { WatermarkWorkspace } from '@/components/tools/WatermarkWorkspace';
-import { PageNumbersWorkspace } from '@/components/tools/PageNumbersWorkspace';
-import { ProtectPdfWorkspace } from '@/components/tools/ProtectPdfWorkspace';
-import { PdfMetadataWorkspace } from '@/components/tools/PdfMetadataWorkspace';
-import { OcrWorkspace } from '@/components/tools/OcrWorkspace';
-import { PdfViewerWorkspace } from '@/components/tools/PdfViewerWorkspace';
-import { BatchProcessWorkspace } from '@/components/tools/BatchProcessWorkspace';
-import { WorkflowBuilderWorkspace } from '@/components/tools/WorkflowBuilderWorkspace';
-import { RemoveBlankPagesWorkspace } from '@/components/tools/RemoveBlankPagesWorkspace';
-import { ExtractToolsWorkspace } from '@/components/tools/ExtractToolsWorkspace';
-import { FillFormWorkspace } from '@/components/tools/FillFormWorkspace';
-import { RedactPdfWorkspace } from '@/components/tools/RedactPdfWorkspace';
-import { ComparePdfWorkspace } from '@/components/tools/ComparePdfWorkspace';
-import { PdfAssistantWorkspace } from '@/components/tools/PdfAssistantWorkspace';
-import { PdfToStudyWorkspace } from '@/components/tools/PdfToStudyWorkspace';
-import { ReadAloudWorkspace } from '@/components/tools/ReadAloudWorkspace';
-import { BookletMakerWorkspace } from '@/components/tools/BookletMakerWorkspace';
-import { PdfHealthWorkspace } from '@/components/tools/PdfHealthWorkspace';
-import { PdfSanitizerWorkspace } from '@/components/tools/PdfSanitizerWorkspace';
-import { PdfToMarkdownWorkspace } from '@/components/tools/PdfToMarkdownWorkspace';
-import { PdfToHtmlWorkspace } from '@/components/tools/PdfToHtmlWorkspace';
-import { PdfToExcelWorkspace } from '@/components/tools/PdfToExcelWorkspace';
-import { DocxConverterWorkspace } from '@/components/tools/DocxConverterWorkspace';
-import { CompressTargetWorkspace } from '@/components/tools/CompressTargetWorkspace';
-import { SplitBySizeWorkspace } from '@/components/tools/SplitBySizeWorkspace';
-import { CropTrimWorkspace } from '@/components/tools/CropTrimWorkspace';
-import { NupWorkspace } from '@/components/tools/NupWorkspace';
-import { GrayscaleWorkspace } from '@/components/tools/GrayscaleWorkspace';
-import { BatesStampingWorkspace } from '@/components/tools/BatesStampingWorkspace';
-import { FlattenPdfWorkspace } from '@/components/tools/FlattenPdfWorkspace';
-import { DigitalCertificateSignatureWorkspace } from '@/components/tools/DigitalCertificateSignatureWorkspace';
-import { RepairPdfWorkspace } from '@/components/tools/RepairPdfWorkspace';
-import { InvertColorsWorkspace } from '@/components/tools/InvertColorsWorkspace';
+/** Shared suspense-free loading skeleton shown while a lazily loaded workspace chunk arrives. */
+const WorkspaceLoading = () => (
+  <div
+    className="flex items-center justify-center py-24"
+    role="status"
+    aria-busy="true"
+    aria-label="Loading tool"
+  >
+    <div className="w-6 h-6 rounded-full border-2 border-[#E5DFD4] dark:border-[#2E2729] border-t-[#6D1F35] dark:border-t-[#C6A15B] animate-spin motion-reduce:animate-[spin_1.5s_linear_infinite_reverse]" />
+  </div>
+);
+
+const MergePdfWorkspace = dynamic(
+  () => import('@/components/tools/MergePdfWorkspace').then((m) => ({ default: m.MergePdfWorkspace })),
+  { ssr: false, loading: WorkspaceLoading }
+);
+const SplitPdfWorkspace = dynamic(
+  () => import('@/components/tools/SplitPdfWorkspace').then((m) => ({ default: m.SplitPdfWorkspace })),
+  { ssr: false, loading: WorkspaceLoading }
+);
+const OrganizePdfWorkspace = dynamic(
+  () => import('@/components/tools/OrganizePdfWorkspace').then((m) => ({ default: m.OrganizePdfWorkspace })),
+  { ssr: false, loading: WorkspaceLoading }
+);
+const CompressPdfWorkspace = dynamic(
+  () => import('@/components/tools/CompressPdfWorkspace').then((m) => ({ default: m.CompressPdfWorkspace })),
+  { ssr: false, loading: WorkspaceLoading }
+);
+const PdfToImageWorkspace = dynamic(
+  () => import('@/components/tools/PdfToImageWorkspace').then((m) => ({ default: m.PdfToImageWorkspace })),
+  { ssr: false, loading: WorkspaceLoading }
+);
+const ImageToPdfWorkspace = dynamic(
+  () => import('@/components/tools/ImageToPdfWorkspace').then((m) => ({ default: m.ImageToPdfWorkspace })),
+  { ssr: false, loading: WorkspaceLoading }
+);
+const PdfEditorWorkspace = dynamic(
+  () => import('@/components/tools/PdfEditorWorkspace').then((m) => ({ default: m.PdfEditorWorkspace })),
+  { ssr: false, loading: WorkspaceLoading }
+);
+const SignPdfWorkspace = dynamic(
+  () => import('@/components/tools/SignPdfWorkspace').then((m) => ({ default: m.SignPdfWorkspace })),
+  { ssr: false, loading: WorkspaceLoading }
+);
+const WatermarkWorkspace = dynamic(
+  () => import('@/components/tools/WatermarkWorkspace').then((m) => ({ default: m.WatermarkWorkspace })),
+  { ssr: false, loading: WorkspaceLoading }
+);
+const PageNumbersWorkspace = dynamic(
+  () => import('@/components/tools/PageNumbersWorkspace').then((m) => ({ default: m.PageNumbersWorkspace })),
+  { ssr: false, loading: WorkspaceLoading }
+);
+const ProtectPdfWorkspace = dynamic(
+  () => import('@/components/tools/ProtectPdfWorkspace').then((m) => ({ default: m.ProtectPdfWorkspace })),
+  { ssr: false, loading: WorkspaceLoading }
+);
+const PdfMetadataWorkspace = dynamic(
+  () => import('@/components/tools/PdfMetadataWorkspace').then((m) => ({ default: m.PdfMetadataWorkspace })),
+  { ssr: false, loading: WorkspaceLoading }
+);
+const OcrWorkspace = dynamic(
+  () => import('@/components/tools/OcrWorkspace').then((m) => ({ default: m.OcrWorkspace })),
+  { ssr: false, loading: WorkspaceLoading }
+);
+const PdfViewerWorkspace = dynamic(
+  () => import('@/components/tools/PdfViewerWorkspace').then((m) => ({ default: m.PdfViewerWorkspace })),
+  { ssr: false, loading: WorkspaceLoading }
+);
+const BatchProcessWorkspace = dynamic(
+  () => import('@/components/tools/BatchProcessWorkspace').then((m) => ({ default: m.BatchProcessWorkspace })),
+  { ssr: false, loading: WorkspaceLoading }
+);
+const WorkflowBuilderWorkspace = dynamic(
+  () => import('@/components/tools/WorkflowBuilderWorkspace').then((m) => ({ default: m.WorkflowBuilderWorkspace })),
+  { ssr: false, loading: WorkspaceLoading }
+);
+const RemoveBlankPagesWorkspace = dynamic(
+  () => import('@/components/tools/RemoveBlankPagesWorkspace').then((m) => ({ default: m.RemoveBlankPagesWorkspace })),
+  { ssr: false, loading: WorkspaceLoading }
+);
+const ExtractToolsWorkspace = dynamic(
+  () => import('@/components/tools/ExtractToolsWorkspace').then((m) => ({ default: m.ExtractToolsWorkspace })),
+  { ssr: false, loading: WorkspaceLoading }
+);
+const FillFormWorkspace = dynamic(
+  () => import('@/components/tools/FillFormWorkspace').then((m) => ({ default: m.FillFormWorkspace })),
+  { ssr: false, loading: WorkspaceLoading }
+);
+const RedactPdfWorkspace = dynamic(
+  () => import('@/components/tools/RedactPdfWorkspace').then((m) => ({ default: m.RedactPdfWorkspace })),
+  { ssr: false, loading: WorkspaceLoading }
+);
+const ComparePdfWorkspace = dynamic(
+  () => import('@/components/tools/ComparePdfWorkspace').then((m) => ({ default: m.ComparePdfWorkspace })),
+  { ssr: false, loading: WorkspaceLoading }
+);
+const PdfAssistantWorkspace = dynamic(
+  () => import('@/components/tools/PdfAssistantWorkspace').then((m) => ({ default: m.PdfAssistantWorkspace })),
+  { ssr: false, loading: WorkspaceLoading }
+);
+const PdfToStudyWorkspace = dynamic(
+  () => import('@/components/tools/PdfToStudyWorkspace').then((m) => ({ default: m.PdfToStudyWorkspace })),
+  { ssr: false, loading: WorkspaceLoading }
+);
+const ReadAloudWorkspace = dynamic(
+  () => import('@/components/tools/ReadAloudWorkspace').then((m) => ({ default: m.ReadAloudWorkspace })),
+  { ssr: false, loading: WorkspaceLoading }
+);
+const BookletMakerWorkspace = dynamic(
+  () => import('@/components/tools/BookletMakerWorkspace').then((m) => ({ default: m.BookletMakerWorkspace })),
+  { ssr: false, loading: WorkspaceLoading }
+);
+const PdfHealthWorkspace = dynamic(
+  () => import('@/components/tools/PdfHealthWorkspace').then((m) => ({ default: m.PdfHealthWorkspace })),
+  { ssr: false, loading: WorkspaceLoading }
+);
+const PdfSanitizerWorkspace = dynamic(
+  () => import('@/components/tools/PdfSanitizerWorkspace').then((m) => ({ default: m.PdfSanitizerWorkspace })),
+  { ssr: false, loading: WorkspaceLoading }
+);
+const PdfToMarkdownWorkspace = dynamic(
+  () => import('@/components/tools/PdfToMarkdownWorkspace').then((m) => ({ default: m.PdfToMarkdownWorkspace })),
+  { ssr: false, loading: WorkspaceLoading }
+);
+const PdfToHtmlWorkspace = dynamic(
+  () => import('@/components/tools/PdfToHtmlWorkspace').then((m) => ({ default: m.PdfToHtmlWorkspace })),
+  { ssr: false, loading: WorkspaceLoading }
+);
+const PdfToExcelWorkspace = dynamic(
+  () => import('@/components/tools/PdfToExcelWorkspace').then((m) => ({ default: m.PdfToExcelWorkspace })),
+  { ssr: false, loading: WorkspaceLoading }
+);
+const DocxConverterWorkspace = dynamic(
+  () => import('@/components/tools/DocxConverterWorkspace').then((m) => ({ default: m.DocxConverterWorkspace })),
+  { ssr: false, loading: WorkspaceLoading }
+);
+const CompressTargetWorkspace = dynamic(
+  () => import('@/components/tools/CompressTargetWorkspace').then((m) => ({ default: m.CompressTargetWorkspace })),
+  { ssr: false, loading: WorkspaceLoading }
+);
+const SplitBySizeWorkspace = dynamic(
+  () => import('@/components/tools/SplitBySizeWorkspace').then((m) => ({ default: m.SplitBySizeWorkspace })),
+  { ssr: false, loading: WorkspaceLoading }
+);
+const CropTrimWorkspace = dynamic(
+  () => import('@/components/tools/CropTrimWorkspace').then((m) => ({ default: m.CropTrimWorkspace })),
+  { ssr: false, loading: WorkspaceLoading }
+);
+const NupWorkspace = dynamic(
+  () => import('@/components/tools/NupWorkspace').then((m) => ({ default: m.NupWorkspace })),
+  { ssr: false, loading: WorkspaceLoading }
+);
+const GrayscaleWorkspace = dynamic(
+  () => import('@/components/tools/GrayscaleWorkspace').then((m) => ({ default: m.GrayscaleWorkspace })),
+  { ssr: false, loading: WorkspaceLoading }
+);
+const BatesStampingWorkspace = dynamic(
+  () => import('@/components/tools/BatesStampingWorkspace').then((m) => ({ default: m.BatesStampingWorkspace })),
+  { ssr: false, loading: WorkspaceLoading }
+);
+const FlattenPdfWorkspace = dynamic(
+  () => import('@/components/tools/FlattenPdfWorkspace').then((m) => ({ default: m.FlattenPdfWorkspace })),
+  { ssr: false, loading: WorkspaceLoading }
+);
+const DigitalCertificateSignatureWorkspace = dynamic(
+  () => import('@/components/tools/DigitalCertificateSignatureWorkspace').then((m) => ({ default: m.DigitalCertificateSignatureWorkspace })),
+  { ssr: false, loading: WorkspaceLoading }
+);
+const RepairPdfWorkspace = dynamic(
+  () => import('@/components/tools/RepairPdfWorkspace').then((m) => ({ default: m.RepairPdfWorkspace })),
+  { ssr: false, loading: WorkspaceLoading }
+);
+const InvertColorsWorkspace = dynamic(
+  () => import('@/components/tools/InvertColorsWorkspace').then((m) => ({ default: m.InvertColorsWorkspace })),
+  { ssr: false, loading: WorkspaceLoading }
+);
 
 const ICON_MAP: Record<string, React.ElementType> = {
   Layers,
@@ -127,6 +264,12 @@ export const ToolPageClientWrapper: React.FC<ToolPageClientWrapperProps> = ({
 }) => {
   const [recentOpen, setRecentOpen] = useState(false);
   const IconComponent = ICON_MAP[tool.iconName] || FileText;
+
+  // Track tool usage (local only) so the command palette's
+  // "Recently Used" section reflects real visits, not just palette launches.
+  useEffect(() => {
+    recordRecentTool(tool.slug);
+  }, [tool.slug]);
 
   const renderWorkspace = () => {
     switch (tool.slug) {
