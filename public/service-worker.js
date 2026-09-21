@@ -1,6 +1,16 @@
 // PDFly Service Worker - High Performance Local-First PWA Cache
 const CACHE_NAME = 'pdfly-shell-v12';
 
+// Deployment-aware base path, derived at runtime from this service worker's
+// own registration scope. On the GitHub Pages project site the scope is
+// /pdfly-app/ so BASE_PATH becomes '/pdfly-app'; on a root deployment
+// (custom domain, local dev) the scope is / and BASE_PATH stays ''.
+// No build-time injection or duplicated workers required.
+const BASE_PATH = new URL(self.registration.scope).pathname.replace(/\/$/, '');
+
+// Map a root-relative app path to the deployment base path.
+const withBasePath = (path) => BASE_PATH + path;
+
 // Core shell and assets to precache immediately on install
 const PRECACHE_ASSETS = [
   '/',
@@ -32,7 +42,7 @@ self.addEventListener('install', (event) => {
       .then((cache) => {
         return Promise.allSettled(
           PRECACHE_ASSETS.map((asset) =>
-            cache.add(asset).catch((err) => {
+            cache.add(withBasePath(asset)).catch((err) => {
               console.warn('[PDFly SW] Precache skip:', asset, err);
             })
           )
@@ -84,7 +94,7 @@ self.addEventListener('fetch', (event) => {
   const url = new URL(request.url);
 
   // SECURITY RULE: NEVER cache API routes or dynamic AI completions
-  if (url.pathname.startsWith('/api/')) {
+  if (url.pathname.startsWith(withBasePath('/api/'))) {
     return;
   }
 
@@ -111,7 +121,7 @@ self.addEventListener('fetch', (event) => {
             return cachedResponse;
           }
           // Fallback to app shell
-          return caches.match('/') || caches.match('/install');
+          return caches.match(withBasePath('/')) || caches.match(withBasePath('/install'));
         })
     );
     return;
@@ -120,7 +130,7 @@ self.addEventListener('fetch', (event) => {
   // 2. Next.js Script Chunks & Runtime: Network First with Cache Fallback
   // Prevents hydration mismatches by ensuring client JavaScript matches server HTML when online
   const isScriptOrChunk =
-    url.pathname.startsWith('/_next/') ||
+    url.pathname.startsWith(withBasePath('/_next/')) ||
     url.pathname.endsWith('.js');
 
   if (isScriptOrChunk) {
@@ -142,8 +152,8 @@ self.addEventListener('fetch', (event) => {
 
   // 3. Static Media, Fonts, & Brand Assets - Cache First with Background Update
   const isStaticMedia =
-    url.pathname.startsWith('/icons/') ||
-    url.pathname.startsWith('/fonts/') ||
+    url.pathname.startsWith(withBasePath('/icons/')) ||
+    url.pathname.startsWith(withBasePath('/fonts/')) ||
     url.pathname.endsWith('.png') ||
     url.pathname.endsWith('.svg') ||
     url.pathname.endsWith('.ico') ||

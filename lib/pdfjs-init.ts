@@ -1,6 +1,7 @@
 'use client';
 
 // Dynamic client-side PDF.js loader with safe fallback
+import { withBasePath } from '@/lib/base-path';
 let pdfjsLib: any = null;
 
 export async function getPdfjs() {
@@ -13,8 +14,8 @@ export async function getPdfjs() {
         // Use local same-origin worker from /public/pdf.worker.min.mjs matching pdfjs-dist version
         const workerUrl =
           typeof window !== 'undefined' && window.location
-            ? new URL('/pdf.worker.min.mjs', window.location.href).toString()
-            : '/pdf.worker.min.mjs';
+            ? new URL(withBasePath('/pdf.worker.min.mjs'), window.location.href).toString()
+            : withBasePath('/pdf.worker.min.mjs');
         pdfjsLib.GlobalWorkerOptions.workerSrc = workerUrl;
       }
     } catch (e) {
@@ -37,8 +38,8 @@ export async function getPdfDocumentFromFile(file: File | ArrayBuffer) {
 
   const cMapUrl =
     typeof window !== 'undefined' && window.location
-      ? new URL('/cmaps/', window.location.href).toString()
-      : '/cmaps/';
+      ? new URL(withBasePath('/cmaps/'), window.location.href).toString()
+      : withBasePath('/cmaps/');
 
   const loadingTask = pdfjs.getDocument({
     data: new Uint8Array(arrayBuffer),
