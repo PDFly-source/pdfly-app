@@ -643,11 +643,62 @@ export interface WatermarkOptions {
   color?: string; // hex
   opacity?: number; // 0.1 to 1.0
   rotation?: number; // -90 to 90
-  position?: 'center' | 'diagonal' | 'top' | 'bottom' | 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right';
+  position?: 'center' | 'diagonal' | 'top' | 'bottom' | 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right' | 'custom';
   imageFile?: File;
   imageBuffer?: ArrayBuffer;
   imageType?: 'png' | 'jpeg' | 'jpg';
   imageScale?: number;
+  /** Which pages receive the watermark. Defaults to all. */
+  pageSelection?: PageSelection;
+  /** Custom position as a fraction (0-1) of page width/height. Requires position === 'custom'. */
+  customX?: number;
+  customY?: number;
+}
+
+export interface PageSelection {
+  mode: 'all' | 'first' | 'last' | 'odd' | 'even' | 'range';
+  /** 1-indexed page ranges, e.g. "1-3,5,8-10". Used when mode === 'range'. */
+  range?: string;
+}
+
+export function parsePageRange(rangeStr: string | undefined, total: number): Set<number> {
+  const set = new Set<number>();
+  if (!rangeStr) return set;
+  for (const part of rangeStr.split(',')) {
+    const seg = part.trim();
+    if (!seg) continue;
+    const dash = seg.split('-');
+    if (dash.length === 2) {
+      let a = parseInt(dash[0], 10);
+      let b = parseInt(dash[1], 10);
+      if (!isNaN(a) && !isNaN(b)) {
+        if (a > b) [a, b] = [b, a];
+        for (let p = Math.max(1, a); p <= Math.min(total, b); p++) set.add(p);
+      }
+    } else {
+      const p = parseInt(seg, 10);
+      if (!isNaN(p) && p >= 1 && p <= total) set.add(p);
+    }
+  }
+  return set;
+}
+
+export function pageMatchesSelection(sel: PageSelection | undefined, pageNumber1: number, total: number): boolean {
+  if (!sel || sel.mode === 'all') return true;
+  switch (sel.mode) {
+    case 'first':
+      return pageNumber1 === 1;
+    case 'last':
+      return pageNumber1 === total;
+    case 'odd':
+      return pageNumber1 % 2 === 1;
+    case 'even':
+      return pageNumber1 % 2 === 0;
+    case 'range':
+      return parsePageRange(sel.range, total).has(pageNumber1);
+    default:
+      return true;
+  }
 }
 
 export async function watermarkPdf(
@@ -680,8 +731,11 @@ export async function watermarkPdf(
         : await pdfDoc.embedJpg(options.imageBuffer);
   }
 
+  const total = pages.length;
   for (let i = 0; i < pages.length; i++) {
-    onProgress?.(`Watermarking page ${i + 1} of ${pages.length}...`, 25 + Math.round((i / pages.length) * 65));
+    const pageNum = i + 1;
+    if (!pageMatchesSelection(options.pageSelection, pageNum, total)) continue;
+    onProgress?.(`Watermarking page ${pageNum} of ${total}...`, 25 + Math.round((i / total) * 65));
     const page = pages[i];
     const { width, height } = page.getSize();
 
@@ -692,7 +746,10 @@ export async function watermarkPdf(
       let imgX = (width - imgW) / 2;
       let imgY = (height - imgH) / 2;
 
-      if (options.position === 'top-left') {
+      if (options.position === 'custom') {
+        imgX = (options.customX ?? 0.5) * width - imgW / 2;
+        imgY = (1 - (options.customY ?? 0.5)) * height - imgH / 2;
+      } else if (options.position === 'top-left') {
         imgX = 30;
         imgY = height - imgH - 30;
       } else if (options.position === 'top-right') {
@@ -720,7 +777,10 @@ export async function watermarkPdf(
       let x = (width - textWidth) / 2;
       let y = (height - textHeight) / 2;
 
-      if (options.position === 'top') {
+      if (options.position === 'custom') {
+        x = (options.customX ?? 0.5) * width - textWidth / 2;
+        y = (1 - (options.customY ?? 0.5)) * height - textHeight / 2;
+      } else if (options.position === 'top') {
         y = height - textHeight - 40;
       } else if (options.position === 'bottom') {
         y = 40;
@@ -811,12 +871,17 @@ export async function addPageNumbers(
       y = height - fontSize - margin;
     }
 
+    const pnHex = (options.color || '#333333').replace('#', '');
+    const pnR = parseInt(pnHex.substring(0, 2), 16) / 255 || 0.2;
+    const pnG = parseInt(pnHex.substring(2, 4), 16) / 255 || 0.2;
+    const pnB = parseInt(pnHex.substring(4, 6), 16) / 255 || 0.2;
+
     safeDrawText(page, text, {
       x,
       y,
       size: fontSize,
       font,
-      color: rgb(0.2, 0.2, 0.2),
+      color: rgb(pnR, pnG, pnB),
     });
   }
 
@@ -953,6 +1018,46 @@ export async function updateOrClearMetadata(
       pdfDoc.setKeywords(newMetadata.keywords.split(',').map((k) => k.trim()));
     }
   }
+
+  onProgress?.('Saving sanitized PDF...', 90);
+  const bytes = await pdfDoc.save({ useObjectStreams: true });
+  onProgress?.('Complete!', 100);
+
+  return new Blob([bytes as any], { type: 'application/pdf' });
+}
+
+export interface MetadataFields {
+  title?: boolean;
+  author?: boolean;
+  subject?: boolean;
+  keywords?: boolean;
+  creator?: boolean;
+  producer?: boolean;
+  creationDate?: boolean;
+  modificationDate?: boolean;
+}
+
+/**
+ * Selectively clears metadata fields (local only).
+ * Only the fields set to true are removed; others are preserved.
+ */
+export async function sanitizeMetadataFields(
+  file: File,
+  fields: MetadataFields,
+  onProgress?: ProgressCallback
+): Promise<Blob> {
+  onProgress?.('Sanitizing selected metadata...', 30);
+  const arrayBuffer = await file.arrayBuffer();
+  const pdfDoc = await PDFDocument.load(arrayBuffer, { ignoreEncryption: true });
+
+  if (fields.title) pdfDoc.setTitle('');
+  if (fields.author) pdfDoc.setAuthor('');
+  if (fields.subject) pdfDoc.setSubject('');
+  if (fields.keywords) pdfDoc.setKeywords([]);
+  if (fields.creator) pdfDoc.setCreator('');
+  if (fields.producer) pdfDoc.setProducer('PDFly Local Privacy Sanitizer');
+  if (fields.creationDate) pdfDoc.setCreationDate(new Date(0));
+  if (fields.modificationDate) pdfDoc.setModificationDate(new Date(0));
 
   onProgress?.('Saving sanitized PDF...', 90);
   const bytes = await pdfDoc.save({ useObjectStreams: true });
