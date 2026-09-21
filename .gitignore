@@ -7,3 +7,6 @@ coverage/
 .env*
 !.env.example
 *.tsbuildinfo
+
+# Next.js static export output (output: export)
+out/

@@ -1,6 +1,8 @@
 import type { MetadataRoute } from 'next';
 import { SITE_URL } from '@/lib/site';
 
+export const dynamic = 'force-static'; // Required for static export (output: 'export').
+
 /**
  * robots.txt — allows standard search crawlers (Googlebot, Bingbot),
  * AI search crawlers (OAI-SearchBot, GPTBot, ClaudeBot, PerplexityBot),

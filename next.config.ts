@@ -3,6 +3,23 @@ import type {NextConfig} from 'next';
 const nextConfig: NextConfig = {
   distDir: process.env.NODE_ENV === 'development' ? '.next-dev' : '.next',
   reactStrictMode: true,
+  // Static export for GitHub Pages (Step A).
+  // basePath/assetPrefix are intentionally NOT set yet; deployment-aware
+  // basePath will be added in a separate later step.
+  output: 'export',
+  trailingSlash: true,
+  images: {
+    unoptimized: true,
+    // Allow access to remote image placeholder.
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'picsum.photos',
+        port: '',
+        pathname: '/**', // This allows any path under the hostname
+      },
+    ],
+  },
   eslint: {
     ignoreDuringBuilds: true,
   },
@@ -12,17 +29,6 @@ const nextConfig: NextConfig = {
   devIndicators: false,
   experimental: {
     devtoolSegmentExplorer: false,
-  },
-  // Allow access to remote image placeholder.
-  images: {
-    remotePatterns: [
-      {
-        protocol: 'https',
-        hostname: 'picsum.photos',
-        port: '',
-        pathname: '/**', // This allows any path under the hostname
-      },
-    ],
   },
   transpilePackages: ['motion'],
   webpack: (config, {dev}) => {
