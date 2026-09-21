@@ -34,6 +34,7 @@ export const BatesStampingWorkspace: React.FC = () => {
   const [prefix, setPrefix] = useState('CASE-2026-');
   const [suffix, setSuffix] = useState('');
   const [startNumber, setStartNumber] = useState(1);
+  const [increment, setIncrement] = useState(1);
   const [digits, setDigits] = useState(6);
   const [separator, setSeparator] = useState('-');
   const [font, setFont] = useState<'Helvetica' | 'HelveticaBold' | 'TimesRoman' | 'Courier'>('HelveticaBold');
@@ -108,7 +109,7 @@ export const BatesStampingWorkspace: React.FC = () => {
   }, [file, previewPage]);
 
   // Sample Bates stamp text for current preview page
-  const sampleNumber = startNumber + (previewPage - 1);
+  const sampleNumber = startNumber + (previewPage - 1) * (increment > 0 ? increment : 1);
   const sampleFormattedText = formatBatesNumber(prefix, sampleNumber, digits, suffix, separator);
 
   const handleApplyBates = async () => {
@@ -124,6 +125,7 @@ export const BatesStampingWorkspace: React.FC = () => {
           prefix,
           suffix,
           startNumber,
+          increment,
           digits,
           separator,
           font,
@@ -365,6 +367,17 @@ export const BatesStampingWorkspace: React.FC = () => {
                       min={1}
                       value={startNumber}
                       onChange={(e) => setStartNumber(Math.max(1, parseInt(e.target.value, 10) || 1))}
+                      className="w-full px-3 py-2 rounded-lg border border-border bg-background text-sm font-mono focus:outline-none focus:ring-1 focus:ring-burgundy"
+                    />
+                  </div>
+                  <div>
+                    <label className="text-xs font-medium text-muted-foreground mb-1 block">Increment</label>
+                    <input
+                      type="number"
+                      min={1}
+                      value={increment}
+                      onChange={(e) => setIncrement(Math.max(1, parseInt(e.target.value, 10) || 1))}
+                      aria-label="Number increment per page"
                       className="w-full px-3 py-2 rounded-lg border border-border bg-background text-sm font-mono focus:outline-none focus:ring-1 focus:ring-burgundy"
                     />
                   </div>
