@@ -131,7 +131,15 @@ export const FlattenPdfWorkspace: React.FC = () => {
         downloadLabel="Download Flattened PDF"
         onDownload={handleDownload}
         onReset={handleReset}
-        additionalNote={`Successfully converted ${result.formsFlattened} form field(s) and ${result.annotsFlattened} annotation markup(s) into immutable background page graphics.`}
+        additionalNote={
+          `Baked ${result.formsFlattened} form field(s) and ${result.annotsFlattened} annotation(s) into immutable page graphics.` +
+          (result.annotationsKeptInteractive > 0
+            ? ` ${result.annotationsKeptInteractive} item(s) without a static appearance (e.g. links) were preserved interactive and could not be baked.`
+            : '') +
+          (result.widgetsPreserved > 0
+            ? ` ${result.widgetsPreserved} form widget(s) were left interactive because form flattening was not selected.`
+            : '')
+        }
       />
     );
   }
@@ -209,7 +217,7 @@ export const FlattenPdfWorkspace: React.FC = () => {
               </div>
               <p className="text-xs text-muted-foreground">
                 {annotsFound > 0
-                  ? 'Comment markups, sticky notes, and stamps will have interactive triggers removed.'
+                  ? 'Comment markups, sticky notes, and stamps are baked into the page as static graphics. Items without a static appearance (e.g. links) stay interactive.'
                   : 'No annotation markup streams were detected in this document.'}
               </p>
             </div>

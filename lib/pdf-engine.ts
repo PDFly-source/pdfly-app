@@ -1,6 +1,22 @@
 'use client';
 
-import { PDFDocument, rgb, degrees, StandardFonts, PageSizes, PDFName } from 'pdf-lib';
+import {
+  PDFDocument,
+  rgb,
+  degrees,
+  StandardFonts,
+  PageSizes,
+  PDFName,
+  PDFArray,
+  PDFDict,
+  PDFNumber,
+  PDFRef,
+  PDFRawStream,
+  PDFOperator,
+  pushGraphicsState,
+  popGraphicsState,
+  concatTransformationMatrix,
+} from 'pdf-lib';
 import { safeDrawText, safeWidthOfTextAtSize, sanitizeForWinAnsi } from './font-safe';
 import JSZip from 'jszip';
 import { getPdfDocumentFromFile, renderPageToCanvas } from './pdfjs-init';
@@ -2140,6 +2156,8 @@ export interface BatesStampingOptions {
   prefix: string;
   suffix?: string;
   startNumber: number;
+  /** Per-page increment applied to the running Bates number. Defaults to 1. */
+  increment?: number;
   digits: number;
   separator: string;
   font: 'Helvetica' | 'HelveticaBold' | 'TimesRoman' | 'Courier';
@@ -2248,7 +2266,7 @@ export async function applyBatesStamping(
       options.suffix,
       options.separator
     );
-    currentNumber++;
+    currentNumber += options.increment && options.increment > 0 ? options.increment : 1;
 
     const textWidth = safeWidthOfTextAtSize(font, stampText, options.fontSize);
     const textHeight = options.fontSize;
@@ -2300,7 +2318,14 @@ export async function applyBatesStamping(
 export interface FlattenPdfResult {
   blob: Blob;
   formsFlattened: number;
+  /** Annotations whose static appearance streams were baked into page content. */
+  annotationsBaked: number;
+  /** Legacy alias of annotationsBaked. */
   annotsFlattened: number;
+  /** Annotations without a static appearance (e.g. link annotations) — kept interactive, reported honestly. */
+  annotationsKeptInteractive: number;
+  /** Form widget annotations preserved interactive in annotations-only mode. */
+  widgetsPreserved: number;
   originalSize: number;
   flattenedSize: number;
 }
@@ -2316,6 +2341,9 @@ export async function flattenPdf(
 
   let formsFlattened = 0;
   let annotsFlattened = 0;
+  let annotationsBaked = 0;
+  let annotationsKeptInteractive = 0;
+  let widgetsPreserved = 0;
 
   // Flatten interactive form fields
   if (mode === 'forms' || mode === 'all') {
@@ -2332,19 +2360,128 @@ export async function flattenPdf(
     }
   }
 
-  // Flatten annotations and comments
+  // Flatten annotations and comments.
+  // Instead of deleting annotations (which made them disappear entirely),
+  // bake each annotation's static normal appearance stream (/AP /N) into the
+  // page content as an XObject so the visible appearance is preserved while
+  // the interactive annotation object is removed. Annotations that cannot be
+  // safely baked (no static appearance, e.g. link annotations, or multi-state
+  // appearance sub-dictionaries) are kept interactive and reported honestly.
   if (mode === 'annotations' || mode === 'all') {
-    onProgress?.('Flattening annotations and comment markups...', 65);
+    onProgress?.('Baking annotation appearance streams into page content...', 65);
     const pages = pdfDoc.getPages();
-    for (let i = 0; i < pages.length; i++) {
-      const page = pages[i];
+    for (const page of pages) {
       const annots = page.node.Annots();
-      if (annots) {
-        annotsFlattened += annots.size();
-        // Remove interactive annotation widget hooks so they become static appearance only
+      if (!annots || annots.size() === 0) continue;
+
+      // Ensure the page has /Resources /XObject to register baked appearances
+      let resources = page.node.Resources();
+      if (!resources) {
+        resources = pdfDoc.context.obj({}) as PDFDict;
+        page.node.set(PDFName.of('Resources'), resources);
+      }
+      let xobjectDict = resources.lookupMaybe(PDFName.of('XObject'), PDFDict);
+      if (!xobjectDict) {
+        xobjectDict = pdfDoc.context.obj({}) as PDFDict;
+        resources.set(PDFName.of('XObject'), xobjectDict);
+      }
+
+      const kept: any[] = [];
+      const ops: PDFOperator[] = [];
+
+      const readNum = (arr: PDFArray, idx: number): number => {
+        const v = arr.lookup(idx);
+        return v instanceof PDFNumber ? v.asNumber() : 0;
+      };
+
+      for (let i = 0; i < annots.size(); i++) {
+        const raw = annots.get(i);
+        const annot = annots.lookup(i);
+        if (!(annot instanceof PDFDict)) {
+          kept.push(raw);
+          continue;
+        }
+
+        const subtype = annot.lookupMaybe(PDFName.of('Subtype'), PDFName);
+
+        // In annotations-only mode, form widgets must stay interactive
+        // (forms are not being flattened in that mode).
+        if (mode === 'annotations' && subtype?.toString() === '/Widget') {
+          widgetsPreserved++;
+          kept.push(raw);
+          continue;
+        }
+
+        const ap = annot.lookupMaybe(PDFName.of('AP'), PDFDict);
+        const nObj = ap ? ap.get(PDFName.of('N')) : undefined;
+
+        // Only indirect (stream) normal appearances can be baked as XObjects.
+        // A PDFDict here is a multi-state appearance sub-dictionary — not safely bakeable.
+        if (!(nObj instanceof PDFRef)) {
+          annotationsKeptInteractive++;
+          kept.push(raw);
+          continue;
+        }
+
+        const stream = pdfDoc.context.lookup(nObj);
+        const bboxArr =
+          stream instanceof PDFRawStream
+            ? stream.dict.lookupMaybe(PDFName.of('BBox'), PDFArray)
+            : undefined;
+        const rectArr = annot.lookupMaybe(PDFName.of('Rect'), PDFArray);
+        if (!bboxArr || !rectArr) {
+          annotationsKeptInteractive++;
+          kept.push(raw);
+          continue;
+        }
+
+        const rx1 = readNum(rectArr, 0), ry1 = readNum(rectArr, 1);
+        const rx2 = readNum(rectArr, 2), ry2 = readNum(rectArr, 3);
+        const bx1 = readNum(bboxArr, 0), by1 = readNum(bboxArr, 1);
+        const bx2 = readNum(bboxArr, 2), by2 = readNum(bboxArr, 3);
+        const bboxW = bx2 - bx1, bboxH = by2 - by1;
+        const rectW = rx2 - rx1, rectH = ry2 - ry1;
+        if (bboxW <= 0 || bboxH <= 0 || rectW <= 0 || rectH <= 0) {
+          annotationsKeptInteractive++;
+          kept.push(raw);
+          continue;
+        }
+
+        // Register the existing appearance XObject under a unique page-local name
+        let n = i;
+        let xname = PDFName.of(`AnnotBake${n}`);
+        while (xobjectDict.has(xname)) {
+          n += 1;
+          xname = PDFName.of(`AnnotBake${n}`);
+        }
+        xobjectDict.set(xname, nObj);
+
+        // Place the appearance stream at the annotation rectangle:
+        // scale the BBox onto the Rect and translate by (rectLL - bboxLL * scale)
+        const sx = rectW / bboxW;
+        const sy = rectH / bboxH;
+        const tx = rx1 - bx1 * sx;
+        const ty = ry1 - by1 * sy;
+        ops.push(
+          pushGraphicsState(),
+          concatTransformationMatrix(sx, 0, 0, sy, tx, ty),
+          PDFOperator.of('Do', [xname]),
+          popGraphicsState()
+        );
+        annotationsBaked++;
+      }
+
+      if (ops.length > 0) {
+        page.pushOperators(...ops);
+      }
+      // Remove flattened annotations; keep anything that could not be baked.
+      if (kept.length === 0) {
         page.node.delete(PDFName.of('Annots'));
+      } else {
+        page.node.set(PDFName.of('Annots'), pdfDoc.context.obj(kept));
       }
     }
+    annotsFlattened = annotationsBaked;
   }
 
   onProgress?.('Serializing flattened PDF...', 85);
@@ -2355,7 +2492,10 @@ export async function flattenPdf(
   return {
     blob: outBlob,
     formsFlattened,
+    annotationsBaked,
     annotsFlattened,
+    annotationsKeptInteractive,
+    widgetsPreserved,
     originalSize: file.size,
     flattenedSize: outBlob.size,
   };
