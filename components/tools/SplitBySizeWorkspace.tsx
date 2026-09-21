@@ -117,6 +117,24 @@ export const SplitBySizeWorkspace: React.FC = () => {
           {!parts && (
             <div className="rounded-xl border bg-card p-4 space-y-4">
               <p className="text-sm font-bold inline-flex items-center gap-2"><Scissors className="h-4 w-4 text-primary" /> Target size per part</p>
+              <div className="flex flex-wrap gap-2" role="group" aria-label="Preset part sizes">
+                {([
+                  { label: '1 MB', v: '1' },
+                  { label: '5 MB', v: '5' },
+                  { label: '10 MB', v: '10' },
+                ] as const).map((p) => (
+                  <button
+                    key={p.label}
+                    onClick={() => { setValue(p.v); setUnit('MB'); }}
+                    aria-pressed={unit === 'MB' && value === p.v}
+                    className={`rounded-lg border px-3 py-2 text-xs font-semibold min-h-[44px] ${
+                      unit === 'MB' && value === p.v ? 'bg-primary text-primary-foreground' : 'hover:bg-accent'
+                    }`}
+                  >
+                    {p.label}
+                  </button>
+                ))}
+              </div>
               <div className="flex flex-wrap items-center gap-2">
                 <input
                   type="number"

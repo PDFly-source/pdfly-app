@@ -246,7 +246,7 @@ export const PdfToExcelWorkspace: React.FC = () => {
                         onClick={() => setSelectedTable(i)}
                         className={`rounded-lg border px-3 py-2 text-xs font-semibold min-h-[44px] ${i === selectedTable ? 'bg-primary text-primary-foreground' : 'hover:bg-accent'}`}
                       >
-                        Page {t.pageIndex + 1} • {t.rows.length}×{t.columnCount} {t.hasHeaderRow ? '(header)' : ''}
+                        Page {t.pageIndex + 1} • {t.rows.length}×{t.columnCount} {t.hasHeaderRow ? '(header)' : ''} • {Math.round(t.confidence * 100)}% structure
                       </button>
                     ))}
                   </div>
