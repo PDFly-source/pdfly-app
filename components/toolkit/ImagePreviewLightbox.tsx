@@ -39,14 +39,15 @@ export const ImagePreviewLightbox: React.FC<ImagePreviewLightboxProps> = ({
 }) => {
   const [zoom, setZoom] = useState(1);
   const [rotation, setRotation] = useState(0);
+  const [prevIndex, setPrevIndex] = useState(index);
+  if (prevIndex !== index) {
+    setPrevIndex(index);
+    setZoom(1);
+    setRotation(0);
+  }
 
   const isOpen = index !== null && index >= 0 && index < items.length;
   const current = isOpen ? items[index as number] : null;
-
-  useEffect(() => {
-    setZoom(1);
-    setRotation(0);
-  }, [index]);
 
   const navigate = useCallback(
     (dir: 1 | -1) => {

@@ -31,10 +31,11 @@ export const PdfPreviewModal: React.FC<PdfPreviewModalProps> = ({
   footer,
 }) => {
   const [pageIdx, setPageIdx] = useState(0);
-
-  useEffect(() => {
+  const [prevIsOpen, setPrevIsOpen] = useState(isOpen);
+  if (prevIsOpen !== isOpen) {
+    setPrevIsOpen(isOpen);
     setPageIdx(0);
-  }, [isOpen]);
+  }
 
   useEffect(() => {
     if (!isOpen) return;

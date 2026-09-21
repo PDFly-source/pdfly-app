@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useState, useSyncExternalStore } from 'react';
 import { CheckCircle2, Download, RefreshCw, ArrowLeft, ShieldCheck, FileCheck, Share2, Eye, Pencil, Check, X } from 'lucide-react';
 import { formatBytes } from '@/lib/pdf-engine';
 
@@ -42,15 +42,17 @@ export const SuccessView: React.FC<SuccessViewProps> = ({
 }) => {
   const [renaming, setRenaming] = useState(false);
   const [draftName, setDraftName] = useState(fileName);
-  const [canShare, setCanShare] = useState(false);
-
-  useEffect(() => {
+  const [prevFileName, setPrevFileName] = useState(fileName);
+  if (prevFileName !== fileName) {
+    setPrevFileName(fileName);
     setDraftName(fileName);
-  }, [fileName]);
+  }
 
-  useEffect(() => {
-    setCanShare(typeof navigator !== 'undefined' && !!navigator.share);
-  }, []);
+  const canShare = useSyncExternalStore(
+    () => () => {},
+    () => typeof navigator !== 'undefined' && typeof navigator.share === 'function',
+    () => false
+  );
 
   const commitRename = () => {
     const cleaned = draftName.trim();

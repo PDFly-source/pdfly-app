@@ -26,12 +26,19 @@ export const ProcessingModal: React.FC<ProcessingModalProps> = ({
 }) => {
   // Honest elapsed-time counter (measured, not estimated)
   const [elapsed, setElapsed] = useState(0);
+  const [prevIsOpen, setPrevIsOpen] = useState(isOpen);
+  if (prevIsOpen !== isOpen) {
+    setPrevIsOpen(isOpen);
+    if (isOpen) {
+      setElapsed(0);
+    }
+  }
+
   const startedAt = useRef<number>(0);
 
   useEffect(() => {
     if (isOpen) {
       startedAt.current = Date.now();
-      setElapsed(0);
       const timer = window.setInterval(() => {
         setElapsed(Math.floor((Date.now() - startedAt.current) / 1000));
       }, 1000);

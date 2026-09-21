@@ -40,8 +40,16 @@ export const RecipesPanel: React.FC<RecipesPanelProps> = ({ onLoadSteps, refresh
   const [open, setOpen] = useState(true);
 
   React.useEffect(() => {
-    setRecipes(listRecipes());
-    setHistory(listHistory());
+    let cancelled = false;
+    Promise.resolve().then(() => {
+      if (!cancelled) {
+        setRecipes(listRecipes());
+        setHistory(listHistory());
+      }
+    });
+    return () => {
+      cancelled = true;
+    };
   }, [refreshKey]);
 
   const refresh = () => {

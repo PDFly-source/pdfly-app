@@ -46,10 +46,14 @@ export const CropTrimWorkspace: React.FC = () => {
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
 
   const dragRef = useRef<HTMLDivElement>(null);
+  const pageUrlRef = useRef<string | null>(null);
   const [dragging, setDragging] = useState<'top' | 'right' | 'bottom' | 'left' | null>(null);
 
   const reset = () => {
-    if (pageUrl) URL.revokeObjectURL(pageUrl);
+    if (pageUrlRef.current) {
+      URL.revokeObjectURL(pageUrlRef.current);
+      pageUrlRef.current = null;
+    }
     if (resultBlobUrl) URL.revokeObjectURL(resultBlobUrl);
     setFile(null); setResult(null); setResultBlobUrl(null); setErrorMessage(null);
     setPageUrl(null); setBeforeUrl(null); setAfterUrl(null); setShowCompare(false);
@@ -84,9 +88,16 @@ export const CropTrimWorkspace: React.FC = () => {
         const ctx = canvas.getContext('2d', { willReadFrequently: true })!;
         await page.render({ canvasContext: ctx, viewport }).promise;
         if (cancelled) { canvas.width = 0; return; }
-        if (pageUrl) URL.revokeObjectURL(pageUrl);
+        if (pageUrlRef.current) {
+          URL.revokeObjectURL(pageUrlRef.current);
+          pageUrlRef.current = null;
+        }
         canvas.toBlob((blob) => {
-          if (blob && !cancelled) setPageUrl(URL.createObjectURL(blob));
+          if (blob && !cancelled) {
+            const url = URL.createObjectURL(blob);
+            pageUrlRef.current = url;
+            setPageUrl(url);
+          }
           canvas.width = 0;
           canvas.height = 0;
         }, 'image/jpeg', 0.9);

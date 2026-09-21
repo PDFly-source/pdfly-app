@@ -30,46 +30,6 @@ export const FileDropzone: React.FC<FileDropzoneProps> = ({
   const [warningMsg, setWarningMsg] = useState<{ text: string; strong: boolean } | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  // Smart Dropzone handoff: claim files the user dropped globally and
-  // routed to this tool, so they never have to re-select the file.
-  // Claiming is atomic — only the first matching dropzone consumes them.
-  const claimHandoff = () => {
-    if (typeof window === 'undefined') return;
-    const match = window.location.pathname.match(/^\/tools\/([^/]+)/);
-    if (!match) return;
-    const slug = match[1];
-    const pending = peekPendingFiles(slug);
-    if (pending.length === 0) return;
-
-    // Double-check against this dropzone's accept list BEFORE claiming,
-    // so files are never lost to a non-matching dropzone
-    const accepted = accept
-      .split(',')
-      .map((a) => a.trim().toLowerCase())
-      .filter(Boolean);
-    const matches = pending.filter((f) =>
-      accepted.some((a) => {
-        if (a.startsWith('.')) return f.name.toLowerCase().endsWith(a);
-        if (a.endsWith('/*')) return f.type.startsWith(a.slice(0, -1));
-        return f.type === a;
-      })
-    );
-    if (matches.length > 0) {
-      claimPendingFiles(slug); // atomic consume so only one dropzone takes them
-      validateAndPass(matches);
-    }
-  };
-
-  useEffect(() => {
-    // Claim on mount (fresh navigation to the tool page)
-    claimHandoff();
-    // And when files are announced while already on the page
-    const onReady = () => claimHandoff();
-    window.addEventListener('pdfly:files-ready', onReady);
-    return () => window.removeEventListener('pdfly:files-ready', onReady);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
   const validateAndPass = (incoming: FileList | File[] | null) => {
     if (!incoming || incoming.length === 0) return;
     setErrorMsg(null);
@@ -106,6 +66,52 @@ export const FileDropzone: React.FC<FileDropzoneProps> = ({
 
     onFilesSelected(list);
   };
+
+  // Smart Dropzone handoff: claim files the user dropped globally and
+  // routed to this tool, so they never have to re-select the file.
+  // Claiming is atomic — only the first matching dropzone consumes them.
+  const claimHandoff = () => {
+    if (typeof window === 'undefined') return;
+    const match = window.location.pathname.match(/^\/tools\/([^/]+)/);
+    if (!match) return;
+    const slug = match[1];
+    const pending = peekPendingFiles(slug);
+    if (pending.length === 0) return;
+
+    // Double-check against this dropzone's accept list BEFORE claiming,
+    // so files are never lost to a non-matching dropzone
+    const accepted = accept
+      .split(',')
+      .map((a) => a.trim().toLowerCase())
+      .filter(Boolean);
+    const matches = pending.filter((f) =>
+      accepted.some((a) => {
+        if (a.startsWith('.')) return f.name.toLowerCase().endsWith(a);
+        if (a.endsWith('/*')) return f.type.startsWith(a.slice(0, -1));
+        return f.type === a;
+      })
+    );
+    if (matches.length > 0) {
+      claimPendingFiles(slug); // atomic consume so only one dropzone takes them
+      validateAndPass(matches);
+    }
+  };
+
+  useEffect(() => {
+    // Claim on mount (fresh navigation to the tool page)
+    let cancelled = false;
+    Promise.resolve().then(() => {
+      if (!cancelled) claimHandoff();
+    });
+    // And when files are announced while already on the page
+    const onReady = () => claimHandoff();
+    window.addEventListener('pdfly:files-ready', onReady);
+    return () => {
+      cancelled = true;
+      window.removeEventListener('pdfly:files-ready', onReady);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const handleDragOver = (e: React.DragEvent) => {
     e.preventDefault();

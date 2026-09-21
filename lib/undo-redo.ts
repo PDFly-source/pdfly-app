@@ -40,83 +40,97 @@ const DEFAULT_LIMIT = 30;
  * Present-state tracking lets undo/redo restore exactly what the user saw.
  */
 export function useUndoRedo<T>(initial: T, limit: number = DEFAULT_LIMIT): UndoRedoState<T> {
-  const [state, setState] = useState<T>(initial);
-  const past = useRef<T[]>([]);
-  const future = useRef<T[]>([]);
-  // Bump to re-render canUndo/canRedo without duplicating arrays in state.
-  const [version, setVersion] = useState(0);
-  const touch = useCallback(() => setVersion((v) => v + 1), []);
+  const [history, setHistory] = useState<{
+    past: T[];
+    present: T;
+    future: T[];
+  }>(() => ({
+    past: [],
+    present: initial,
+    future: [],
+  }));
 
   const commit = useCallback(
     (next: T | ((prev: T) => T)) => {
-      setState((prev) => {
+      setHistory((curr) => {
         const value =
-          typeof next === 'function' ? (next as (p: T) => T)(prev) : next;
-        past.current = [...past.current.slice(-(limit - 1)), prev];
-        future.current = []; // a new change invalidates the redo branch
-        return value;
+          typeof next === 'function' ? (next as (p: T) => T)(curr.present) : next;
+        return {
+          past: [...curr.past.slice(-(limit - 1)), curr.present],
+          present: value,
+          future: [],
+        };
       });
-      touch();
     },
-    [limit, touch]
+    [limit]
   );
 
-  const reset = useCallback(
-    (next: T | ((prev: T) => T)) => {
-      setState((prev) =>
-        typeof next === 'function' ? (next as (p: T) => T)(prev) : next
-      );
-      past.current = [];
-      future.current = [];
-      touch();
-    },
-    []
-  );
+  const reset = useCallback((next: T | ((prev: T) => T)) => {
+    setHistory((curr) => {
+      const value =
+        typeof next === 'function' ? (next as (p: T) => T)(curr.present) : next;
+      return {
+        past: [],
+        present: value,
+        future: [],
+      };
+    });
+  }, []);
 
   const patch = useCallback((next: T | ((prev: T) => T)) => {
-    setState((prev) =>
-      typeof next === 'function' ? (next as (p: T) => T)(prev) : next
-    );
+    setHistory((curr) => {
+      const value =
+        typeof next === 'function' ? (next as (p: T) => T)(curr.present) : next;
+      return {
+        ...curr,
+        present: value,
+      };
+    });
   }, []);
 
   const undo = useCallback(() => {
-    setState((current) => {
-      const previous = past.current.pop();
-      if (previous === undefined) return current;
-      future.current = [current, ...future.current.slice(0, limit - 1)];
-      return previous;
+    setHistory((curr) => {
+      if (curr.past.length === 0) return curr;
+      const previous = curr.past[curr.past.length - 1];
+      const newPast = curr.past.slice(0, -1);
+      return {
+        past: newPast,
+        present: previous,
+        future: [curr.present, ...curr.future.slice(0, limit - 1)],
+      };
     });
-    touch();
-  }, [limit, touch]);
+  }, [limit]);
 
   const redo = useCallback(() => {
-    setState((current) => {
-      const next = future.current.shift();
-      if (next === undefined) return current;
-      past.current = [...past.current.slice(-(limit - 1)), current];
-      return next;
+    setHistory((curr) => {
+      if (curr.future.length === 0) return curr;
+      const next = curr.future[0];
+      const newFuture = curr.future.slice(1);
+      return {
+        past: [...curr.past.slice(-(limit - 1)), curr.present],
+        present: next,
+        future: newFuture,
+      };
     });
-    touch();
-  }, [limit, touch]);
+  }, [limit]);
 
   const clearHistory = useCallback(() => {
-    past.current = [];
-    future.current = [];
-    touch();
-  }, [touch]);
-
-  // Keep referenced values fresh for canUndo/canRedo
-  void version;
+    setHistory((curr) => ({
+      past: [],
+      present: curr.present,
+      future: [],
+    }));
+  }, []);
 
   return {
-    state,
+    state: history.present,
     commit,
     reset,
     patch,
     undo,
     redo,
-    canUndo: past.current.length > 0,
-    canRedo: future.current.length > 0,
+    canUndo: history.past.length > 0,
+    canRedo: history.future.length > 0,
     clearHistory,
   };
 }
@@ -135,9 +149,12 @@ export function useUndoRedoShortcuts(opts: {
   const undoRef = useRef(onUndo);
   const redoRef = useRef(onRedo);
   const enabledRef = useRef(enabled);
-  undoRef.current = onUndo;
-  redoRef.current = onRedo;
-  enabledRef.current = enabled;
+
+  useEffect(() => {
+    undoRef.current = onUndo;
+    redoRef.current = onRedo;
+    enabledRef.current = enabled;
+  });
 
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {

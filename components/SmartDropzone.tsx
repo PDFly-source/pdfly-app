@@ -50,6 +50,48 @@ export const SmartDropzone: React.FC = () => {
   const dragDepth = useRef(0);
   const overToolZone = useRef(false);
 
+  /** Rule-based local intent detection: extension + MIME only. */
+  const handleDroppedFiles = (files: File[]) => {
+    const reviewed: DroppedFile[] = files.map((file) => {
+      const isPdf =
+        file.type === 'application/pdf' || hasExtension(file.name, ['.pdf']);
+      const isImage =
+        file.type.startsWith('image/') || hasExtension(file.name, IMAGE_EXTENSIONS);
+      if (!isPdf && !isImage) return { file, status: 'unsupported' as const };
+      if (file.size > MAX_FILE_BYTES) return { file, status: 'oversized' as const };
+      return { file, status: 'ok' as const };
+    });
+
+    const okFiles = reviewed.filter((d) => d.status === 'ok').map((d) => d.file);
+
+    setDropped(reviewed);
+    setAcceptedFiles(okFiles);
+
+    // Which existing tools accept this file type? Data-driven from the
+    // tool registry's `accepts` list — no duplicated tool definitions.
+    const tools = new Map<string, ToolDefinition>();
+    for (const f of okFiles) {
+      const isPdf = f.type === 'application/pdf' || hasExtension(f.name, ['.pdf']);
+      const ext = isPdf
+        ? '.pdf'
+        : IMAGE_EXTENSIONS.find((e) => hasExtension(f.name, [e])) || `.${f.name.split('.').pop()}`;
+      for (const t of ALL_TOOLS) {
+        if (t.accepts?.some((a) => a === ext || a === f.type)) {
+          tools.set(t.slug, t);
+        }
+      }
+    }
+
+    // Sensible ordering: popular tools first, keep the rest stable
+    const ordered = Array.from(tools.values()).sort((a, b) => {
+      if (a.popular !== b.popular) return a.popular ? -1 : 1;
+      return a.name.localeCompare(b.name);
+    });
+
+    setIntentTools(ordered);
+    setIntentOpen(true);
+  };
+
   // Window-level drag tracking
   useEffect(() => {
     const isFileDragEvent = (e: DragEvent) => {
@@ -119,48 +161,6 @@ export const SmartDropzone: React.FC = () => {
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
-  /** Rule-based local intent detection: extension + MIME only. */
-  const handleDroppedFiles = (files: File[]) => {
-    const reviewed: DroppedFile[] = files.map((file) => {
-      const isPdf =
-        file.type === 'application/pdf' || hasExtension(file.name, ['.pdf']);
-      const isImage =
-        file.type.startsWith('image/') || hasExtension(file.name, IMAGE_EXTENSIONS);
-      if (!isPdf && !isImage) return { file, status: 'unsupported' as const };
-      if (file.size > MAX_FILE_BYTES) return { file, status: 'oversized' as const };
-      return { file, status: 'ok' as const };
-    });
-
-    const okFiles = reviewed.filter((d) => d.status === 'ok').map((d) => d.file);
-
-    setDropped(reviewed);
-    setAcceptedFiles(okFiles);
-
-    // Which existing tools accept this file type? Data-driven from the
-    // tool registry's `accepts` list — no duplicated tool definitions.
-    const tools = new Map<string, ToolDefinition>();
-    for (const f of okFiles) {
-      const isPdf = f.type === 'application/pdf' || hasExtension(f.name, ['.pdf']);
-      const ext = isPdf
-        ? '.pdf'
-        : IMAGE_EXTENSIONS.find((e) => hasExtension(f.name, [e])) || `.${f.name.split('.').pop()}`;
-      for (const t of ALL_TOOLS) {
-        if (t.accepts?.some((a) => a === ext || a === f.type)) {
-          tools.set(t.slug, t);
-        }
-      }
-    }
-
-    // Sensible ordering: popular tools first, keep the rest stable
-    const ordered = Array.from(tools.values()).sort((a, b) => {
-      if (a.popular !== b.popular) return a.popular ? -1 : 1;
-      return a.name.localeCompare(b.name);
-    });
-
-    setIntentTools(ordered);
-    setIntentOpen(true);
-  };
 
   const runTool = (tool: ToolDefinition) => {
     setIntentOpen(false);
