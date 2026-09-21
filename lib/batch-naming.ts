@@ -50,15 +50,16 @@ export function buildBatchOutputName(
     .slice(0, 96)
     .toLowerCase() || 'document';
 
+  // Outputs must never overwrite the source, and duplicates (e.g. two copies
+  // of "scan.pdf", or re-running an already-suffixed file) resolve numerically:
+  // name-2.pdf, name-3.pdf, ... — the established collision-safe convention.
   let candidate = `${base}-${opSuffix}${ext}`;
-  if (candidate.toLowerCase() === originalName.toLowerCase()) {
-    candidate = `${base}-${opSuffix}-processed${ext}`;
-  }
-
-  // Duplicate filenames (e.g. two copies of "scan.pdf") get a numeric suffix.
-  if (taken.has(candidate.toLowerCase())) {
-    let n = 2;
-    while (taken.has(`${base}-${opSuffix}-${n}${ext}`.toLowerCase())) n++;
+  let n = 1;
+  while (
+    candidate.toLowerCase() === originalName.toLowerCase() ||
+    taken.has(candidate.toLowerCase())
+  ) {
+    n++;
     candidate = `${base}-${opSuffix}-${n}${ext}`;
   }
   taken.add(candidate.toLowerCase());
