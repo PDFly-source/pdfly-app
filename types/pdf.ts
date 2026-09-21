@@ -24,6 +24,8 @@ export interface ToolDefinition {
   popular?: boolean;
   accepts: string[];
   maxFiles?: number;
+  /** Declares whether this tool's operation is available in the Batch Processing Center. */
+  supportsBatch?: boolean;
   outputExt: string;
   keywords?: string[];
   seoTitle: string;
