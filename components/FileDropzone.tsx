@@ -12,7 +12,9 @@ interface FileDropzoneProps {
   multiple?: boolean;
   maxFiles?: number;
   label?: string;
+  title?: string;
   sublabel?: string;
+  subtitle?: string;
   compact?: boolean;
 }
 
@@ -21,10 +23,14 @@ export const FileDropzone: React.FC<FileDropzoneProps> = ({
   accept = '.pdf,application/pdf',
   multiple = false,
   maxFiles = 20,
-  label = 'Choose PDF Files',
-  sublabel = 'or drop documents directly here',
+  label: labelProp,
+  title,
+  sublabel: sublabelProp,
+  subtitle,
   compact = false,
 }) => {
+  const label = title || labelProp || 'Choose PDF Files';
+  const sublabel = subtitle || sublabelProp || 'or drop documents directly here';
   const [isDragOver, setIsDragOver] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [warningMsg, setWarningMsg] = useState<{ text: string; strong: boolean } | null>(null);
