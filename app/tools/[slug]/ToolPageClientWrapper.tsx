@@ -37,6 +37,8 @@ import {
   Code,
   Layers2,
   Share2,
+  Wrench,
+  Contrast,
 } from 'lucide-react';
 
 // Workspaces
@@ -76,6 +78,11 @@ import { SplitBySizeWorkspace } from '@/components/tools/SplitBySizeWorkspace';
 import { CropTrimWorkspace } from '@/components/tools/CropTrimWorkspace';
 import { NupWorkspace } from '@/components/tools/NupWorkspace';
 import { GrayscaleWorkspace } from '@/components/tools/GrayscaleWorkspace';
+import { BatesStampingWorkspace } from '@/components/tools/BatesStampingWorkspace';
+import { FlattenPdfWorkspace } from '@/components/tools/FlattenPdfWorkspace';
+import { DigitalCertificateSignatureWorkspace } from '@/components/tools/DigitalCertificateSignatureWorkspace';
+import { RepairPdfWorkspace } from '@/components/tools/RepairPdfWorkspace';
+import { InvertColorsWorkspace } from '@/components/tools/InvertColorsWorkspace';
 
 const ICON_MAP: Record<string, React.ElementType> = {
   Layers,
@@ -105,6 +112,8 @@ const ICON_MAP: Record<string, React.ElementType> = {
   Code,
   Layers2,
   Share2,
+  Wrench,
+  Contrast,
 };
 
 interface ToolPageClientWrapperProps {
@@ -211,6 +220,29 @@ export const ToolPageClientWrapper: React.FC<ToolPageClientWrapperProps> = ({
         return <NupWorkspace />;
       case 'grayscale-ink-saver':
         return <GrayscaleWorkspace />;
+      case 'bates-stamping':
+      case 'bates-numbering':
+      case 'legal-numbering':
+        return <BatesStampingWorkspace />;
+      case 'flatten-pdf':
+      case 'flatten-forms':
+      case 'lock-pdf':
+        return <FlattenPdfWorkspace />;
+      case 'sign-pdf-cert':
+      case 'digital-signature':
+      case 'cert-sign-pdf':
+      case 'validate-signatures':
+        return <DigitalCertificateSignatureWorkspace />;
+      case 'repair-pdf':
+      case 'fix-pdf':
+      case 'salvage-pdf':
+      case 'recover-pdf':
+        return <RepairPdfWorkspace />;
+      case 'invert-colors':
+      case 'dark-mode-pdf':
+      case 'dark-reader-pdf':
+      case 'invert-pdf':
+        return <InvertColorsWorkspace />;
       default:
         return <MergePdfWorkspace />;
     }

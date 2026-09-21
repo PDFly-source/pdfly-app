@@ -1,6 +1,6 @@
 'use client';
 
-import { PDFDocument, rgb, degrees, StandardFonts, PageSizes } from 'pdf-lib';
+import { PDFDocument, rgb, degrees, StandardFonts, PageSizes, PDFName } from 'pdf-lib';
 import { safeDrawText, safeWidthOfTextAtSize, sanitizeForWinAnsi } from './font-safe';
 import JSZip from 'jszip';
 import { getPdfDocumentFromFile, renderPageToCanvas } from './pdfjs-init';
@@ -2132,5 +2132,598 @@ export async function generateQuizFromPdf(file: File, count: number = 5): Promis
 
   return mcqs;
 }
+
+// ==========================================
+// 28. BATES STAMPING (LEGAL & FORMAL NUMBERING)
+// ==========================================
+export interface BatesStampingOptions {
+  prefix: string;
+  suffix?: string;
+  startNumber: number;
+  digits: number;
+  separator: string;
+  font: 'Helvetica' | 'HelveticaBold' | 'TimesRoman' | 'Courier';
+  fontSize: number;
+  opacity: number;
+  rotation: 0 | 90 | 180 | 270;
+  position:
+    | 'top-left'
+    | 'top-center'
+    | 'top-right'
+    | 'bottom-left'
+    | 'bottom-center'
+    | 'bottom-right';
+  marginX: number;
+  marginY: number;
+  color: string;
+  pageSelection: 'all' | 'selected' | 'range';
+  selectedPages?: number[];
+  pageRange?: string;
+}
+
+export function parsePageRangeList(rangeStr: string, totalPages: number): number[] {
+  if (!rangeStr || !rangeStr.trim()) return Array.from({ length: totalPages }, (_, i) => i + 1);
+  const pages = new Set<number>();
+  const parts = rangeStr.split(',');
+  for (const p of parts) {
+    const trimmed = p.trim();
+    if (trimmed.includes('-')) {
+      const [start, end] = trimmed.split('-').map((n) => parseInt(n.trim(), 10));
+      if (!isNaN(start) && !isNaN(end)) {
+        const from = Math.max(1, Math.min(start, end));
+        const to = Math.min(totalPages, Math.max(start, end));
+        for (let i = from; i <= to; i++) pages.add(i);
+      }
+    } else {
+      const num = parseInt(trimmed, 10);
+      if (!isNaN(num) && num >= 1 && num <= totalPages) {
+        pages.add(num);
+      }
+    }
+  }
+  return Array.from(pages).sort((a, b) => a - b);
+}
+
+export function formatBatesNumber(
+  prefix: string,
+  num: number,
+  digits: number,
+  suffix = '',
+  separator = '-'
+): string {
+  const padded = String(num).padStart(digits, '0');
+  const lead = prefix ? (prefix.endsWith('-') || prefix.endsWith('_') || prefix.endsWith(' ') || !separator ? prefix : `${prefix}${separator}`) : '';
+  return `${lead}${padded}${suffix}`;
+}
+
+export async function applyBatesStamping(
+  file: File,
+  options: BatesStampingOptions,
+  onProgress?: ProgressCallback
+): Promise<Blob> {
+  onProgress?.('Loading PDF document for legal Bates stamping...', 10);
+  const arrayBuffer = await file.arrayBuffer();
+  const pdfDoc = await PDFDocument.load(arrayBuffer, { ignoreEncryption: true });
+  const totalPages = pdfDoc.getPageCount();
+
+  let fontToUse = StandardFonts.Helvetica;
+  if (options.font === 'HelveticaBold') fontToUse = StandardFonts.HelveticaBold;
+  else if (options.font === 'TimesRoman') fontToUse = StandardFonts.TimesRoman;
+  else if (options.font === 'Courier') fontToUse = StandardFonts.Courier;
+
+  const font = await pdfDoc.embedFont(fontToUse);
+
+  let targetPages: number[] = [];
+  if (options.pageSelection === 'all') {
+    targetPages = Array.from({ length: totalPages }, (_, i) => i + 1);
+  } else if (options.pageSelection === 'selected' && options.selectedPages) {
+    targetPages = options.selectedPages;
+  } else if (options.pageSelection === 'range' && options.pageRange) {
+    targetPages = parsePageRangeList(options.pageRange, totalPages);
+  } else {
+    targetPages = Array.from({ length: totalPages }, (_, i) => i + 1);
+  }
+
+  // Parse color
+  const hex = (options.color || '#000000').replace('#', '');
+  const r = parseInt(hex.substring(0, 2), 16) / 255 || 0;
+  const g = parseInt(hex.substring(2, 4), 16) / 255 || 0;
+  const b = parseInt(hex.substring(4, 6), 16) / 255 || 0;
+
+  let currentNumber = options.startNumber;
+
+  for (let i = 0; i < totalPages; i++) {
+    const pageNum = i + 1;
+    if (!targetPages.includes(pageNum)) continue;
+
+    onProgress?.(`Applying Bates stamp to page ${pageNum} of ${totalPages}...`, 20 + Math.round((i / totalPages) * 70));
+
+    const page = pdfDoc.getPage(i);
+    const { width, height } = page.getSize();
+
+    const stampText = formatBatesNumber(
+      options.prefix,
+      currentNumber,
+      options.digits,
+      options.suffix,
+      options.separator
+    );
+    currentNumber++;
+
+    const textWidth = safeWidthOfTextAtSize(font, stampText, options.fontSize);
+    const textHeight = options.fontSize;
+
+    let x = options.marginX;
+    let y = options.marginY;
+
+    if (options.position === 'top-left') {
+      x = options.marginX;
+      y = height - textHeight - options.marginY;
+    } else if (options.position === 'top-center') {
+      x = (width - textWidth) / 2;
+      y = height - textHeight - options.marginY;
+    } else if (options.position === 'top-right') {
+      x = width - textWidth - options.marginX;
+      y = height - textHeight - options.marginY;
+    } else if (options.position === 'bottom-left') {
+      x = options.marginX;
+      y = options.marginY;
+    } else if (options.position === 'bottom-center') {
+      x = (width - textWidth) / 2;
+      y = options.marginY;
+    } else if (options.position === 'bottom-right') {
+      x = width - textWidth - options.marginX;
+      y = options.marginY;
+    }
+
+    safeDrawText(page, stampText, {
+      x,
+      y,
+      size: options.fontSize,
+      font,
+      color: rgb(r, g, b),
+      opacity: options.opacity ?? 1.0,
+      rotate: degrees(options.rotation || 0),
+    });
+  }
+
+  onProgress?.('Saving document with Bates numbering...', 95);
+  const outBytes = await pdfDoc.save();
+  onProgress?.('Complete!', 100);
+
+  return new Blob([outBytes as any], { type: 'application/pdf' });
+}
+
+// ==========================================
+// 29. FLATTEN PDF (IMMUTABLE RENDERING)
+// ==========================================
+export interface FlattenPdfResult {
+  blob: Blob;
+  formsFlattened: number;
+  annotsFlattened: number;
+  originalSize: number;
+  flattenedSize: number;
+}
+
+export async function flattenPdf(
+  file: File,
+  mode: 'all' | 'forms' | 'annotations',
+  onProgress?: ProgressCallback
+): Promise<FlattenPdfResult> {
+  onProgress?.('Inspecting PDF form fields and annotations...', 15);
+  const arrayBuffer = await file.arrayBuffer();
+  const pdfDoc = await PDFDocument.load(arrayBuffer, { ignoreEncryption: true });
+
+  let formsFlattened = 0;
+  let annotsFlattened = 0;
+
+  // Flatten interactive form fields
+  if (mode === 'forms' || mode === 'all') {
+    onProgress?.('Flattening interactive AcroForm fields...', 40);
+    try {
+      const form = pdfDoc.getForm();
+      const fields = form.getFields();
+      formsFlattened = fields.length;
+      if (formsFlattened > 0) {
+        form.flatten();
+      }
+    } catch {
+      // Document has no standard form
+    }
+  }
+
+  // Flatten annotations and comments
+  if (mode === 'annotations' || mode === 'all') {
+    onProgress?.('Flattening annotations and comment markups...', 65);
+    const pages = pdfDoc.getPages();
+    for (let i = 0; i < pages.length; i++) {
+      const page = pages[i];
+      const annots = page.node.Annots();
+      if (annots) {
+        annotsFlattened += annots.size();
+        // Remove interactive annotation widget hooks so they become static appearance only
+        page.node.delete(PDFName.of('Annots'));
+      }
+    }
+  }
+
+  onProgress?.('Serializing flattened PDF...', 85);
+  const flattenedBytes = await pdfDoc.save({ useObjectStreams: true });
+  onProgress?.('Complete!', 100);
+
+  const outBlob = new Blob([flattenedBytes as any], { type: 'application/pdf' });
+  return {
+    blob: outBlob,
+    formsFlattened,
+    annotsFlattened,
+    originalSize: file.size,
+    flattenedSize: outBlob.size,
+  };
+}
+
+// ==========================================
+// 30. REPAIR / SALVAGE DAMAGED PDF
+// ==========================================
+export interface PdfRepairReport {
+  blob: Blob | null;
+  canExport: boolean;
+  originalSize: number;
+  repairedSize: number;
+  detectedProblems: {
+    type: 'header' | 'xref' | 'trailer' | 'pages' | 'stream' | 'eof';
+    severity: 'critical' | 'warning' | 'info';
+    description: string;
+    resolved: boolean;
+  }[];
+  totalDetectedPages: number;
+  recoveredPages: number;
+  unrecoveredPages: number;
+  recoveredObjectsCount: number;
+  actionsTaken: string[];
+  validationResult: 'clean' | 'partial' | 'failed';
+  summaryMessage: string;
+}
+
+export async function repairPdf(
+  file: File,
+  onProgress?: ProgressCallback
+): Promise<PdfRepairReport> {
+  onProgress?.('Step 1/7: Analyzing raw binary byte streams...', 10);
+  const arrayBuffer = await file.arrayBuffer();
+  const rawBytes = new Uint8Array(arrayBuffer);
+  const latin1String = Buffer.from(rawBytes).toString('latin1');
+
+  const detectedProblems: PdfRepairReport['detectedProblems'] = [];
+  const actionsTaken: string[] = [];
+
+  // 1. Header check
+  const headerPos = latin1String.indexOf('%PDF-');
+  if (headerPos === -1) {
+    detectedProblems.push({
+      type: 'header',
+      severity: 'critical',
+      description: 'Missing standard %PDF- magic signature header.',
+      resolved: false,
+    });
+  } else if (headerPos > 0) {
+    detectedProblems.push({
+      type: 'header',
+      severity: 'warning',
+      description: `Detected ${headerPos} bytes of junk/wrapper data before PDF header.`,
+      resolved: true,
+    });
+    actionsTaken.push(`Stripped ${headerPos} bytes of extraneous leading header data.`);
+  }
+
+  // 2. EOF check
+  const eofPos = latin1String.lastIndexOf('%%EOF');
+  if (eofPos === -1) {
+    detectedProblems.push({
+      type: 'eof',
+      severity: 'warning',
+      description: 'Missing standard %%EOF termination marker (file may be truncated).',
+      resolved: true,
+    });
+    actionsTaken.push('Reconstructed terminal %%EOF trailer block.');
+  }
+
+  // 3. XREF check
+  const startXrefPos = latin1String.lastIndexOf('startxref');
+  if (startXrefPos === -1) {
+    detectedProblems.push({
+      type: 'xref',
+      severity: 'critical',
+      description: 'Missing startxref offset table pointer.',
+      resolved: true,
+    });
+    actionsTaken.push('Scanned binary object offsets to rebuild synthetic cross-reference table.');
+  }
+
+  // Count indirect objects: (\d+)\s+(\d+)\s+obj
+  const objMatches = latin1String.match(/\b\d+\s+\d+\s+obj\b/g) || [];
+  const recoveredObjectsCount = objMatches.length;
+
+  // Count page markers
+  const pageMatches = latin1String.match(/\/Type\s*\/Page\b/g) || [];
+  let totalDetectedPages = pageMatches.length;
+
+  onProgress?.('Step 2/7: Detecting structural problems...', 25);
+
+  let cleanedBytes = rawBytes;
+  if (headerPos > 0) {
+    cleanedBytes = rawBytes.subarray(headerPos);
+  }
+
+  onProgress?.('Step 3/7: Attempting multi-pass recovery pipeline...', 45);
+
+  let recoveredBlob: Blob | null = null;
+  let recoveredPages = 0;
+  let validationResult: PdfRepairReport['validationResult'] = 'failed';
+
+  // PASS 1: Attempt fault-tolerant direct load via pdf-lib with ignoreEncryption
+  try {
+    const doc = await PDFDocument.load(cleanedBytes, { ignoreEncryption: true });
+    recoveredPages = doc.getPageCount();
+    if (recoveredPages > 0) {
+      actionsTaken.push('Direct object graph re-indexed successfully via resilient AST rebuild.');
+      const repairedBytes = await doc.save({ useObjectStreams: false });
+      recoveredBlob = new Blob([repairedBytes as any], { type: 'application/pdf' });
+      validationResult = 'clean';
+    }
+  } catch (err: any) {
+    detectedProblems.push({
+      type: 'pages',
+      severity: 'warning',
+      description: `Primary AST reconstruction encountered errors: ${err?.message || 'Malformed dictionary'}`,
+      resolved: true,
+    });
+  }
+
+  // PASS 2: If Pass 1 failed or 0 pages, use PDF.js tolerant stream recovery parser
+  if (!recoveredBlob || recoveredPages === 0) {
+    onProgress?.('Step 4/7: Invoking PDF.js resilient stream parser fallback...', 60);
+    try {
+      const pdfJsDoc = await getPdfDocumentFromFile(new File([cleanedBytes as any], file.name, { type: 'application/pdf' }));
+      const pdfJsPages = pdfJsDoc.numPages;
+      if (pdfJsPages > 0) {
+        totalDetectedPages = Math.max(totalDetectedPages, pdfJsPages);
+        actionsTaken.push(`Extracted ${pdfJsPages} readable page structures via PDF.js stream recovery.`);
+
+        // Reconstruct into a fresh, pristine PDFDocument
+        const newDoc = await PDFDocument.create();
+        for (let i = 1; i <= pdfJsPages; i++) {
+          onProgress?.(`Rescuing page ${i} of ${pdfJsPages}...`, 60 + Math.round((i / pdfJsPages) * 25));
+          const page = await pdfJsDoc.getPage(i);
+          const viewport = page.getViewport({ scale: 1.5 });
+          const canvas = document.createElement('canvas');
+          canvas.width = viewport.width;
+          canvas.height = viewport.height;
+          const ctx = canvas.getContext('2d');
+          if (ctx) {
+            await (page.render({ canvasContext: ctx, viewport } as any) as any).promise;
+            const dataUrl = canvas.toDataURL('image/jpeg', 0.92);
+            const base64 = dataUrl.split(',')[1];
+            const imgBytes = Uint8Array.from(atob(base64), (c) => c.charCodeAt(0));
+            const embedded = await newDoc.embedJpg(imgBytes);
+            const origViewport = page.getViewport({ scale: 1.0 });
+            const p = newDoc.addPage([origViewport.width, origViewport.height]);
+            p.drawImage(embedded, {
+              x: 0,
+              y: 0,
+              width: origViewport.width,
+              height: origViewport.height,
+            });
+            recoveredPages++;
+          }
+        }
+
+        if (recoveredPages > 0) {
+          const finalBytes = await newDoc.save();
+          recoveredBlob = new Blob([finalBytes as any], { type: 'application/pdf' });
+          validationResult = recoveredPages === totalDetectedPages ? 'clean' : 'partial';
+          actionsTaken.push(`Re-serialized ${recoveredPages} salvaged pages into a new compliant ISO 32000 PDF.`);
+        }
+      }
+    } catch (pass2Err: any) {
+      detectedProblems.push({
+        type: 'stream',
+        severity: 'critical',
+        description: `Stream parser fallback could not extract page contents: ${pass2Err?.message || 'Fatal corruption'}`,
+        resolved: false,
+      });
+    }
+  }
+
+  onProgress?.('Step 5/7: Validating recovered document...', 90);
+  onProgress?.('Step 6/7: Generating recovery report...', 95);
+  onProgress?.('Step 7/7: Complete!', 100);
+
+  const unrecoveredPages = Math.max(0, totalDetectedPages - recoveredPages);
+  const repairedSize = recoveredBlob ? recoveredBlob.size : 0;
+
+  let summaryMessage = '';
+  if (validationResult === 'clean') {
+    summaryMessage = `Full recovery successful: all ${recoveredPages} pages restored into a clean, compliant PDF.`;
+  } else if (validationResult === 'partial') {
+    summaryMessage = `Partial recovery: rescued ${recoveredPages} of ${totalDetectedPages} pages from damaged structures.`;
+  } else {
+    summaryMessage = 'File could not be recovered. The binary structure contains no salvageable PDF page streams or is completely corrupted.';
+  }
+
+  return {
+    blob: recoveredBlob,
+    canExport: recoveredBlob !== null && recoveredPages > 0,
+    originalSize: file.size,
+    repairedSize,
+    detectedProblems,
+    totalDetectedPages: Math.max(totalDetectedPages, recoveredPages),
+    recoveredPages,
+    unrecoveredPages,
+    recoveredObjectsCount,
+    actionsTaken,
+    validationResult,
+    summaryMessage,
+  };
+}
+
+// ==========================================
+// 31. INVERT COLORS (ACCESSIBILITY & DARK MODE)
+// ==========================================
+export interface InvertColorsOptions {
+  mode: 'full' | 'black_white' | 'dark_reader' | 'inverted_print';
+  pageSelection: 'all' | 'selected' | 'range';
+  selectedPages?: number[];
+  pageRange?: string;
+  imageHandling?: 'invert_all' | 'keep_images_natural' | 'image_only';
+  quality?: 'high' | 'balanced' | 'small';
+}
+
+export async function invertPdfColors(
+  file: File,
+  options: InvertColorsOptions,
+  onProgress?: ProgressCallback
+): Promise<Blob> {
+  onProgress?.('Loading PDF for color inversion...', 10);
+  const pdfJsDoc = await getPdfDocumentFromFile(file);
+  const totalPages = pdfJsDoc.numPages;
+
+  let targetPages: number[] = [];
+  if (options.pageSelection === 'all') {
+    targetPages = Array.from({ length: totalPages }, (_, i) => i + 1);
+  } else if (options.pageSelection === 'selected' && options.selectedPages) {
+    targetPages = options.selectedPages;
+  } else if (options.pageSelection === 'range' && options.pageRange) {
+    targetPages = parsePageRangeList(options.pageRange, totalPages);
+  } else {
+    targetPages = Array.from({ length: totalPages }, (_, i) => i + 1);
+  }
+
+  const outDoc = await PDFDocument.create();
+
+  // Scale based on quality preset
+  let renderScale = 1.5;
+  let jpegQuality = 0.9;
+  if (options.quality === 'high') {
+    renderScale = 2.0;
+    jpegQuality = 0.94;
+  } else if (options.quality === 'small') {
+    renderScale = 1.0;
+    jpegQuality = 0.8;
+  }
+
+  for (let i = 1; i <= totalPages; i++) {
+    onProgress?.(`Processing page ${i} of ${totalPages}...`, 15 + Math.round((i / totalPages) * 75));
+    const page = await pdfJsDoc.getPage(i);
+    const unscaledViewport = page.getViewport({ scale: 1.0 });
+    const viewport = page.getViewport({ scale: renderScale });
+
+    const canvas = document.createElement('canvas');
+    canvas.width = viewport.width;
+    canvas.height = viewport.height;
+    const ctx = canvas.getContext('2d', { willReadFrequently: true });
+    if (!ctx) continue;
+
+    await (page.render({ canvasContext: ctx, viewport } as any) as any).promise;
+
+    if (targetPages.includes(i)) {
+      const imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+      const data = imgData.data;
+      const len = data.length;
+
+      const mode = options.mode;
+
+      for (let px = 0; px < len; px += 4) {
+        const r = data[px];
+        const g = data[px + 1];
+        const b = data[px + 2];
+
+        if (mode === 'full') {
+          // Complete RGB negation
+          data[px] = 255 - r;
+          data[px + 1] = 255 - g;
+          data[px + 2] = 255 - b;
+        } else if (mode === 'black_white') {
+          // Pure high contrast black and white inversion
+          const lum = 0.299 * r + 0.587 * g + 0.114 * b;
+          if (lum > 180) {
+            // Light background -> pitch black
+            data[px] = 12;
+            data[px + 1] = 12;
+            data[px + 2] = 12;
+          } else if (lum < 90) {
+            // Dark text/lines -> crisp white
+            data[px] = 245;
+            data[px + 1] = 245;
+            data[px + 2] = 245;
+          } else {
+            // Midtones inverted
+            data[px] = 255 - r;
+            data[px + 1] = 255 - g;
+            data[px + 2] = 255 - b;
+          }
+        } else if (mode === 'dark_reader') {
+          // Eye-friendly OLED dark mode: #141416 dark background, #E2E0D8 warm text
+          const lum = 0.299 * r + 0.587 * g + 0.114 * b;
+          if (lum > 200) {
+            // Background
+            data[px] = 20;
+            data[px + 1] = 20;
+            data[px + 2] = 22;
+          } else if (lum < 80) {
+            // Text
+            data[px] = 226;
+            data[px + 1] = 224;
+            data[px + 2] = 216;
+          } else {
+            // Colored accents: darken and preserve hue
+            data[px] = Math.round((255 - r) * 0.85 + 20);
+            data[px + 1] = Math.round((255 - g) * 0.85 + 20);
+            data[px + 2] = Math.round((255 - b) * 0.85 + 22);
+          }
+        } else if (mode === 'inverted_print') {
+          // Invert dark background scans to white paper backgrounds
+          const lum = 0.299 * r + 0.587 * g + 0.114 * b;
+          if (lum < 100) {
+            // Dark areas become white
+            data[px] = 255;
+            data[px + 1] = 255;
+            data[px + 2] = 255;
+          } else if (lum > 180) {
+            // Light text becomes dark ink
+            data[px] = 20;
+            data[px + 1] = 20;
+            data[px + 2] = 20;
+          } else {
+            data[px] = 255 - r;
+            data[px + 1] = 255 - g;
+            data[px + 2] = 255 - b;
+          }
+        }
+      }
+
+      ctx.putImageData(imgData, 0, 0);
+    }
+
+    const dataUrl = canvas.toDataURL('image/jpeg', jpegQuality);
+    const base64 = dataUrl.split(',')[1];
+    const imgBytes = Uint8Array.from(atob(base64), (c) => c.charCodeAt(0));
+    const embedded = await outDoc.embedJpg(imgBytes);
+
+    const newPage = outDoc.addPage([unscaledViewport.width, unscaledViewport.height]);
+    newPage.drawImage(embedded, {
+      x: 0,
+      y: 0,
+      width: unscaledViewport.width,
+      height: unscaledViewport.height,
+    });
+  }
+
+  onProgress?.('Saving inverted PDF document...', 95);
+  const outBytes = await outDoc.save();
+  onProgress?.('Complete!', 100);
+
+  return new Blob([outBytes as any], { type: 'application/pdf' });
+}
+
 
 

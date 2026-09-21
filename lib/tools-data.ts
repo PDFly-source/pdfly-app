@@ -655,6 +655,93 @@ export const ALL_TOOLS: ToolDefinition[] = [
     keywords: ['grayscale pdf', 'black and white pdf', 'ink saver', 'print cheaper', 'bw pdf'],
     seoTitle: 'Grayscale & Ink Saver PDF Converter | PDFMiniFly',
     seoDescription: 'Convert PDFs to grayscale, pure black & white, or ink-saving profiles with DPI control and live preview. 100% local.'
+  },
+  // Phase 2: Legal & Formal Document Features
+  {
+    id: 'bates-stamping',
+    slug: 'bates-stamping',
+    name: 'Bates Stamping',
+    description: 'Apply sequential legal Bates numbering with custom prefixes, suffixes, digit padding, font size, and live interactive alignment preview.',
+    category: 'edit',
+    categoryLabel: 'Edit',
+    iconName: 'Hash',
+    badge: 'Legal',
+    popular: true,
+    accepts: ['.pdf', 'application/pdf'],
+    maxFiles: 1,
+    outputExt: '.pdf',
+    keywords: ['bates stamping', 'bates numbering', 'legal numbering', 'discovery numbering', 'litigation pdf', 'court filing stamp'],
+    seoTitle: 'Bates Stamping Tool – Legal PDF Numbering | PDFMiniFly',
+    seoDescription: 'Add sequential legal Bates stamps to litigation bundles and legal documents. Zero uploads, live preview, 100% client-side privacy.'
+  },
+  {
+    id: 'flatten-pdf',
+    slug: 'flatten-pdf',
+    name: 'Flatten PDF',
+    description: 'Permanently bake interactive form fields, checkboxes, and markup annotations into static page graphics for legal archiving and finalization.',
+    category: 'security',
+    categoryLabel: 'Security',
+    iconName: 'Layers',
+    badge: 'Formal',
+    popular: true,
+    accepts: ['.pdf', 'application/pdf'],
+    maxFiles: 1,
+    outputExt: '.pdf',
+    keywords: ['flatten pdf', 'lock form fields', 'flatten annotations', 'pdf form lock', 'legal archiving', 'read-only pdf'],
+    seoTitle: 'Flatten PDF – Lock Form Fields & Annotations | PDFMiniFly',
+    seoDescription: 'Lock and flatten fillable PDF forms and annotations into immutable background page layers. Complete in-browser privacy.'
+  },
+  {
+    id: 'sign-pdf-cert',
+    slug: 'sign-pdf-cert',
+    name: 'Digital Certificate Signature',
+    description: 'Cryptographically sign PDF documents using PKCS#12 (.p12 / .pfx) digital certificates and inspect/validate existing CMS signatures in the browser.',
+    category: 'security',
+    categoryLabel: 'Security',
+    iconName: 'ShieldCheck',
+    badge: 'PKCS#7',
+    popular: true,
+    accepts: ['.pdf', 'application/pdf'],
+    maxFiles: 1,
+    outputExt: '.pdf',
+    keywords: ['digital certificate signature', 'p12 pdf sign', 'pfx digital signature', 'pkcs7 pdf', 'validate pdf signature', 'cryptographic pdf signature'],
+    seoTitle: 'Digital Certificate PDF Signer & Validator | PDFMiniFly',
+    seoDescription: 'Apply real cryptographic PKCS#7 digital signatures using your .p12/.pfx certificates directly in your browser. No private keys uploaded.'
+  },
+  // Phase 2: PDF Utility & Recovery Features
+  {
+    id: 'repair-pdf',
+    slug: 'repair-pdf',
+    name: 'Repair & Salvage PDF',
+    description: 'Multi-pass recovery pipeline to diagnose corrupted byte streams, reconstruct damaged XREF tables, fix broken trailers, and salvage pages.',
+    category: 'productivity',
+    categoryLabel: 'Productivity',
+    iconName: 'Wrench',
+    badge: 'Recovery',
+    popular: true,
+    accepts: ['.pdf', 'application/pdf'],
+    maxFiles: 1,
+    outputExt: '.pdf',
+    keywords: ['repair pdf', 'salvage corrupt pdf', 'fix damaged pdf', 'recover pdf pages', 'xref recovery', 'broken pdf repair'],
+    seoTitle: 'Repair Corrupted PDF – Salvage Damaged Documents | PDFMiniFly',
+    seoDescription: 'Diagnose and repair broken PDF cross-reference tables, missing trailers, and malformed catalogs. 100% private local recovery.'
+  },
+  {
+    id: 'invert-colors',
+    slug: 'invert-colors',
+    name: 'Invert Colors',
+    description: 'Invert PDF colors for eye-friendly dark reading, high-contrast accessibility, dark slide conversion, and ink-efficient inverted printing.',
+    category: 'edit',
+    categoryLabel: 'Edit',
+    iconName: 'Contrast',
+    badge: 'Dark Mode',
+    popular: true,
+    accepts: ['.pdf', 'application/pdf'],
+    maxFiles: 1,
+    outputExt: '.pdf',
+    keywords: ['invert pdf colors', 'dark mode pdf', 'high contrast pdf', 'negative pdf', 'inverted print pdf', 'read pdf in dark'],
+    seoTitle: 'Invert PDF Colors – Dark Reader & High Contrast | PDFMiniFly',
+    seoDescription: 'Convert PDFs to gentle dark mode, high-contrast black & white, or inverted print for scanned books and night reading. Live split preview.'
   }
 ];
 
@@ -682,13 +769,13 @@ export function toolMatchesCategory(tool: ToolDefinition, catId: string): boolea
     return ['compress-pdf', 'compress-to-target-size'].includes(tool.slug);
   }
   if (catId === 'edit') {
-    return ['edit-pdf', 'sign-pdf', 'fill-form', 'watermark-pdf', 'page-numbers', 'pdf-metadata', 'crop-trim-pdf', 'grayscale-ink-saver'].includes(tool.slug);
+    return ['edit-pdf', 'sign-pdf', 'fill-form', 'watermark-pdf', 'page-numbers', 'pdf-metadata', 'crop-trim-pdf', 'grayscale-ink-saver', 'bates-stamping', 'invert-colors'].includes(tool.slug);
   }
   if (catId === 'convert') {
     return ['pdf-to-image', 'image-to-pdf', 'pdf-to-markdown', 'pdf-to-html', 'docx-to-pdf', 'pdf-to-docx'].includes(tool.slug);
   }
   if (catId === 'security') {
-    return ['protect-pdf', 'redact-pdf', 'pdf-sanitizer'].includes(tool.slug);
+    return ['protect-pdf', 'redact-pdf', 'pdf-sanitizer', 'flatten-pdf', 'sign-pdf-cert'].includes(tool.slug);
   }
   if (catId === 'ocr') {
     return tool.slug === 'ocr-pdf';
@@ -700,7 +787,7 @@ export function toolMatchesCategory(tool: ToolDefinition, catId: string): boolea
     return ['pdf-assistant', 'pdf-to-study'].includes(tool.slug);
   }
   if (catId === 'productivity') {
-    return ['pdf-viewer', 'read-aloud', 'compare-pdf', 'batch-process', 'workflow-builder', 'pdf-health'].includes(tool.slug);
+    return ['pdf-viewer', 'read-aloud', 'compare-pdf', 'batch-process', 'workflow-builder', 'pdf-health', 'repair-pdf'].includes(tool.slug);
   }
   return tool.category === catId;
 }
@@ -735,6 +822,22 @@ export function getToolBySlug(slug: string): ToolDefinition | undefined {
     'pdf-to-text': 'extract-text',
     'pdf-extract-images': 'extract-images',
     'pdf-stats': 'pdf-health',
+    // Phase 2 aliases:
+    'bates-numbering': 'bates-stamping',
+    'legal-numbering': 'bates-stamping',
+    'bates-stamp': 'bates-stamping',
+    'flatten-forms': 'flatten-pdf',
+    'lock-pdf': 'flatten-pdf',
+    'digital-signature': 'sign-pdf-cert',
+    'cert-sign-pdf': 'sign-pdf-cert',
+    'p12-signature': 'sign-pdf-cert',
+    'validate-signatures': 'sign-pdf-cert',
+    'fix-pdf': 'repair-pdf',
+    'salvage-pdf': 'repair-pdf',
+    'recover-pdf': 'repair-pdf',
+    'dark-mode-pdf': 'invert-colors',
+    'dark-reader-pdf': 'invert-colors',
+    'invert-pdf': 'invert-colors',
   };
 
   const targetId = aliases[slug];

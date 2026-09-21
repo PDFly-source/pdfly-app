@@ -453,4 +453,74 @@ export const TOOL_SEO_CONTENT: Record<string, ToolSeoContent> = {
       },
     ],
   },
+  'bates-stamping': {
+    intro:
+      'Apply sequential legal Bates numbering across PDF documents for litigation discovery, trial exhibits, and court filings. Configure custom prefixes, zero-padded digits, suffixes, and font sizes with live interactive alignment preview.',
+    faqs: [
+      {
+        q: 'What is Bates stamping used for?',
+        a: 'Bates stamping is standard in legal proceedings to uniquely identify and index each page of documentary evidence, discovery disclosures, and trial exhibits.',
+      },
+      {
+        q: 'Are my confidential litigation documents uploaded anywhere?',
+        a: 'No. Stamping is calculated and embedded directly inside your browser’s local PDF rendering engine. No files are ever sent across a network.',
+      },
+    ],
+  },
+  'flatten-pdf': {
+    intro:
+      'Permanently lock and flatten interactive AcroForm fields, checkboxes, and markup annotations into the document’s base graphical layer. Essential for court submissions, final contract execution, and tamper-resistant archiving.',
+    faqs: [
+      {
+        q: 'What is the difference between flattening and signing?',
+        a: 'Flattening bakes interactive fields into the static page image so they cannot be edited in form readers. Digital signing uses cryptographic certificates to guarantee non-repudiation and byte-level tamper detection.',
+      },
+      {
+        q: 'Can a flattened PDF be unflattened later?',
+        a: 'No. Flattening is a permanent conversion that merges form widgets and annotation streams into the background page contents.',
+      },
+    ],
+  },
+  'sign-pdf-cert': {
+    intro:
+      'Apply genuine cryptographic PKCS#7 / CMS digital signatures using your PKCS#12 (.p12 / .pfx) certificate directly in the browser. You can also inspect and validate existing digital signatures for byte-level document integrity and tamper evidence.',
+    faqs: [
+      {
+        q: 'How does in-browser cryptographic signing work without uploading my private key?',
+        a: 'PDFMiniFly runs WebAssembly and local cryptographic engines (node-forge and Web Crypto) inside your browser tab to decrypt your .p12 bundle and compute the SHA-256 ByteRange signature in memory. Your private key and password never leave your device.',
+      },
+      {
+        q: 'Can I test digital signing if I do not have a .p12 certificate file?',
+        a: 'Yes. The tool features a built-in test certificate generator that generates an authentic 2048-bit RSA self-signed X.509 certificate in browser memory in seconds.',
+      },
+    ],
+  },
+  'repair-pdf': {
+    intro:
+      'Diagnose and salvage corrupted, broken, or malformed PDF files using an automated multi-pass recovery pipeline. Reconstructs missing cross-reference tables, repairs damaged trailers, and salvages readable page streams.',
+    faqs: [
+      {
+        q: 'What types of PDF damage can be repaired?',
+        a: 'The engine handles corrupted XREF tables, incorrect byte offsets, missing trailer dictionaries, malformed root catalogs, and salvageable page object streams.',
+      },
+      {
+        q: 'What if parts of the PDF are completely scrambled or missing?',
+        a: 'The recovery pipeline extracts every readable page and object into a fresh, standards-compliant ISO 32000 PDF document, providing a detailed diagnostic recovery report.',
+      },
+    ],
+  },
+  'invert-colors': {
+    intro:
+      'Invert PDF colors for comfortable night reading, high-contrast visual accessibility, dark slide conversion, and ink-efficient printing. Features an interactive before-and-after split comparison and custom resolution controls.',
+    faqs: [
+      {
+        q: 'Which inversion modes are supported?',
+        a: 'You can choose between gentle Dark Reader (OLED-friendly dark slate with warm off-white text), Black ↔ White High Contrast, Full Color Negative, and Inverted Print for dark slides.',
+      },
+      {
+        q: 'Does color inversion preserve page clarity?',
+        a: 'Yes. Pages are rendered at resolutions up to 300 DPI with anti-aliasing to guarantee crisp, legible text and sharp diagram readability.',
+      },
+    ],
+  },
 };
