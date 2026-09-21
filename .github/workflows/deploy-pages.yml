@@ -1,0 +1,75 @@
+# PDFMiniFly — GitHub Pages deployment (Step B)
+#
+# Pipeline: Google AI Studio -> GitHub main -> GitHub Actions -> GitHub Pages
+# Target: https://pdfly-source.github.io/pdfly-app/
+#
+# Deployment-aware configuration (no hard-coded project path in app source):
+#   - NEXT_PUBLIC_BASE_PATH=/pdfly-app  -> next.config.ts basePath + app paths
+#   - NEXT_PUBLIC_SITE_URL              -> canonical URLs, sitemap, robots
+#
+# A future custom-domain deployment simply re-runs the same build with
+# NEXT_PUBLIC_BASE_PATH unset (or '') and NEXT_PUBLIC_SITE_URL set to the
+# custom domain - no source-code changes required.
+
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Allow only one concurrent Pages deployment; skip queued builds on new pushes.
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+
+      - name: Install dependencies
+        run: bun install --frozen-lockfile
+
+      - name: Apply deployment base path to static public assets
+        run: node scripts/apply-base-path.js
+        env:
+          NEXT_PUBLIC_BASE_PATH: /pdfly-app
+
+      - name: Build static export
+        run: bun run build
+        env:
+          NEXT_PUBLIC_BASE_PATH: /pdfly-app
+          NEXT_PUBLIC_SITE_URL: https://pdfly-source.github.io/pdfly-app
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: out
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    permissions:
+      pages: write
+      id-token: write
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
