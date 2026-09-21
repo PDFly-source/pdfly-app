@@ -2,6 +2,7 @@
 
 import React from 'react';
 import Link from 'next/link';
+import { withBasePath } from '@/lib/base-path';
 
 export interface LogoProps {
   size?: 'sm' | 'md' | 'lg' | 'xl';
@@ -49,7 +50,7 @@ export const Logo: React.FC<LogoProps> = ({
         suppressHydrationWarning
       >
         <img
-          src="/pdfminifly-mark.svg"
+          src={withBasePath('/pdfminifly-mark.svg')}
           alt="PDFMiniFly"
           className="w-full h-full object-contain"
           draggable={false}

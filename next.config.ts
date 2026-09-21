@@ -1,11 +1,21 @@
 import type {NextConfig} from 'next';
 
+// Deployment-aware base path (Step B).
+// - GitHub Pages project site: built with NEXT_PUBLIC_BASE_PATH=/pdfly-app
+//   (set by .github/workflows/deploy-pages.yml) -> https://pdfly-source.github.io/pdfly-app/
+// - Local development / future custom domain: variable unset -> served from '/'
+// The value is never hard-coded here, so switching to a custom domain later
+// requires only a deployment environment change, no source rewrite.
+const basePath = process.env.NEXT_PUBLIC_BASE_PATH || '';
+
 const nextConfig: NextConfig = {
   distDir: process.env.NODE_ENV === 'development' ? '.next-dev' : '.next',
+  basePath,
   reactStrictMode: true,
   // Static export for GitHub Pages (Step A).
-  // basePath/assetPrefix are intentionally NOT set yet; deployment-aware
-  // basePath will be added in a separate later step.
+  // assetPrefix is intentionally NOT set: Next.js `basePath` already prefixes
+  // all generated asset URLs (_next/*, metadata icons, manifest, etc.).
+  // Verified in the build output - no double prefixes, no missing prefixes.
   output: 'export',
   trailingSlash: true,
   images: {

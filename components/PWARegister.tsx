@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { setGlobalSWRegistration } from '@/hooks/usePWAInstall';
+import { withBasePath } from '@/lib/base-path';
 import { OfflineIndicator } from './OfflineIndicator';
 import { RefreshCw, Sparkles } from 'lucide-react';
 
@@ -16,8 +17,8 @@ export const PWARegister: React.FC = () => {
 
     const registerSW = async () => {
       try {
-        const registration = await navigator.serviceWorker.register('/sw.js', {
-          scope: '/',
+        const registration = await navigator.serviceWorker.register(withBasePath('/sw.js'), {
+          scope: withBasePath('/'),
         });
 
         // Check if there is already a waiting worker - immediately skip waiting

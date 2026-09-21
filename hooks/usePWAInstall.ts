@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState, useCallback } from 'react';
+import { withBasePath } from '@/lib/base-path';
 
 export interface BeforeInstallPromptEvent extends Event {
   prompt: () => Promise<void>;
@@ -155,7 +156,7 @@ export function usePWAInstall() {
     const hasSW = typeof navigator !== 'undefined' && 'serviceWorker' in navigator;
     return {
       isHttps,
-      manifestUrl: '/manifest.json',
+      manifestUrl: withBasePath('/manifest.json'),
       hasServiceWorker: hasSW,
       swRegistered: !!globalRegistration,
       swActive: !!globalRegistration?.active,

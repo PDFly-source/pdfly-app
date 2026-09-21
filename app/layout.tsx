@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from 'next';
 import './globals.css';
 import { SITE_URL, SITE_DESCRIPTION, LOGO_URL } from '@/lib/site';
+import { withBasePath } from '@/lib/base-path';
 import { JsonLd } from '@/components/JsonLd';
 import { SmartDropzone } from '@/components/SmartDropzone';
 import { PWARegister } from '@/components/PWARegister';
@@ -36,10 +37,10 @@ export const metadata: Metadata = {
   },
   icons: {
     icon: [
-      { url: '/favicon.ico', sizes: 'any' },
-      { url: '/icon.svg', type: 'image/svg+xml' },
+      { url: withBasePath('/favicon.ico'), sizes: 'any' },
+      { url: withBasePath('/icon.svg'), type: 'image/svg+xml' },
     ],
-    apple: [{ url: '/apple-touch-icon.png', sizes: '180x180' }],
+    apple: [{ url: withBasePath('/apple-touch-icon.png'), sizes: '180x180' }],
   },
   openGraph: {
     title: 'PDFMiniFly — Free Private PDF Tools | Merge, Split, Compress & Edit PDFs',
@@ -138,14 +139,14 @@ const webAppSchema = {
           }}
         />
         <title>PDFMiniFly — Private PDF Tools | Powerful. Local. Secure.</title>
-        <link rel="manifest" href="/manifest.json" />
+        <link rel="manifest" href={withBasePath('/manifest.json')} />
         <meta name="application-name" content="PDFMiniFly" />
         <meta name="theme-color" content="#741B35" />
         <meta name="mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
         <meta name="apple-mobile-web-app-title" content="PDFMiniFly" />
-        <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+        <link rel="apple-touch-icon" href={withBasePath('/apple-touch-icon.png')} />
       </head>
       <body suppressHydrationWarning className="antialiased min-h-screen">
         <JsonLd data={websiteSchema} />
