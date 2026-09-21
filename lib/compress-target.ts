@@ -223,4 +223,5 @@ export const TARGET_PRESETS = [
   { label: '1 MB', bytes: 1024 * 1024 },
   { label: '2 MB', bytes: 2 * 1024 * 1024 },
   { label: '5 MB', bytes: 5 * 1024 * 1024 },
+  { label: '10 MB', bytes: 10 * 1024 * 1024 },
 ];
