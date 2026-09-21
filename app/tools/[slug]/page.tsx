@@ -3,9 +3,12 @@ import { notFound } from 'next/navigation';
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { ALL_TOOLS, getToolBySlug } from '@/lib/tools-data';
+import { TOOL_SEO_CONTENT } from '@/lib/tool-seo-content';
 import { ToolPageClientWrapper } from './ToolPageClientWrapper';
 import { ToolCard } from '@/components/ToolCard';
-import { HelpCircle, ChevronRight } from 'lucide-react';
+import { JsonLd } from '@/components/JsonLd';
+import { SITE_URL } from '@/lib/site';
+import { HelpCircle, ChevronRight, ShieldCheck } from 'lucide-react';
 
 interface ToolPageProps {
   params: Promise<{
@@ -25,25 +28,34 @@ export async function generateMetadata({ params }: ToolPageProps): Promise<Metad
 
   if (!tool) {
     return {
-      title: 'Tool Not Found | PDFMiniFly',
+      title: { absolute: 'Tool Not Found | PDFMiniFly' },
       description: 'The requested PDF tool could not be found.',
     };
   }
 
+  const title = tool.seoTitle || `${tool.name} - Free & Private Local PDF Tool | PDFMiniFly`;
+  const description =
+    tool.seoDescription ||
+    `${tool.description} Fast, secure, and processed 100% locally in your browser with PDFMiniFly.`;
+
   return {
-    title: `${tool.name} - Free & Private Local PDF Tool | PDFMiniFly`,
-    description: `${tool.description} Fast, secure, and processed 100% locally in your browser with PDFMiniFly.`,
+    title: { absolute: title },
+    description,
     keywords: [tool.name, ...(tool.keywords || []), 'PDFMiniFly', 'local PDF', 'private PDF tool', 'browser PDF editor'],
+    alternates: {
+      canonical: `/tools/${tool.slug}`,
+    },
     openGraph: {
-      title: `${tool.name} - PDFMiniFly`,
-      description: tool.description,
+      title,
+      description,
       type: 'website',
       siteName: 'PDFMiniFly',
+      url: `${SITE_URL}/tools/${tool.slug}`,
     },
     twitter: {
       card: 'summary_large_image',
-      title: `${tool.name} - PDFMiniFly`,
-      description: tool.description,
+      title,
+      description,
     },
   };
 }
@@ -56,6 +68,7 @@ export default async function ToolPage({ params }: ToolPageProps) {
     notFound();
   }
 
+  const seoContent = TOOL_SEO_CONTENT[tool.slug];
   const relatedTools = ALL_TOOLS.filter((t) => t.slug !== tool.slug && t.category === tool.category).slice(0, 3);
   const fallbackRelated =
     relatedTools.length < 3
@@ -68,9 +81,93 @@ export default async function ToolPage({ params }: ToolPageProps) {
         ]
       : relatedTools;
 
+  const toolUrl = `${SITE_URL}/tools/${tool.slug}`;
+
+  // Visible FAQs (schema must match these exactly)
+  const visibleFaqs: { q: string; a: string }[] = seoContent
+    ? [
+        ...seoContent.faqs,
+        {
+          q: 'Are my files uploaded to a server?',
+          a: 'No. PDFMiniFly processes everything locally inside your browser. Your document never leaves your device, and once the app is installed it also works offline.',
+        },
+      ]
+    : [];
+
+  const breadcrumbSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Home', item: `${SITE_URL}/` },
+      { '@type': 'ListItem', position: 2, name: 'PDF Tools', item: `${SITE_URL}/tools` },
+      { '@type': 'ListItem', position: 3, name: tool.name, item: toolUrl },
+    ],
+  };
+
+  const softwareSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'WebApplication',
+    name: `${tool.name} — PDFMiniFly`,
+    url: toolUrl,
+    applicationCategory: 'UtilitiesApplication',
+    operatingSystem: 'Any (web browser)',
+    browserRequirements: 'Requires a modern web browser. Works offline once installed.',
+    offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
+    isAccessibleForFree: true,
+  };
+
+  const faqSchema =
+    visibleFaqs.length > 0
+      ? {
+          '@context': 'https://schema.org',
+          '@type': 'FAQPage',
+          mainEntity: visibleFaqs.map((f) => ({
+            '@type': 'Question',
+            name: f.q,
+            acceptedAnswer: { '@type': 'Answer', text: f.a },
+          })),
+        }
+      : null;
+
   return (
     <ToolPageClientWrapper tool={tool}>
+      <JsonLd data={breadcrumbSchema} />
+      <JsonLd data={softwareSchema} />
+      {faqSchema && <JsonLd data={faqSchema} />}
+
       <div className="max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 pb-16">
+        {/* Breadcrumb Navigation (visible; matches BreadcrumbList schema) */}
+        <nav aria-label="Breadcrumb" className="pt-8 pb-2">
+          <ol className="flex flex-wrap items-center gap-1.5 text-xs text-[#5C5256] dark:text-[#AFA6A8]">
+            <li>
+              <Link href="/" className="hover:text-[#7A1635] dark:hover:text-[#C9A15A] font-semibold">
+                Home
+              </Link>
+            </li>
+            <li aria-hidden="true" className="flex items-center gap-1.5">
+              <ChevronRight className="w-3.5 h-3.5" />
+              <Link href="/tools" className="hover:text-[#7A1635] dark:hover:text-[#C9A15A] font-semibold">
+                PDF Tools
+              </Link>
+            </li>
+            <li aria-hidden="true">
+              <ChevronRight className="w-3.5 h-3.5 inline" />
+            </li>
+            <li aria-current="page" className="text-[#1A1416] dark:text-[#F7F1E8] font-bold">
+              {tool.name}
+            </li>
+          </ol>
+        </nav>
+
+        {/* Tool-specific introduction */}
+        {seoContent && (
+          <section className="mb-10 max-w-3xl">
+            <p className="text-sm sm:text-base text-[#3D3438] dark:text-[#C9C0C2] leading-relaxed">
+              {seoContent.intro}
+            </p>
+          </section>
+        )}
+
         {/* How It Works (3-step) */}
         <section className="mb-16 pt-10 border-t border-[#E8DFD3] dark:border-[#2E2629]">
           <h2 className="text-xl font-black text-[#1A1416] dark:text-[#F7F1E8] text-center mb-8">
@@ -107,7 +204,7 @@ export default async function ToolPage({ params }: ToolPageProps) {
                 3
               </span>
               <h3 className="text-sm font-bold text-[#1A1416] dark:text-[#F7F1E8] mb-1">
-                Save & Download
+                Save &amp; Download
               </h3>
               <p className="text-xs text-[#5C5256] dark:text-[#AFA6A8] leading-relaxed">
                 Click the action button. The new document is compiled in memory and downloaded straight to your device.
@@ -116,44 +213,29 @@ export default async function ToolPage({ params }: ToolPageProps) {
           </div>
         </section>
 
-        {/* Frequently Asked Questions */}
-        <section className="my-16 max-w-3xl mx-auto">
-          <h2 className="text-xl font-black text-[#1A1416] dark:text-[#F7F1E8] text-center mb-6">
-            Frequently Asked Questions
-          </h2>
+        {/* Frequently Asked Questions (tool-specific + shared privacy answer) */}
+        {visibleFaqs.length > 0 && (
+          <section className="my-16 max-w-3xl mx-auto">
+            <h2 className="text-xl font-black text-[#1A1416] dark:text-[#F7F1E8] text-center mb-6">
+              Frequently Asked Questions
+            </h2>
 
-          <div className="space-y-3">
-            <div className="p-5 rounded-2xl bg-[#FFFDF9] dark:bg-[#1B1719] border border-[#E8DFD3] dark:border-[#2E2629]">
-              <h3 className="text-sm font-bold text-[#1A1416] dark:text-[#F7F1E8] mb-1.5 flex items-center gap-2">
-                <HelpCircle className="w-4 h-4 text-[#7A1635] dark:text-[#C9A15A]" />
-                <span>Is {tool.name} safe to use for sensitive contracts or financial documents?</span>
-              </h3>
-              <p className="text-xs text-[#5C5256] dark:text-[#AFA6A8] leading-relaxed">
-                Yes, completely. Unlike conventional PDF websites that send your confidential documents to unknown remote servers, PDFMiniFly operates exclusively inside your browser sandbox using WebAssembly and client-side JavaScript. Your file data never leaves your device.
-              </p>
+            <div className="space-y-3">
+              {visibleFaqs.map((f) => (
+                <div
+                  key={f.q}
+                  className="p-5 rounded-2xl bg-[#FFFDF9] dark:bg-[#1B1719] border border-[#E8DFD3] dark:border-[#2E2629]"
+                >
+                  <h3 className="text-sm font-bold text-[#1A1416] dark:text-[#F7F1E8] mb-1.5 flex items-start gap-2">
+                    <HelpCircle className="w-4 h-4 text-[#7A1635] dark:text-[#C9A15A] shrink-0 mt-0.5" />
+                    <span>{f.q}</span>
+                  </h3>
+                  <p className="text-xs text-[#5C5256] dark:text-[#AFA6A8] leading-relaxed pl-6">{f.a}</p>
+                </div>
+              ))}
             </div>
-
-            <div className="p-5 rounded-2xl bg-[#FFFDF9] dark:bg-[#1B1719] border border-[#E8DFD3] dark:border-[#2E2629]">
-              <h3 className="text-sm font-bold text-[#1A1416] dark:text-[#F7F1E8] mb-1.5 flex items-center gap-2">
-                <HelpCircle className="w-4 h-4 text-[#7A1635] dark:text-[#C9A15A]" />
-                <span>Does this work offline?</span>
-              </h3>
-              <p className="text-xs text-[#5C5256] dark:text-[#AFA6A8] leading-relaxed">
-                Yes! Once PDFMiniFly is loaded or installed as a Progressive Web App (PWA), the PDF processing engine operates even when you have no internet connection.
-              </p>
-            </div>
-
-            <div className="p-5 rounded-2xl bg-[#FFFDF9] dark:bg-[#1B1719] border border-[#E8DFD3] dark:border-[#2E2629]">
-              <h3 className="text-sm font-bold text-[#1A1416] dark:text-[#F7F1E8] mb-1.5 flex items-center gap-2">
-                <HelpCircle className="w-4 h-4 text-[#7A1635] dark:text-[#C9A15A]" />
-                <span>Are there any usage limits or paywalls?</span>
-              </h3>
-              <p className="text-xs text-[#5C5256] dark:text-[#AFA6A8] leading-relaxed">
-                No account, no subscriptions, and no intrusive ads. You can use PDFMiniFly as much as you need on your phone, tablet, or desktop.
-              </p>
-            </div>
-          </div>
-        </section>
+          </section>
+        )}
 
         {/* Related Tools */}
         <section className="my-16 pt-10 border-t border-[#E8DFD3] dark:border-[#2E2629]">
@@ -162,7 +244,7 @@ export default async function ToolPage({ params }: ToolPageProps) {
               Explore Other PDF Tools
             </h2>
             <Link
-              href="/#tools"
+              href="/tools"
               className="text-xs font-bold text-[#7A1635] dark:text-[#C9A15A] hover:underline"
             >
               View all {ALL_TOOLS.length} tools →

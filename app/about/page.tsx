@@ -13,15 +13,39 @@ import {
 } from 'lucide-react';
 import type { Metadata } from 'next';
 
+import { JsonLd } from '@/components/JsonLd';
+import { SITE_URL, LOGO_URL } from '@/lib/site';
+
 export const metadata: Metadata = {
-  title: 'About PDFMiniFly | The Private, Client-Side PDF Toolkit',
+  title: { absolute: 'About PDFMiniFly | The Private, Client-Side PDF Toolkit' },
   description:
     'Learn about PDFMiniFly’s mission to provide fast, private, browser-based PDF tools with zero unauthorized cloud uploads or paywalls.',
+  alternates: { canonical: '/about' },
 };
 
 export default function AboutPage() {
+
+  const aboutSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'AboutPage',
+    url: `${SITE_URL}/about`,
+    name: 'About PDFMiniFly',
+  };
+
+  const orgSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'Organization',
+    name: 'PDFMiniFly',
+    alternateName: 'PDFMiniFly',
+    url: SITE_URL,
+    logo: LOGO_URL,
+  };
+
+
   return (
     <div className="min-h-screen flex flex-col bg-[#F6EFE3] dark:bg-[#141012] text-[#1A1416] dark:text-[#F7F1E8] transition-colors">
+      <JsonLd data={aboutSchema} />
+      <JsonLd data={orgSchema} />
       <Navbar />
 
       <main className="flex-1 max-w-4xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-12">

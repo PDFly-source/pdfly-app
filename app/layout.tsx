@@ -1,5 +1,7 @@
 import type { Metadata, Viewport } from 'next';
 import './globals.css';
+import { SITE_URL, SITE_DESCRIPTION, LOGO_URL } from '@/lib/site';
+import { JsonLd } from '@/components/JsonLd';
 import { PWARegister } from '@/components/PWARegister';
 import { SmartInstallBanner } from '@/components/SmartInstallBanner';
 import { PWASplashScreen } from '@/components/PWASplashScreen';
@@ -15,15 +17,17 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
-  metadataBase: new URL('https://pdfminifly.app'),
+  metadataBase: new URL(SITE_URL),
   applicationName: 'PDFMiniFly',
   title: {
-    default: 'PDFMiniFly — Private PDF Tools | Powerful. Local. Secure.',
+    default: 'PDFMiniFly — Free Private PDF Tools | Merge, Split, Compress & Edit PDFs',
     template: '%s | PDFMiniFly',
   },
-  description:
-    'Private, powerful, local-first PDF toolkit for reading, editing, organizing, converting, protecting, and studying documents directly in your browser. No cloud uploads. No account required.',
+  description: SITE_DESCRIPTION,
   manifest: '/manifest.json',
+  alternates: {
+    canonical: '/',
+  },
   appleWebApp: {
     capable: true,
     statusBarStyle: 'black-translucent',
@@ -37,10 +41,9 @@ export const metadata: Metadata = {
     apple: [{ url: '/apple-touch-icon.png', sizes: '180x180' }],
   },
   openGraph: {
-    title: 'PDFMiniFly — Private PDF Tools | Powerful. Local. Secure.',
-    description:
-      'Private, powerful, local-first PDF toolkit for reading, editing, organizing, converting, protecting, and studying documents directly in your browser. No cloud uploads. No account required.',
-    url: 'https://pdfminifly.app',
+    title: 'PDFMiniFly — Free Private PDF Tools | Merge, Split, Compress & Edit PDFs',
+    description: SITE_DESCRIPTION,
+    url: SITE_URL,
     siteName: 'PDFMiniFly',
     images: [
       {
@@ -55,14 +58,45 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'PDFMiniFly — Private PDF Tools | Powerful. Local. Secure.',
-    description:
-      'Private, powerful, local-first PDF toolkit for reading, editing, organizing, converting, protecting, and studying documents directly in your browser. No cloud uploads. No account required.',
+    title: 'PDFMiniFly — Free Private PDF Tools | Merge, Split, Compress & Edit PDFs',
+    description: SITE_DESCRIPTION,
     images: ['/og-image.png'],
   },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
+
+// Site-wide structured data (server-rendered on every public page)
+const websiteSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'WebSite',
+  name: 'PDFMiniFly',
+  url: SITE_URL,
+  description: SITE_DESCRIPTION,
+};
+
+const organizationSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Organization',
+  name: 'PDFMiniFly',
+  alternateName: 'PDFMiniFly',
+  url: SITE_URL,
+  logo: LOGO_URL,
+};
+
+const webAppSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: 'PDFMiniFly',
+  url: SITE_URL,
+  applicationCategory: 'UtilitiesApplication',
+  operatingSystem: 'Any (web browser)',
+  browserRequirements: 'Requires a modern web browser. Works offline once installed as a PWA.',
+  description: SITE_DESCRIPTION,
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
+  isAccessibleForFree: true,
+};
+
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
@@ -113,6 +147,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
       </head>
       <body suppressHydrationWarning className="antialiased min-h-screen">
+        <JsonLd data={websiteSchema} />
+        <JsonLd data={organizationSchema} />
+        <JsonLd data={webAppSchema} />
         <PWASplashScreen />
         <PWARegister />
         {children}

@@ -6,9 +6,10 @@ import { ShieldCheck, Cpu, ServerOff, ChevronRight, HardDrive } from 'lucide-rea
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Privacy Policy & Local Processing Architecture | PDFMiniFly',
+  title: { absolute: 'Privacy Policy & Local Processing Architecture | PDFMiniFly' },
   description:
     'Learn how PDFMiniFly guarantees document privacy by executing PDF operations locally in your browser sandbox with WebAssembly. Zero unauthorized file uploads.',
+  alternates: { canonical: '/privacy' },
 };
 
 export default function PrivacyPage() {
