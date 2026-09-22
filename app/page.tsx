@@ -105,7 +105,7 @@ export default function HomePage() {
     <div className="min-h-screen flex flex-col bg-[#F6EFE3] dark:bg-[#121012] text-[#1A1416] dark:text-[#F7F1E8] transition-colors">
       <Navbar onOpenRecent={() => setRecentOpen(true)} />
 
-      <main className="flex-1">
+      <main id="main-content" tabIndex={-1} className="flex-1">
         {/* ======================================================== */}
         {/* HERO SECTION WITH 3D LAYERED VISUAL (REF: file_00000000d1208207a0e6a218a6e3b9b6.png) */}
         {/* ======================================================== */}

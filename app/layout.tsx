@@ -149,6 +149,12 @@ const webAppSchema = {
         <link rel="apple-touch-icon" href={withBasePath('/apple-touch-icon.png')} />
       </head>
       <body suppressHydrationWarning className="antialiased min-h-screen">
+        <a
+          href="#main-content"
+          className="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-[100] focus:px-4 focus:py-2.5 focus:rounded-xl focus:bg-[#7A1635] focus:text-[#F7F1E8] focus:text-sm focus:font-bold focus:shadow-lg focus:outline-2 focus:outline-offset-2"
+        >
+          Skip to main content
+        </a>
         <JsonLd data={websiteSchema} />
         <JsonLd data={organizationSchema} />
         <JsonLd data={webAppSchema} />

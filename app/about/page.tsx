@@ -48,7 +48,7 @@ export default function AboutPage() {
       <JsonLd data={orgSchema} />
       <Navbar />
 
-      <main className="flex-1 max-w-4xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-12">
+      <main id="main-content" tabIndex={-1} className="flex-1 max-w-4xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-12">
         {/* Breadcrumb */}
         <nav aria-label="Breadcrumb" className="flex items-center gap-1.5 text-xs text-[#5C5256] dark:text-[#AFA6A8] mb-6">
           <Link href="/" className="hover:text-[#7A1635] dark:hover:text-[#C9A15A]">

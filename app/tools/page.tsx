@@ -65,7 +65,7 @@ export default function ToolsIndexPage() {
       <JsonLd data={itemListSchema} />
       <JsonLd data={breadcrumbSchema} />
       <Navbar />
-      <main className="flex-1 w-full">
+      <main id="main-content" tabIndex={-1} className="flex-1 w-full">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
           <header className="max-w-3xl mb-10">
             <h1 className="text-3xl sm:text-4xl font-black tracking-tight text-[#1A1416] dark:text-[#F7F1E8]">
