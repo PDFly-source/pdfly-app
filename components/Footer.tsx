@@ -152,12 +152,16 @@ export const Footer: React.FC = () => {
               Private • Powerful • Local
             </span>
           </div>
-          <p className="text-xs text-[#5C5256] dark:text-[#AFA6A8]">
-            Crafted &amp; Developed by{' '}
-            <span className="font-black text-sm tracking-wide text-[#1A1416] dark:text-[#F7F1E8]">
-              PKD
-            </span>
-          </p>
+          <div className="flex items-center justify-center gap-3">
+            <span aria-hidden="true" className="h-px w-6 sm:w-8 rounded-full bg-[#C9A15A]/50 dark:bg-[#C9A15A]/40" />
+            <p className="text-xs font-light tracking-[0.08em] text-[#5C5256] dark:text-[#AFA6A8]">
+              Crafted &amp; Developed by{' '}
+              <span className="ml-0.5 font-black text-sm tracking-wide text-[#1A1416] dark:text-[#F7F1E8]">
+                PKD
+              </span>
+            </p>
+            <span aria-hidden="true" className="h-px w-6 sm:w-8 rounded-full bg-[#C9A15A]/50 dark:bg-[#C9A15A]/40" />
+          </div>
           <p className="text-[11px] text-[#5C5256] dark:text-[#AFA6A8]">
             &copy; 2026 PDFMiniFly. All rights reserved.
           </p>
