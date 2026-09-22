@@ -7,6 +7,7 @@ import { SuccessView } from '@/components/SuccessView';
 import { FileNameInput } from '@/components/toolkit/FileNameInput';
 import { PdfPreviewModal } from '@/components/toolkit/PdfPreviewModal';
 import { nupPdf, NupLayout, NUP_LAYOUTS, PAPER_SIZES, SheetOrientation, PageOrder } from '@/lib/nup-pdf';
+import { useRevokeOnUnmount } from '@/lib/use-revoke-on-unmount';
 import { PDFDocument } from 'pdf-lib';
 import { triggerDownload, formatBytes } from '@/lib/pdf-engine';
 import { ensurePdfExtension } from '@/lib/suggest-filename';
@@ -38,6 +39,7 @@ export const NupWorkspace: React.FC = () => {
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [result, setResult] = useState<{ blob: Blob; size: number; sheets: number } | null>(null);
   const [resultBlobUrl, setResultBlobUrl] = useState<string | null>(null);
+  useRevokeOnUnmount(resultBlobUrl);
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
 
   const reset = () => {

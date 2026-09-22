@@ -6,6 +6,7 @@ import { ProcessingModal } from '@/components/ProcessingModal';
 import { SuccessView } from '@/components/SuccessView';
 import { FileNameInput } from '@/components/toolkit/FileNameInput';
 import { splitPdfBySize, zipParts, SplitPart } from '@/lib/split-by-size';
+import { useRevokeOnUnmount } from '@/lib/use-revoke-on-unmount';
 import { triggerDownload, formatBytes } from '@/lib/pdf-engine';
 import { addRecentJob } from '@/lib/recent-jobs';
 import { Package, RefreshCw, Download, AlertTriangle, Scissors } from 'lucide-react';
@@ -27,6 +28,7 @@ export const SplitBySizeWorkspace: React.FC = () => {
   const [parts, setParts] = useState<SplitPart[] | null>(null);
   const [originalSize, setOriginalSize] = useState(0);
   const [zipUrl, setZipUrl] = useState<string | null>(null);
+  useRevokeOnUnmount(zipUrl);
 
   const targetBytes = (() => {
     const v = parseFloat(value);

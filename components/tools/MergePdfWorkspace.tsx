@@ -8,6 +8,7 @@ import { OrderedFileList } from '@/components/toolkit/OrderedFileList';
 import { FileNameInput } from '@/components/toolkit/FileNameInput';
 import { PdfPreviewModal } from '@/components/toolkit/PdfPreviewModal';
 import { mergePdfFiles, triggerDownload, formatBytes } from '@/lib/pdf-engine';
+import { useRevokeOnUnmount } from '@/lib/use-revoke-on-unmount';
 import { ensurePdfExtension } from '@/lib/suggest-filename';
 import { addRecentJob } from '@/lib/recent-jobs';
 import { getPdfDocumentFromFile } from '@/lib/pdfjs-init';
@@ -32,8 +33,10 @@ export const MergePdfWorkspace: React.FC = () => {
   const [fileName, setFileName] = useState(DEFAULT_MERGE_NAME);
   const [previewFileIndex, setPreviewFileIndex] = useState<number | null>(null);
   const [previewFileUrl, setPreviewFileUrl] = useState<string | null>(null);
+  useRevokeOnUnmount(previewFileUrl);
   const [isResultPreviewOpen, setIsResultPreviewOpen] = useState(false);
   const [resultBlobUrl, setResultBlobUrl] = useState<string | null>(null);
+  useRevokeOnUnmount(resultBlobUrl);
 
   const [isProcessing, setIsProcessing] = useState(false);
   const [processStep, setProcessStep] = useState('Preparing documents...');

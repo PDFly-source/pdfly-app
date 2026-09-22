@@ -17,6 +17,26 @@ export async function getPdfjs() {
             ? new URL(withBasePath('/pdf.worker.min.mjs'), window.location.href).toString()
             : withBasePath('/pdf.worker.min.mjs');
         pdfjsLib.GlobalWorkerOptions.workerSrc = workerUrl;
+
+        // Share ONE worker across every document opened in this session.
+        // By default pdf.js spawns a dedicated Worker per getDocument() call;
+        // a PDF toolkit opens documents constantly (previews, page flips,
+        // per-tool operations), which accumulates worker processes that are
+        // never terminated. A single shared worker port keeps memory bounded
+        // without changing any call site. Never call PDFDocumentProxy.destroy()
+        // while a shared port is registered — pdf.js would tear down the
+        // shared worker's message handler; leaving documents to the worker's
+        // own doc registry (and page unload) is the safe lifecycle here.
+        if (!pdfjsLib.GlobalWorkerOptions.workerPort) {
+          const sharedWorker = new Worker(workerUrl, { type: 'module' });
+          sharedWorker.addEventListener('error', () => {
+            // Failed to boot the shared worker: fall back to per-document
+            // workers (the previous behavior), which is still functional.
+            try { sharedWorker.terminate(); } catch { /* already gone */ }
+            try { delete pdfjsLib.GlobalWorkerOptions.workerPort; } catch { /* ignore */ }
+          });
+          pdfjsLib.GlobalWorkerOptions.workerPort = sharedWorker;
+        }
       }
     } catch (e) {
       console.warn('PDF.js worker initialization notice:', e);

@@ -7,6 +7,7 @@ import { SuccessView } from '@/components/SuccessView';
 import { FileNameInput } from '@/components/toolkit/FileNameInput';
 import { PdfPreviewModal } from '@/components/toolkit/PdfPreviewModal';
 import { readDocx, DocxDocumentModel } from '@/lib/docx-engine';
+import { useRevokeOnUnmount } from '@/lib/use-revoke-on-unmount';
 import { docxToPdf, pdfToDocx } from '@/lib/docx-pdf-bridge';
 import { triggerDownload, formatBytes, extractTextFromPdf } from '@/lib/pdf-engine';
 import { addRecentJob } from '@/lib/recent-jobs';
@@ -25,6 +26,7 @@ export const DocxConverterWorkspace: React.FC<{ mode: 'docx-to-pdf' | 'pdf-to-do
   const [previewText, setPreviewText] = useState<string | null>(null);
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
   const [resultBlobUrl, setResultBlobUrl] = useState<string | null>(null);
+  useRevokeOnUnmount(resultBlobUrl);
   const [stats, setStats] = useState<{ paragraphs: number; headings: number; tables: number } | null>(null);
 
   const [keepPageBreaks, setKeepPageBreaks] = useState(true);

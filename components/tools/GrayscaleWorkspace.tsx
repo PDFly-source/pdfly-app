@@ -7,6 +7,7 @@ import { SuccessView } from '@/components/SuccessView';
 import { FileNameInput } from '@/components/toolkit/FileNameInput';
 import { PdfPreviewModal } from '@/components/toolkit/PdfPreviewModal';
 import { applyInkMode, renderInkPreview, InkMode } from '@/lib/ink-saver';
+import { useRevokeOnUnmount } from '@/lib/use-revoke-on-unmount';
 import { getPdfDocumentFromFile } from '@/lib/pdfjs-init';
 import { triggerDownload, formatBytes } from '@/lib/pdf-engine';
 import { ensurePdfExtension } from '@/lib/suggest-filename';
@@ -37,6 +38,7 @@ export const GrayscaleWorkspace: React.FC = () => {
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [result, setResult] = useState<{ blob: Blob; size: number; pages: number } | null>(null);
   const [resultBlobUrl, setResultBlobUrl] = useState<string | null>(null);
+  useRevokeOnUnmount(resultBlobUrl);
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
 
   const reset = () => {

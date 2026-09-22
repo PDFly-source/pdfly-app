@@ -9,6 +9,7 @@ import { OrderedFileList, OrderedListItem } from '@/components/toolkit/OrderedFi
 import { FileNameInput } from '@/components/toolkit/FileNameInput';
 import { PdfPreviewModal } from '@/components/toolkit/PdfPreviewModal';
 import { imagesToPdf, triggerDownload, formatBytes } from '@/lib/pdf-engine';
+import { useRevokeOnUnmount } from '@/lib/use-revoke-on-unmount';
 import { addRecentJob } from '@/lib/recent-jobs';
 import {
   suggestImagesToPdfName,
@@ -63,6 +64,7 @@ export const ImageToPdfWorkspace: React.FC = () => {
   const [resultBlob, setResultBlob] = useState<Blob | null>(null);
   const [resultFileName, setResultFileName] = useState('');
   const [resultBlobUrl, setResultBlobUrl] = useState<string | null>(null);
+  useRevokeOnUnmount(resultBlobUrl);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   // Preview aspect for the final-preview modal page cards

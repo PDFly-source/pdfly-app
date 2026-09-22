@@ -45,6 +45,7 @@ import {
   addHistory,
 } from '@/lib/workflow-storage';
 import { addRecentJob } from '@/lib/recent-jobs';
+import { useRevokeOnUnmount } from '@/lib/use-revoke-on-unmount';
 import { formatBytes, triggerDownload } from '@/lib/pdf-engine';
 import {
   Workflow,
@@ -98,6 +99,7 @@ export const WorkflowBuilderWorkspace: React.FC = () => {
     { fileName: string; blob: Blob; pages: number; ok: boolean; error?: string }[]
   >([]);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  useRevokeOnUnmount(previewUrl);
 
   const [nameMode, setNameMode] = useState<NameMode>('original');
   const [customName, setCustomName] = useState('PDFMiniFly_Workflow_Output');

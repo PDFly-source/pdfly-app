@@ -7,6 +7,7 @@ import { SuccessView } from '@/components/SuccessView';
 import { FileNameInput } from '@/components/toolkit/FileNameInput';
 import { PdfPreviewModal } from '@/components/toolkit/PdfPreviewModal';
 import { compressToTargetSize, TARGET_PRESETS, TargetSizeMode } from '@/lib/compress-target';
+import { useRevokeOnUnmount } from '@/lib/use-revoke-on-unmount';
 import { triggerDownload, formatBytes } from '@/lib/pdf-engine';
 import { ensurePdfExtension } from '@/lib/suggest-filename';
 import { addRecentJob } from '@/lib/recent-jobs';
@@ -32,6 +33,7 @@ export const CompressTargetWorkspace: React.FC = () => {
   const [progressPct, setProgressPct] = useState(0);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [resultBlobUrl, setResultBlobUrl] = useState<string | null>(null);
+  useRevokeOnUnmount(resultBlobUrl);
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
   const [result, setResult] = useState<{
     blob: Blob; newSize: number; targetBytes: number; targetMet: boolean; quality: number; dpi: number; attempts: number;

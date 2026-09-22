@@ -60,22 +60,27 @@ export const OcrWorkspace: React.FC = () => {
       const { createWorker } = await import('tesseract.js');
       const worker = await createWorker(language);
 
-      for (let p = 1; p <= totalPages; p++) {
-        setProcessStep(`Recognizing characters on page ${p} of ${totalPages}...`);
-        setProgressPct(20 + Math.round((p / totalPages) * 65));
+      try {
+        for (let p = 1; p <= totalPages; p++) {
+          setProcessStep(`Recognizing characters on page ${p} of ${totalPages}...`);
+          setProgressPct(20 + Math.round((p / totalPages) * 65));
 
-        const page = await pdfJsDoc.getPage(p);
-        const canvas = document.createElement('canvas');
-        await renderPageToCanvas(page, canvas, 1.5);
+          const page = await pdfJsDoc.getPage(p);
+          const canvas = document.createElement('canvas');
+          await renderPageToCanvas(page, canvas, 1.5);
 
-        const ret = await worker.recognize(canvas);
-        const pageText = ret.data.text || '';
+          const ret = await worker.recognize(canvas);
+          const pageText = ret.data.text || '';
 
-        pagesData.push({ pageNum: p, text: pageText });
-        combinedText += `--- Page ${p} ---\n${pageText}\n\n`;
+          pagesData.push({ pageNum: p, text: pageText });
+          combinedText += `--- Page ${p} ---\n${pageText}\n\n`;
+        }
+      } finally {
+        // Always release the OCR worker, even if a page render or
+        // recognition step threw mid-run (it holds WASM + traineddata).
+        try { await worker.terminate(); } catch { /* already terminated */ }
       }
 
-      await worker.terminate();
 
       setExtractedText(combinedText);
       setPageResults(pagesData);
