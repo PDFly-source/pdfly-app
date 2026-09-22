@@ -172,7 +172,7 @@ export default function InstallPage() {
     <div className="min-h-screen flex flex-col bg-[#F6EFE3] dark:bg-[#121012] text-[#1A1416] dark:text-[#F7F1E8] transition-colors selection:bg-[#7A1635] selection:text-[#F7F1E8]">
       <Navbar />
 
-      <main className="flex-1 w-full pb-20">
+      <main id="main-content" tabIndex={-1} className="flex-1 w-full pb-20">
         {/* ============================================================ */}
         {/* A. HERO SECTION — INSPIRED BY REFERENCE PWA DESIGN            */}
         {/* ============================================================ */}

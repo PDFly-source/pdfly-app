@@ -47,6 +47,9 @@ export const CropTrimWorkspace: React.FC = () => {
 
   const dragRef = useRef<HTMLDivElement>(null);
   const pageUrlRef = useRef<string | null>(null);
+  // Phase G: track generated blob URLs so every one is revoked exactly once
+  const afterUrlRef = useRef<string | null>(null);
+  const resultBlobUrlRef = useRef<string | null>(null);
   const [dragging, setDragging] = useState<'top' | 'right' | 'bottom' | 'left' | null>(null);
 
   const reset = () => {
@@ -54,7 +57,9 @@ export const CropTrimWorkspace: React.FC = () => {
       URL.revokeObjectURL(pageUrlRef.current);
       pageUrlRef.current = null;
     }
-    if (resultBlobUrl) URL.revokeObjectURL(resultBlobUrl);
+    if (afterUrlRef.current) URL.revokeObjectURL(afterUrlRef.current);
+    if (resultBlobUrlRef.current) URL.revokeObjectURL(resultBlobUrlRef.current);
+    afterUrlRef.current = null; resultBlobUrlRef.current = null;
     setFile(null); setResult(null); setResultBlobUrl(null); setErrorMessage(null);
     setPageUrl(null); setBeforeUrl(null); setAfterUrl(null); setShowCompare(false);
   };
@@ -108,6 +113,15 @@ export const CropTrimWorkspace: React.FC = () => {
     return () => { cancelled = true; };
   }, [file, currentPage]);
 
+  // Phase G: release all generated blob URLs when the workspace unmounts
+  useEffect(() => {
+    return () => {
+      if (pageUrlRef.current) URL.revokeObjectURL(pageUrlRef.current);
+      if (afterUrlRef.current) URL.revokeObjectURL(afterUrlRef.current);
+      if (resultBlobUrlRef.current) URL.revokeObjectURL(resultBlobUrlRef.current);
+    };
+  }, []);
+
   // drag handle logic — converts pointer movement into crop fractions
   useEffect(() => {
     if (!dragging || !dragRef.current) return;
@@ -159,7 +173,12 @@ export const CropTrimWorkspace: React.FC = () => {
       after.height = Math.max(1, box.height * scale);
       const actx = after.getContext('2d')!;
       actx.drawImage(canvas, sx, sy, after.width, after.height, 0, 0, after.width, after.height);
-      after.toBlob((b) => b && setAfterUrl(URL.createObjectURL(b)), 'image/jpeg', 0.9);
+      after.toBlob((b) => {
+        if (!b) return;
+        if (afterUrlRef.current) URL.revokeObjectURL(afterUrlRef.current);
+        afterUrlRef.current = URL.createObjectURL(b);
+        setAfterUrl(afterUrlRef.current);
+      }, 'image/jpeg', 0.9);
       canvas.width = 0; canvas.height = 0;
       setShowCompare(true);
 
@@ -170,7 +189,9 @@ export const CropTrimWorkspace: React.FC = () => {
         { mode: applyTo, rangeStr, currentPage, },
         (msg, pct) => { setProcessStep(msg); setProgressPct(pct); }
       );
-      setResultBlobUrl(URL.createObjectURL(res.blob));
+      if (resultBlobUrlRef.current) URL.revokeObjectURL(resultBlobUrlRef.current);
+      resultBlobUrlRef.current = URL.createObjectURL(res.blob);
+      setResultBlobUrl(resultBlobUrlRef.current);
       setResult({ blob: res.blob, size: res.blob.size, pages: res.trimmedPages });
       addRecentJob({
         toolId: 'crop-trim-pdf',
@@ -214,7 +235,9 @@ export const CropTrimWorkspace: React.FC = () => {
         { mode: applyTo, rangeStr, currentPage },
         (msg, pct) => { setProcessStep(msg); setProgressPct(pct); }
       );
-      setResultBlobUrl(URL.createObjectURL(res.blob));
+      if (resultBlobUrlRef.current) URL.revokeObjectURL(resultBlobUrlRef.current);
+      resultBlobUrlRef.current = URL.createObjectURL(res.blob);
+      setResultBlobUrl(resultBlobUrlRef.current);
       setResult({ blob: res.blob, size: res.blob.size, pages: res.croppedPages });
       addRecentJob({
         toolId: 'crop-trim-pdf',
@@ -391,7 +414,7 @@ export const CropTrimWorkspace: React.FC = () => {
           )}
 
           {errorMessage && (
-            <div className="rounded-xl border border-destructive/40 bg-destructive/5 p-4 text-sm flex items-start gap-2">
+            <div role="alert" className="rounded-xl border border-destructive/40 bg-destructive/5 p-4 text-sm flex items-start gap-2">
               <AlertTriangle className="h-4 w-4 text-destructive shrink-0 mt-0.5" />
               <span>{errorMessage}</span>
             </div>

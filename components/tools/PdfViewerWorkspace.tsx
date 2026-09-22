@@ -725,15 +725,24 @@ export const PdfViewerWorkspace: React.FC = () => {
                 <span className="truncate italic max-w-md">{currentSpokenText}</span>
               </div>
               <div className="flex items-center gap-2 shrink-0">
-                <button onClick={pauseSpeech} className="p-1 hover:bg-emerald-100 rounded">
+                <button
+                  onClick={pauseSpeech}
+                  aria-label={speechPaused ? 'Resume speech' : 'Pause speech'}
+                  className="p-1 hover:bg-emerald-100 rounded"
+                >
                   {speechPaused ? <Play className="w-3.5 h-3.5" /> : <Pause className="w-3.5 h-3.5" />}
                 </button>
-                <button onClick={stopSpeech} className="p-1 hover:bg-emerald-100 rounded">
+                <button
+                  onClick={stopSpeech}
+                  aria-label="Stop speech"
+                  className="p-1 hover:bg-emerald-100 rounded"
+                >
                   <Square className="w-3.5 h-3.5" />
                 </button>
                 <select
                   value={speechRate}
                   onChange={(e) => setSpeechRate(parseFloat(e.target.value))}
+                  aria-label="Speech speed"
                   className="bg-white dark:bg-[#1E1A1B] border border-emerald-300 rounded px-1.5 py-0.5 text-[11px]"
                 >
                   <option value={0.75}>0.75x</option>

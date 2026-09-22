@@ -55,7 +55,7 @@ export default function SecurityCenterPage() {
   ];
 
   return (
-    <div className="min-h-screen bg-[#F7F3EC] dark:bg-[#141213] text-[#141213] dark:text-[#F5F0EB] transition-colors pb-24 md:pb-16">
+    <div role="main" id="main-content" tabIndex={-1} className="min-h-screen bg-[#F7F3EC] dark:bg-[#141213] text-[#141213] dark:text-[#F5F0EB] transition-colors pb-24 md:pb-16">
       {/* Header */}
       <div className="border-b border-[#E5DFD4] dark:border-[#2E2729] bg-white/70 dark:bg-[#1A1718]/70 backdrop-blur-md">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-10">

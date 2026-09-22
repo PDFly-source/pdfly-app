@@ -1,5 +1,5 @@
 // PDFly Service Worker - High Performance Local-First PWA Cache
-const CACHE_NAME = 'pdfly-shell-v12';
+const CACHE_NAME = 'pdfly-shell-v13';
 
 // Deployment-aware base path, derived at runtime from this service worker's
 // own registration scope. On the GitHub Pages project site the scope is
@@ -29,8 +29,8 @@ const PRECACHE_ASSETS = [
   '/pwa-512x512.png',
   '/pwa-maskable-192x192.png',
   '/pwa-maskable-512x512.png',
-  '/pdfly-mark.png',
-  '/pdfly-logo.png',
+  '/pdfminifly-mark.png',
+  '/pdfminifly-logo.png',
   '/og-image.png'
 ];
 

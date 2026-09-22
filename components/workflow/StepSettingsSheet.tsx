@@ -206,6 +206,33 @@ const RotateSettings: React.FC<SettingsProps> = ({ step, analysis, onChange }) =
   );
 };
 
+
+// Phase G: keyed child so the image blob URL is created once per buffer and
+// revoked on change/unmount (previously a new Blob was allocated every render,
+// leaking object URLs during watermark drags).
+const WatermarkImagePreview: React.FC<{ item: Record<string, any>; leftPct: number; topPct: number }> = ({ item, leftPct, topPct }) => {
+  const imgType = item.imageType === 'png' ? 'image/png' : 'image/jpeg';
+  const imgUrl = useMemo(
+    () => URL.createObjectURL(new Blob([item.imageBuffer], { type: imgType })),
+    [item.imageBuffer, imgType]
+  );
+  useEffect(() => () => URL.revokeObjectURL(imgUrl), [imgUrl]);
+  return (
+    <span
+      className="absolute pointer-events-none rounded"
+      style={{
+        left: `${leftPct}%`,
+        top: `${topPct}%`,
+        transform: 'translate(-50%, -50%)',
+        width: '30%',
+        height: '18%',
+        background: `center / contain no-repeat url(${imgUrl})`,
+        opacity: item.opacity,
+      }}
+    />
+  );
+};
+
 // ============ ORGANIZE ============
 interface OrgItem {
   id: string;
@@ -726,18 +753,7 @@ const WatermarkSettings: React.FC<StepSettingsSheetProps> = ({ step, analysis, f
             </span>
           )}
           {isImage && o.imageBuffer && (
-            <span
-              className="absolute pointer-events-none rounded"
-              style={{
-                left: `${wmLeft}%`,
-                top: `${wmTop}%`,
-                transform: 'translate(-50%, -50%)',
-                width: '30%',
-                height: '18%',
-                background: `center / contain no-repeat url(${URL.createObjectURL(new Blob([o.imageBuffer], { type: o.imageType === 'png' ? 'image/png' : 'image/jpeg' }))})`,
-                opacity: o.opacity,
-              }}
-            />
+            <WatermarkImagePreview item={o} leftPct={wmLeft} topPct={wmTop} />
           )}
         </div>
         <p className="text-[11px] text-[#5C554F] dark:text-[#A39991] mt-1.5 text-center">
