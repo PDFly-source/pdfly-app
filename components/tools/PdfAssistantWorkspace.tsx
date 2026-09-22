@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import { FileDropzone } from '@/components/FileDropzone';
 import { extractTextFromPdf, formatBytes } from '@/lib/pdf-engine';
+import { withBasePath } from '@/lib/base-path';
 import {
   Sparkles,
   Cpu,
@@ -146,7 +147,11 @@ export const PdfAssistantWorkspace: React.FC = () => {
     setLastAction(action);
 
     try {
-      const res = await fetch('/api/gemini/assistant', {
+      // Deployment-aware endpoint: resolves under the base path on GitHub
+      // Pages-style deployments. The route only exists where a Node server
+      // is actually running; static hosts return their 404 page, handled
+      // below with a clear local-first message instead of a JSON parse crash.
+      const res = await fetch(withBasePath('/api/gemini/assistant'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -157,9 +162,18 @@ export const PdfAssistantWorkspace: React.FC = () => {
         }),
       });
 
-      const data = await res.json();
-      if (!res.ok) {
-        throw new Error(data.error || 'Cloud AI request failed');
+      let data: { result?: string; error?: string } | null = null;
+      try {
+        data = await res.json();
+      } catch {
+        // Static hosting (e.g. GitHub Pages) has no server runtime.
+        data = null;
+      }
+      if (!res.ok || !data?.result) {
+        throw new Error(
+          data?.error ||
+            'Cloud AI is unavailable in this deployment. PDFMiniFly is fully local — switch to Local mode for on-device analysis.'
+        );
       }
 
       setAssistantOutput(data.result);

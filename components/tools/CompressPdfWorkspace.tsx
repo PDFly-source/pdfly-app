@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import { FileDropzone } from '@/components/FileDropzone';
 import { ProcessingModal } from '@/components/ProcessingModal';
 import { compressPdf, triggerDownload, formatBytes } from '@/lib/pdf-engine';
+import { useRevokeOnUnmount } from '@/lib/use-revoke-on-unmount';
 import { addRecentJob } from '@/lib/recent-jobs';
 import { FileNameInput } from '@/components/toolkit/FileNameInput';
 import { PdfPreviewModal } from '@/components/toolkit/PdfPreviewModal';
@@ -29,6 +30,7 @@ export const CompressPdfWorkspace: React.FC = () => {
   const [fileName, setFileName] = useState('compressed');
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
   const [resultBlobUrl, setResultBlobUrl] = useState<string | null>(null);
+  useRevokeOnUnmount(resultBlobUrl);
   const [level, setLevel] = useState<'recommended' | 'extreme' | 'low'>('recommended');
   const [removeMetadata, setRemoveMetadata] = useState(true);
 

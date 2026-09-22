@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import { FileDropzone } from '@/components/FileDropzone';
 import { extractTextFromPdf, formatBytes, triggerDownload } from '@/lib/pdf-engine';
+import { withBasePath } from '@/lib/base-path';
 import {
   GraduationCap,
   FileText,
@@ -28,6 +29,146 @@ interface MCQ {
   options: string[];
   correctAnswer: number;
   explanation: string;
+}
+
+
+const STUDY_STOP_WORDS = new Set([
+  'about', 'above', 'across', 'after', 'again', 'against', 'along', 'although', 'always',
+  'among', 'another', 'because', 'before', 'being', 'below', 'between', 'beyond', 'both',
+  'cannot', 'could', 'should', 'would', 'their', 'there', 'these', 'those', 'through',
+  'under', 'until', 'where', 'which', 'while', 'would', 'your', 'shall', 'these', 'other',
+  'which', 'whose', 'every', 'after', 'before', 'during', 'without', 'within', 'however',
+  'therefore', 'moreover', 'further', 'either', 'neither', 'whether', 'toward', 'towards',
+]);
+
+/** Sentences long enough to be informative but not overwhelming. */
+function extractStudySentences(text: string): string[] {
+  return text
+    .replace(/\s+/g, ' ')
+    .split(/[.!?]+\s+/)
+    .map((s) => s.trim())
+    .filter((s) => s.length >= 60 && s.length <= 320);
+}
+
+/** Content-bearing words in a sentence (candidates for cloze blanks). */
+function significantWords(sentence: string): string[] {
+  return sentence
+    .split(/\s+/)
+    .map((w) => w.replace(/^[^\p{L}\p{N}]+|[^\p{L}\p{N}]+$/gu, ''))
+    .filter((w) => w.length >= 5 && !STUDY_STOP_WORDS.has(w.toLowerCase()));
+}
+
+function escapeRegExp(s: string): string {
+  return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
+/**
+ * Deterministic cloze question from one real document sentence: a
+ * significant word is blanked out and distractors are drawn from other
+ * significant words elsewhere in the same document.
+ */
+function buildClozeMcq(sentence: string, wordPool: string[], salt: number): MCQ | null {
+  const words = significantWords(sentence);
+  if (words.length === 0) return null;
+  const target = words[salt % words.length];
+  const blanked = sentence.replace(new RegExp(escapeRegExp(target)), '_______');
+  if (blanked === sentence) return null;
+
+  const others = wordPool.filter((w) => w.toLowerCase() !== target.toLowerCase());
+  const distractors: string[] = [];
+  for (let d = 0; d < others.length && distractors.length < 3; d++) {
+    const cand = others[(salt * 3 + d * 7 + d * d) % others.length];
+    if (
+      cand.toLowerCase() !== target.toLowerCase() &&
+      !distractors.some((x) => x.toLowerCase() === cand.toLowerCase())
+    ) {
+      distractors.push(cand);
+    }
+  }
+  if (distractors.length < 3) return null;
+
+  const correctSlot = salt % 4;
+  const options: string[] = [];
+  let di = 0;
+  for (let i = 0; i < 4; i++) {
+    options.push(i === correctSlot ? target : distractors[di++]);
+  }
+
+  return {
+    question: `Fill in the blank: ${blanked}`,
+    options,
+    correctAnswer: correctSlot,
+    explanation: `Straight from the document: "${sentence}"`,
+  };
+}
+
+/**
+ * Best-effort parse of the cloud MCQ format
+ * (Q1. ... / A) ... / Correct Answer: B / Explanation: ...).
+ * Returns [] when the response cannot be parsed — callers fall back to
+ * local generation.
+ */
+function parseCloudMcqs(raw: string): MCQ[] {
+  if (typeof raw !== 'string' || !raw.trim()) return [];
+  const blocks = raw.split(/\n?\s*Q\d+[.)]/i).slice(1);
+  const out: MCQ[] = [];
+  for (const block of blocks) {
+    const qMatch = block.match(/^\s*([\s\S]*?)\n\s*A\)/i);
+    const a = block.match(/\n\s*A\)\s*([^\n]*?)\s*(?=\n\s*B\))/i);
+    const b = block.match(/\n\s*B\)\s*([^\n]*?)\s*(?=\n\s*C\))/i);
+    const c = block.match(/\n\s*C\)\s*([^\n]*?)\s*(?=\n\s*D\))/i);
+    const d = block.match(/\n\s*D\)\s*([^\n]*?)\s*(?=\n)/i);
+    const correct = block.match(/Correct\s*Answer\s*[:=]?\s*([A-Da-d])/i);
+    const expl = block.match(/Explanation\s*[:=]?\s*([\s\S]*?)(?:\n\s*Q\d|$)/i);
+    if (!qMatch || !a || !b || !c || !d || !correct) continue;
+    const options = [a[1], b[1], c[1], d[1]].map((o) => o.trim()).filter(Boolean);
+    if (options.length !== 4) continue;
+    const correctIdx = 'ABCD'.indexOf(correct[1].toUpperCase());
+    if (correctIdx < 0 || correctIdx > 3) continue;
+    out.push({
+      question: qMatch[1].trim(),
+      options,
+      correctAnswer: correctIdx,
+      explanation: (expl?.[1] || '').trim(),
+    });
+  }
+  return out;
+}
+
+/** Fully local, deterministic study set derived from the actual document text. */
+function buildLocalStudySet(text: string): { notes: string; mcqs: MCQ[]; flashcards: Flashcard[] } {
+  const sentences = extractStudySentences(text);
+  const wordPool = Array.from(new Set(sentences.flatMap(significantWords)));
+
+  const mcqs: MCQ[] = [];
+  for (let i = 0; i < sentences.length && mcqs.length < 5; i++) {
+    const mcq = buildClozeMcq(sentences[i], wordPool, i);
+    if (mcq) mcqs.push(mcq);
+  }
+
+  const flashcards: Flashcard[] = [];
+  for (let i = 0; i < sentences.length && flashcards.length < 6; i++) {
+    const words = significantWords(sentences[i]);
+    if (words.length === 0) continue;
+    const target = words[(i + 3) % words.length];
+    const blanked = sentences[i].replace(new RegExp(escapeRegExp(target)), '_______');
+    if (blanked === sentences[i]) continue;
+    flashcards.push({ front: blanked, back: `"${target}" — full sentence: ${sentences[i]}` });
+  }
+
+  const topTerms = wordPool
+    .map((w) => ({ w, n: text.toLowerCase().split(w.toLowerCase()).length - 1 }))
+    .sort((x, y) => y.n - x.n)
+    .slice(0, 8)
+    .map((x) => x.w);
+
+  const notes =
+    '### Document Study Notes\n\n' +
+    '**Key passages from the document**:\n\n' +
+    sentences.slice(0, 6).map((s) => `• ${s}`).join('\n\n') +
+    (topTerms.length ? `\n\n**Frequently used terms**: ${topTerms.join(', ')}` : '');
+
+  return { notes, mcqs, flashcards };
 }
 
 export const PdfToStudyWorkspace: React.FC = () => {
@@ -77,94 +218,55 @@ export const PdfToStudyWorkspace: React.FC = () => {
     setIsGenerating(true);
     setErrorMessage(null);
 
+    let cloudNotes: string | null = null;
+    let cloudMcqs: MCQ[] = [];
+
     try {
-      // Call server route to generate notes and MCQs with Gemini 3.8 Flash
+      // Server route (only exists where a Node runtime is deployed).
+      // On static hosting (GitHub Pages) the request resolves to the
+      // host's 404 page — handled below; generation then falls back to
+      // the fully local path instead of failing.
       const [resNotes, resMcqs] = await Promise.all([
-        fetch('/api/gemini/assistant', {
+        fetch(withBasePath('/api/gemini/assistant'), {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ action: 'study_notes', text, language: targetLang }),
         }),
-        fetch('/api/gemini/assistant', {
+        fetch(withBasePath('/api/gemini/assistant'), {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ action: 'mcqs', text, language: targetLang }),
         }),
       ]);
-
-      const dataNotes = await resNotes.json();
-      const dataMcqs = await resMcqs.json();
-
-      setNotesContent(dataNotes.result || 'No notes generated.');
-
-      // Parse structured MCQs
-      const parsedMcqs: MCQ[] = [
-        {
-          question: 'What is the primary subject or obligation articulated in the opening sections?',
-          options: [
-            'Operational compliance and core definitions',
-            'Financial ledger auditing exclusively',
-            'Third party licensing restrictions',
-            'Historical archiving procedures',
-          ],
-          correctAnswer: 0,
-          explanation: 'The initial chapters establish fundamental scope and operational terminology.',
-        },
-        {
-          question: 'Which principle governs data handling and authorization according to the document text?',
-          options: [
-            'Open public replication without restriction',
-            'Local-first privacy and controlled authorization',
-            'Third-party cloud dissemination by default',
-            'Manual paper storage only',
-          ],
-          correctAnswer: 1,
-          explanation: 'Security and authorization policies mandate verified handling and access control.',
-        },
-        {
-          question: 'What is the primary requirement for validating outputs?',
-          options: [
-            'Random sample audit',
-            'Deterministic inspection and verification protocols',
-            'Discretionary oversight',
-            'No verification required',
-          ],
-          correctAnswer: 1,
-          explanation: 'Verification protocols guarantee precision and consistency.',
-        },
-      ];
-
-      setMcqs(parsedMcqs);
-
-      // Create flashcards from sentences and key concepts
-      const sentences = text.split(/[.!?]+/).map((s) => s.trim()).filter((s) => s.length > 20);
-      const generatedCards: Flashcard[] = [
-        {
-          front: 'Key Objective of the Document',
-          back: sentences[0] || 'Core document mandate and introductory premise.',
-        },
-        {
-          front: 'Primary Requirement / Criterion',
-          back: sentences[1] || 'Specific guidelines and operational criteria established by the text.',
-        },
-        {
-          front: 'Conclusion / Action Item',
-          back: sentences[sentences.length - 2] || 'Summary finding and recommendations for implementation.',
-        },
-      ];
-      setFlashcards(generatedCards);
+      if (resNotes.ok) {
+        try {
+          const d = await resNotes.json();
+          if (typeof d?.result === 'string' && d.result.trim()) cloudNotes = d.result;
+        } catch { /* non-JSON (static host 404 page) — local fallback */ }
+      }
+      if (resMcqs.ok) {
+        try {
+          const d = await resMcqs.json();
+          cloudMcqs = parseCloudMcqs(d?.result || '');
+        } catch { /* non-JSON — local fallback */ }
+      }
     } catch (err: any) {
-      console.warn('AI generation fell back to heuristic study cards:', err);
-      // Fallback to local heuristic study generation
-      const sentences = text.split(/[.!?]+/).map((s) => s.trim()).filter((s) => s.length > 20);
-      setNotesContent(
-        `### Document Study Notes\n\n` +
-          `**Summary Highlights**:\n` +
-          sentences.slice(0, 6).map((s) => `• ${s}`).join('\n\n')
-      );
-    } finally {
-      setIsGenerating(false);
+      console.warn('Cloud study generation unavailable; using local generation:', err?.message || err);
     }
+
+    // Everything below is derived from the document's actual text, so the
+    // study set is real in every deployment, including fully static hosting.
+    const local = buildLocalStudySet(text);
+    if (!cloudNotes && local.mcqs.length === 0 && local.flashcards.length === 0 && !local.notes) {
+      setErrorMessage('Not enough readable text in this document to build study materials.');
+      setIsGenerating(false);
+      return;
+    }
+
+    setNotesContent(cloudNotes || local.notes);
+    setMcqs(cloudMcqs.length >= 1 ? cloudMcqs : local.mcqs);
+    setFlashcards(local.flashcards);
+    setIsGenerating(false);
   };
 
   const handleSelectQuizOption = (qIdx: number, optIdx: number) => {
@@ -302,6 +404,11 @@ export const PdfToStudyWorkspace: React.FC = () => {
                 {/* 2. MCQs with Answer Reveal */}
                 {studyTab === 'mcq' && (
                   <div className="space-y-4">
+                    {mcqs.length === 0 && (
+                    <p className="text-center text-sm text-[#5C554F] dark:text-[#A39991] py-8">
+                      No questions could be derived from this document. Try a document with longer passages.
+                    </p>
+                    )}
                     {mcqs.map((q, qIdx) => (
                       <div
                         key={qIdx}
@@ -390,6 +497,11 @@ export const PdfToStudyWorkspace: React.FC = () => {
                 {/* 4. Interactive Quiz Mode */}
                 {studyTab === 'quiz' && (
                   <div className="space-y-4">
+                    {mcqs.length === 0 && (
+                    <p className="text-center text-sm text-[#5C554F] dark:text-[#A39991] py-8">
+                      No questions could be derived from this document. Try a document with longer passages.
+                    </p>
+                    )}
                     {quizSubmitted && (
                       <div className="p-4 rounded-xl bg-[#238B63]/10 border border-[#238B63]/30 text-center space-y-1">
                         <h4 className="text-sm font-bold text-[#238B63]">
