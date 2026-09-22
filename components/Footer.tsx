@@ -130,15 +130,37 @@ export const Footer: React.FC = () => {
           </div>
         </div>
 
-        {/* Bottom Bar */}
-        <div className="pt-8 border-t border-[#E8DFD3] dark:border-[#2E2629] flex flex-col sm:flex-row items-center justify-between gap-4 text-xs">
-          <p>© 2026 PDFMiniFly. All rights reserved.</p>
-          <div className="flex items-center gap-2">
-            <span className="inline-block w-2 h-2 rounded-full bg-[#35C98A]"></span>
-            <span className="font-bold tracking-wider uppercase text-[11px] text-[#4A0D20] dark:text-[#C9A15A]">
-              PRIVATE • POWERFUL • LOCAL
+        {/* Creator Credit */}
+        <div className="pt-8 border-t border-[#E8DFD3] dark:border-[#2E2629] flex flex-col items-center text-center gap-2.5">
+          <div className="flex items-center font-sans">
+            <span
+              className="text-lg font-black text-[#7A1635] dark:text-[#F7F1E8] tracking-tight"
+              style={{ fontFamily: 'system-ui, -apple-system, sans-serif' }}
+            >
+              PDF
+            </span>
+            <span
+              className="text-lg font-black text-[#1A1416] dark:text-[#F7F1E8] tracking-tight"
+              style={{ fontFamily: 'system-ui, -apple-system, sans-serif' }}
+            >
+              MiniFly
             </span>
           </div>
+          <div className="flex items-center gap-2">
+            <span className="inline-block w-2 h-2 rounded-full bg-[#35C98A]"></span>
+            <span className="font-extrabold tracking-[0.18em] uppercase text-[11px] text-[#4A0D20] dark:text-[#C9A15A]">
+              Private • Powerful • Local
+            </span>
+          </div>
+          <p className="text-xs text-[#5C5256] dark:text-[#AFA6A8]">
+            Crafted &amp; Developed by{' '}
+            <span className="font-black text-sm tracking-wide text-[#1A1416] dark:text-[#F7F1E8]">
+              PKD
+            </span>
+          </p>
+          <p className="text-[11px] text-[#5C5256] dark:text-[#AFA6A8]">
+            &copy; 2026 PDFMiniFly. All rights reserved.
+          </p>
         </div>
       </div>
     </footer>
