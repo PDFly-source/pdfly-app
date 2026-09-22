@@ -10,3 +10,6 @@ coverage/
 
 # Next.js static export output (output: export)
 out/
+
+# npm lockfile - this project is Bun-only; bun.lock is the canonical lockfile
+package-lock.json
