@@ -134,7 +134,7 @@ export const Footer: React.FC = () => {
         <div className="pt-8 border-t border-[#E8DFD3] dark:border-[#2E2629] flex flex-col items-center text-center gap-2.5">
           <div className="flex items-center font-sans">
             <span
-              className="text-lg font-black text-[#7A1635] dark:text-[#F7F1E8] tracking-tight"
+              className="text-lg font-black text-[#7A1635] dark:text-[#C15B72] tracking-tight"
               style={{ fontFamily: 'system-ui, -apple-system, sans-serif' }}
             >
               PDF

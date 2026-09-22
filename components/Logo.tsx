@@ -63,7 +63,7 @@ export const Logo: React.FC<LogoProps> = ({
           <div className="flex items-center tracking-tight font-extrabold font-sans">
             {/* "PDF" in Deep Burgundy */}
             <span
-              className={`${textSize} font-black text-[#7A1635] dark:text-[#F7F1E8] tracking-tight`}
+              className={`${textSize} font-black text-[#7A1635] dark:text-[#C15B72] tracking-tight`}
               style={{
                 fontFamily: 'system-ui, -apple-system, sans-serif',
               }}
