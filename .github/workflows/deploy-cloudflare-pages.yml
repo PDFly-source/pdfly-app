@@ -74,17 +74,27 @@ jobs:
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
         run: |
           set -euo pipefail
-          if curl -fsS -H "Authorization: Bearer $CLOUDFLARE_API_TOKEN" \
-              "https://api.cloudflare.com/client/v4/accounts/$CLOUDFLARE_ACCOUNT_ID/pages/projects" \
-              | grep -q '"name": *"pdfminifly"'; then
+          API="https://api.cloudflare.com/client/v4/accounts/$CLOUDFLARE_ACCOUNT_ID/pages/projects"
+          AUTH="Authorization: Bearer $CLOUDFLARE_API_TOKEN"
+          LIST_STATUS=$(curl -s -o /tmp/cf-projects.json -w '%{http_code}' -H "$AUTH" "$API")
+          if [ "$LIST_STATUS" = "200" ] && grep -q '"name": *"pdfminifly"' /tmp/cf-projects.json; then
             echo "Project pdfminifly already exists — reusing it."
           else
-            curl -fsS -X POST \
-              -H "Authorization: Bearer $CLOUDFLARE_API_TOKEN" \
-              -H "Content-Type: application/json" \
-              --data '{"name":"pdfminifly","production_branch":"main"}' \
-              "https://api.cloudflare.com/client/v4/accounts/$CLOUDFLARE_ACCOUNT_ID/pages/projects" >/dev/null
-            echo "Project pdfminifly created with production branch main."
+            echo "Project list check returned HTTP $LIST_STATUS; verifying via create (409 = exists)…"
+            head -c 400 /tmp/cf-projects.json || true
+            echo ""
+            CREATE_STATUS=$(curl -s -o /tmp/cf-create.json -w '%{http_code}' -X POST \
+              -H "$AUTH" -H "Content-Type: application/json" \
+              --data '{"name":"pdfminifly","production_branch":"main"}' "$API")
+            if [ "$CREATE_STATUS" = "200" ]; then
+              echo "Project pdfminifly created with production branch main."
+            elif [ "$CREATE_STATUS" = "409" ]; then
+              echo "Project pdfminifly already exists (create returned 409) — reusing it."
+            else
+              echo "Project creation failed with HTTP $CREATE_STATUS:"
+              head -c 400 /tmp/cf-create.json || true
+              exit 1
+            fi
           fi
 
       - name: Deploy out/ to Cloudflare Pages
