@@ -73,10 +73,18 @@ jobs:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
         run: |
-          if ! npx --yes wrangler@3 pages project list 2>/dev/null | grep -q '"name": "pdfminifly"'; then
-            npx --yes wrangler@3 pages project create pdfminifly --production-branch main
-          else
+          set -euo pipefail
+          if curl -fsS -H "Authorization: Bearer $CLOUDFLARE_API_TOKEN" \
+              "https://api.cloudflare.com/client/v4/accounts/$CLOUDFLARE_ACCOUNT_ID/pages/projects" \
+              | grep -q '"name":"pdfminifly"'; then
             echo "Project pdfminifly already exists — reusing it."
+          else
+            curl -fsS -X POST \
+              -H "Authorization: Bearer $CLOUDFLARE_API_TOKEN" \
+              -H "Content-Type: application/json" \
+              --data '{"name":"pdfminifly","production_branch":"main"}' \
+              "https://api.cloudflare.com/client/v4/accounts/$CLOUDFLARE_ACCOUNT_ID/pages/projects" >/dev/null
+            echo "Project pdfminifly created with production branch main."
           fi
 
       - name: Deploy out/ to Cloudflare Pages
