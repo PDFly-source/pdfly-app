@@ -56,6 +56,7 @@ export async function generateMetadata({ params }: ToolPageProps): Promise<Metad
       card: 'summary_large_image',
       title,
       description,
+      images: [`${SITE_URL}/og-image.png`],
     },
   };
 }

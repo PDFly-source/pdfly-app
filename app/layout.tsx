@@ -138,7 +138,6 @@ const webAppSchema = {
             `,
           }}
         />
-        <title>PDFMiniFly — Private PDF Tools | Powerful. Local. Secure.</title>
         <link rel="manifest" href={withBasePath('/manifest.json')} />
         <meta name="application-name" content="PDFMiniFly" />
         <meta name="theme-color" content="#741B35" />
