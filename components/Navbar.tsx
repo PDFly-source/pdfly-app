@@ -49,7 +49,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenRecent }) => {
             <Logo size="md" variant="compact" />
 
             {/* Desktop Navigation */}
-            <nav className="hidden md:flex items-center gap-1" aria-label="Main Navigation">
+            <nav className="hidden xl:flex items-center gap-1" aria-label="Main Navigation">
               {navLinks.map((link) => {
                 const isActive = pathname === link.href;
                 return (
@@ -70,7 +70,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenRecent }) => {
           </div>
 
           {/* Right Desktop Controls */}
-          <div className="hidden md:flex items-center gap-2.5">
+          <div className="hidden xl:flex items-center gap-2.5">
             {/* Command Search Trigger */}
             <button
               onClick={() => setSearchOpen(true)}
@@ -110,7 +110,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenRecent }) => {
           </div>
 
           {/* Mobile Header Right */}
-          <div className="flex md:hidden items-center gap-1">
+          <div className="flex xl:hidden items-center gap-1">
             <button
               onClick={() => setSearchOpen(true)}
               className="p-2 min-w-[44px] min-h-[44px] flex items-center justify-center rounded-xl text-[#5C5256] dark:text-[#AFA6A8] hover:text-[#7A1635] dark:hover:text-[#C9A15A] transition-colors"
@@ -135,7 +135,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenRecent }) => {
       </header>
 
       {/* Mobile Menu — native-style bottom sheet for one-handed reach */}
-      <div className="md:hidden">
+      <div className="xl:hidden">
         <BottomSheet
           isOpen={mobileMenuOpen}
           onClose={() => setMobileMenuOpen(false)}
