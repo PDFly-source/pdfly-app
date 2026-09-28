@@ -7,7 +7,9 @@ processing is performed locally in your browser whenever technically possible:
 files are not uploaded to a server for the local tools, and nothing is stored
 in the cloud.
 
-**Production:** https://pdfly-source.github.io/pdfly-app/
+**Production (primary):** https://pdfminifly.pages.dev/
+
+**Secondary deployment:** https://pdfly-source.github.io/pdfly-app/
 
 ## What it is
 
@@ -84,9 +86,16 @@ and left empty for local development or a future custom domain.
 
 ## Deployment
 
-GitHub Actions builds and publishes the static export to GitHub Pages on every
-push to `main`. The deployment is fully static: no server, no database, no
-API endpoints are used in production.
+GitHub Actions builds the static export on every push to `main` and publishes
+two production deployments:
+
+- **Cloudflare Pages (primary):** https://pdfminifly.pages.dev/ — root
+  deployment via `.github/workflows/deploy-cloudflare-pages.yml`.
+- **GitHub Pages (secondary):** https://pdfly-source.github.io/pdfly-app/ —
+  `/pdfly-app` base-path deployment via `.github/workflows/deploy-pages.yml`.
+
+The deployment is fully static: no server, no database, no API endpoints are
+used in production.
 
 ## Release history
 
