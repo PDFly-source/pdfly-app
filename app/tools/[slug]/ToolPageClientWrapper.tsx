@@ -41,6 +41,10 @@ import {
   Share2,
   Wrench,
   Contrast,
+  ImageDown,
+  Scaling,
+  Wand,
+  Crop,
 } from 'lucide-react';
 
 // Workspaces
@@ -184,6 +188,26 @@ const CompressTargetWorkspace = dynamic(
   () => import('@/components/tools/CompressTargetWorkspace').then((m) => ({ default: m.CompressTargetWorkspace })),
   { ssr: false, loading: WorkspaceLoading }
 );
+const ImageCompressorWorkspace = dynamic(
+  () => import('@/components/tools/ImageCompressorWorkspace').then((m) => ({ default: m.ImageCompressorWorkspace })),
+  { ssr: false, loading: WorkspaceLoading }
+);
+const ImageResizeWorkspace = dynamic(
+  () => import('@/components/tools/ImageResizeWorkspace').then((m) => ({ default: m.ImageResizeWorkspace })),
+  { ssr: false, loading: WorkspaceLoading }
+);
+const ImageCropWorkspace = dynamic(
+  () => import('@/components/tools/ImageCropWorkspace').then((m) => ({ default: m.ImageCropWorkspace })),
+  { ssr: false, loading: WorkspaceLoading }
+);
+const BackgroundRemoverWorkspace = dynamic(
+  () => import('@/components/tools/BackgroundRemoverWorkspace').then((m) => ({ default: m.BackgroundRemoverWorkspace })),
+  { ssr: false, loading: WorkspaceLoading }
+);
+const ImageWatermarkWorkspace = dynamic(
+  () => import('@/components/tools/ImageWatermarkWorkspace').then((m) => ({ default: m.ImageWatermarkWorkspace })),
+  { ssr: false, loading: WorkspaceLoading }
+);
 const SplitBySizeWorkspace = dynamic(
   () => import('@/components/tools/SplitBySizeWorkspace').then((m) => ({ default: m.SplitBySizeWorkspace })),
   { ssr: false, loading: WorkspaceLoading }
@@ -222,6 +246,10 @@ const InvertColorsWorkspace = dynamic(
 );
 
 const ICON_MAP: Record<string, React.ElementType> = {
+  ImageDown,
+  Scaling,
+  Wand,
+  Crop,
   Layers,
   Scissors,
   Grid,
@@ -355,6 +383,16 @@ export const ToolPageClientWrapper: React.FC<ToolPageClientWrapperProps> = ({
         return <DocxConverterWorkspace mode="pdf-to-docx" />;
       case 'compress-to-target-size':
         return <CompressTargetWorkspace />;
+      case 'image-compressor':
+        return <ImageCompressorWorkspace />;
+      case 'image-resizer':
+        return <ImageResizeWorkspace />;
+      case 'image-crop':
+        return <ImageCropWorkspace />;
+      case 'background-remover':
+        return <BackgroundRemoverWorkspace />;
+      case 'image-watermark':
+        return <ImageWatermarkWorkspace />;
       case 'split-by-size':
         return <SplitBySizeWorkspace />;
       case 'crop-trim-pdf':

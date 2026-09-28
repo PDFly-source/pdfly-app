@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "@google/genai": "^2.4.0",
+    "@mediapipe/selfie_segmentation": "^0.1.1675465747",
     "autoprefixer": "^10.4.21",
     "clsx": "^2.1.1",
     "jszip": "^3.10.2",

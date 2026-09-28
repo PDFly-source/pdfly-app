@@ -13,7 +13,7 @@ in the cloud.
 
 ## What it is
 
-A browser-based PDF workspace with **44 tools** covering organizing, editing,
+A browser-based PDF workspace with **49 tools** covering organizing, editing,
 converting, protecting, analyzing, and automating PDF documents. The
 application ships as a static site (Next.js static export) and installs as a
 Progressive Web App (PWA) for offline use.

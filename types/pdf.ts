@@ -10,7 +10,8 @@ export type ToolCategory =
   | 'extract'
   | 'ai'
   | 'productivity'
-  | 'advanced';
+  | 'advanced'
+  | 'image';
 
 export interface ToolDefinition {
   id: string;

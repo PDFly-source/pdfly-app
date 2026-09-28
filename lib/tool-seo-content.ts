@@ -523,4 +523,76 @@ export const TOOL_SEO_CONTENT: Record<string, ToolSeoContent> = {
       },
     ],
   },
+
+  // ===== IMAGE STUDIO =====
+  'image-compressor': {
+    intro:
+      'Shrink JPG, PNG, and WebP files with true per-image control: pick an output format and quality, or set a target file size and let PDFMiniFly search for the honest best quality that fits. Everything is encoded inside your browser — your photos are never uploaded.',
+    faqs: [
+      {
+        q: 'How does the target-size mode work?',
+        a: 'PDFMiniFly repeatedly encodes your image at different quality levels, fully in your browser, and reports the real result. If the target cannot be met without destroying the image, it says so instead of pretending it succeeded.',
+      },
+      {
+        q: 'Is PNG transparency preserved?',
+        a: 'Yes — PNG and WebP exports keep the original alpha channel. JPG output flattens transparency onto white because the JPG format has no transparency.',
+      },
+    ],
+  },
+  'image-resizer': {
+    intro:
+      'Resize images to exact pixel dimensions, percentages, or fit them inside a box while locking the aspect ratio, and convert between JPG, PNG, and WebP at the same time. Processing happens locally with canvas — no upload, no queue, no watermark.',
+    faqs: [
+      {
+        q: 'What is the difference between exact and fit modes?',
+        a: 'Exact produces precisely the width and height you enter. Fit scales the image to fit inside your target box without distortion, so one dimension may come out smaller than the box.',
+      },
+      {
+        q: 'Can PDFMiniFly change DPI/PPI metadata?',
+        a: 'No — browsers cannot reliably write DPI metadata into JPG/PNG files, so PDFMiniFly does not pretend to. This tool changes real pixel dimensions; use your target software to set print DPI.',
+      },
+    ],
+  },
+  'image-crop': {
+    intro:
+      'Drag, resize, zoom, and pan a crop region directly on your photo, with rotate and flip tools for composition fixes. The exported file is built from the actual selected pixels — not a CSS crop — so what you download is exactly what you framed.',
+    faqs: [
+      {
+        q: 'Does cropping reduce image quality?',
+        a: 'Cropping discards the pixels outside your selection and keeps the selected pixels at full original resolution. Nothing is upscaled, so quality inside the crop is untouched.',
+      },
+      {
+        q: 'Which aspect ratios are available?',
+        a: 'Free crop, 1:1, 4:5, 3:4, 16:9, and A4 are built in. Exports are available as PNG, JPG, or WebP.',
+      },
+    ],
+  },
+  'background-remover': {
+    intro:
+      'Cut out subjects from photos without uploading them anywhere. AI Person mode runs a Google segmentation model directly in your browser to remove the background around people; Smart Color mode detects uniform backgrounds with a local flood-fill algorithm. Your image bytes never leave your device.',
+    faqs: [
+      {
+        q: 'Does background removal upload my photo?',
+        a: 'Never. Segmentation runs locally with WebAssembly/GPU in your browser. The AI model files are small and downloaded once from this site — that is a model download, not an image upload, and it is cached for offline use.',
+      },
+      {
+        q: 'Which mode should I choose?',
+        a: 'AI Person mode is built for photos of people (portraits, teams, selfies). Smart Color mode works best for objects on plain or uniform backgrounds. Complex, cluttered backgrounds behind objects are beyond what local models can reliably segment.',
+      },
+    ],
+  },
+  'image-watermark': {
+    intro:
+      'Place text or logo watermarks — singly or tiled across the whole image — and add real annotations: arrows, boxes, circles, highlights, freehand pen, plus blur and pixelation for hiding sensitive details. Every edit is rendered into the exported pixels, so the download contains exactly what you see.',
+    faqs: [
+      {
+        q: 'Are the annotations burned into the exported image?',
+        a: 'Yes. Blur, pixelation, watermarks, and drawings are all rendered into the final PNG, JPG, or WebP during export — they do not vanish after download.',
+      },
+      {
+        q: 'Can I hide sensitive parts of a photo?',
+        a: 'Yes — draw a blur or pixelation region over any area. The pixels inside are genuinely blurred or block-averaged, so the information is not recoverable from the exported file.',
+      },
+    ],
+  },
 };

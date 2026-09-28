@@ -3,13 +3,16 @@
 import React from 'react';
 import Link from 'next/link';
 import { ToolDefinition } from '@/types/pdf';
-import { Layers, Scissors, Grid, Minimize2, FileText, Edit3, PenTool, ShieldCheck, Stamp, Hash, Image, FileImage, ScanText, ArrowRight, Sparkles, FileX, BookOpen, Volume2, Activity, Trash2, Eye, Workflow, Sparkle, FileSpreadsheet, Lock, Search, Code, CheckCircle2, Shield, Layers2, Share2, Table2, FileType, FileDown, Target, Package, Crop, LayoutGrid, Droplets, Printer, FileCode2 } from 'lucide-react';
+import { Layers, Scissors, Grid, Minimize2, FileText, Edit3, PenTool, ShieldCheck, Stamp, Hash, Image, FileImage, ScanText, ArrowRight, Sparkles, FileX, BookOpen, Volume2, Activity, Trash2, Eye, Workflow, Sparkle, FileSpreadsheet, Lock, Search, Code, CheckCircle2, Shield, Layers2, Share2, Table2, FileType, FileDown, Target, Package, Crop, LayoutGrid, Droplets, Printer, FileCode2, ImageDown, Scaling, Wand} from 'lucide-react';
 
 interface ToolCardProps {
   tool: ToolDefinition;
 }
 
 const ICON_MAP: Record<string, React.ElementType> = {
+  Wand,
+  Scaling,
+  ImageDown,
   Layers,
   Scissors,
   Grid,

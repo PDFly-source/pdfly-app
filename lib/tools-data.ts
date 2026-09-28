@@ -748,7 +748,86 @@ export const ALL_TOOLS: ToolDefinition[] = [
     keywords: ['invert pdf colors', 'dark mode pdf', 'high contrast pdf', 'negative pdf', 'inverted print pdf', 'read pdf in dark'],
     seoTitle: 'Invert PDF Colors – Dark Reader & High Contrast | PDFMiniFly',
     seoDescription: 'Convert PDFs to gentle dark mode, high-contrast black & white, or inverted print for scanned books and night reading. Live split preview.'
-  }
+  },
+  // ==========================================
+  // IMAGE STUDIO — local-first image tools
+  // ==========================================
+  {
+    id: 'image-compressor',
+    slug: 'image-compressor',
+    name: 'Image Compressor Pro',
+    description: 'Compress JPG, PNG, and WebP images locally — by quality or to an honest target file size.',
+    category: 'image',
+    categoryLabel: 'Image Studio',
+    iconName: 'ImageDown',
+    accepts: ['.jpg', '.jpeg', '.png', '.webp', 'image/jpeg', 'image/png', 'image/webp'],
+    maxFiles: 20,
+    outputExt: '.zip',
+    keywords: ['compress image', 'shrink image', 'image size', 'reduce jpg', 'webp compress', 'image optimizer'],
+    seoTitle: 'Compress Images Online – JPG, PNG & WebP | PDFMiniFly',
+    seoDescription: 'Compress JPG, PNG, and WebP images to a target file size entirely in your browser. Private, local-first image compression with no uploads.'
+  },
+  {
+    id: 'image-resizer',
+    slug: 'image-resizer',
+    name: 'Image Resize & Convert',
+    description: 'Resize and convert images between JPG, PNG, and WebP with aspect-ratio and preset control.',
+    category: 'image',
+    categoryLabel: 'Image Studio',
+    iconName: 'Scaling',
+    accepts: ['.jpg', '.jpeg', '.png', '.webp', 'image/jpeg', 'image/png', 'image/webp'],
+    maxFiles: 20,
+    outputExt: '.zip',
+    keywords: ['resize image', 'image dimensions', 'convert jpg', 'png to webp', 'webp to jpg', 'image converter'],
+    seoTitle: 'Resize & Convert Images Online – JPG, PNG, WebP | PDFMiniFly',
+    seoDescription: 'Resize images to exact dimensions, percentages, or fit boxes and convert between JPG, PNG, and WebP. Fully local browser processing, no uploads.'
+  },
+  {
+    id: 'image-crop',
+    slug: 'image-crop',
+    name: 'Advanced Crop Studio',
+    description: 'Interactive crop with zoom, pan, rotate, and flips — exported at true pixel resolution.',
+    category: 'image',
+    categoryLabel: 'Image Studio',
+    iconName: 'Crop',
+    accepts: ['.jpg', '.jpeg', '.png', '.webp', 'image/jpeg', 'image/png', 'image/webp'],
+    maxFiles: 1,
+    outputExt: '.png',
+    keywords: ['crop image', 'photo cropper', 'aspect ratio crop', 'trim image', 'rotate image'],
+    seoTitle: 'Crop Images Online – Free Interactive Crop Tool | PDFMiniFly',
+    seoDescription: 'Crop images with real pixel accuracy: drag, resize, zoom, pan, rotate, and flip — then export PNG, JPG, or WebP. All processing stays in your browser.'
+  },
+  {
+    id: 'background-remover',
+    slug: 'background-remover',
+    name: 'Local Background Remover',
+    description: 'Remove backgrounds around people with a local AI model — or by color detection. No uploads, ever.',
+    category: 'image',
+    categoryLabel: 'Image Studio',
+    iconName: 'Wand',
+    accepts: ['.jpg', '.jpeg', '.png', '.webp', 'image/jpeg', 'image/png', 'image/webp'],
+    maxFiles: 1,
+    outputExt: '.png',
+    keywords: ['remove background', 'transparent background', 'background eraser', 'cut out image', 'png transparent'],
+    seoTitle: 'Remove Image Backgrounds Locally – Private AI Tool | PDFMiniFly',
+    seoDescription: 'Remove image backgrounds with a local in-browser AI model or smart color detection. Your images never leave your device — private by design.'
+  },
+  {
+    id: 'image-watermark',
+    slug: 'image-watermark',
+    name: 'Watermark & Annotation Studio',
+    description: 'Add text or logo watermarks and real annotations — blur, pixelate, arrows, highlights, and pen.',
+    category: 'image',
+    categoryLabel: 'Image Studio',
+    iconName: 'Stamp',
+    accepts: ['.jpg', '.jpeg', '.png', '.webp', 'image/jpeg', 'image/png', 'image/webp'],
+    maxFiles: 1,
+    outputExt: '.png',
+    keywords: ['watermark image', 'annotate photo', 'blur part of image', 'pixelate', 'logo watermark', 'highlight image'],
+    seoTitle: 'Watermark & Annotate Images Online – Private Tool | PDFMiniFly',
+    seoDescription: 'Add text or logo watermarks and draw real annotations — arrows, rectangles, highlights, blur, and pixelation — directly in your browser. No uploads.'
+  },
+
 ];
 
 export type { ToolCategory } from '@/types/pdf';
@@ -764,6 +843,7 @@ export const TOOL_CATEGORIES: { id: string; label: string }[] = [
   { id: 'extract', label: 'Extract' },
   { id: 'ai', label: 'AI' },
   { id: 'productivity', label: 'Productivity' },
+  { id: 'image', label: 'Image' },
 ];
 
 export function toolMatchesCategory(tool: ToolDefinition, catId: string): boolean {

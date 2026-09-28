@@ -1,5 +1,38 @@
 # Changelog
 
+## v1.1.0 — 2026-09-28
+
+Image Power Suite: five new local-first image tools, fully client-side.
+
+### Added
+- **Image Studio** category with 5 new tools (44 → 49 tools total):
+  - **Image Compressor Pro** (`/tools/image-compressor`): JPG/PNG/WebP
+    compression by quality or honest target-size search (batch up to 20,
+    per-file states, ZIP download-all).
+  - **Image Resize & Convert** (`/tools/image-resizer`): exact/fit/percent
+    resizing with aspect lock, presets (1:1, 4:5, 16:9, 1080p, 4K), and
+    JPG/PNG/WebP conversion (batch).
+  - **Advanced Crop Studio** (`/tools/image-crop`): interactive pointer-based
+    crop with zoom, pan, rotate 90°, flips, ratio presets, and true-pixel
+    export (PNG/JPG/WebP).
+  - **Local Background Remover** (`/tools/background-remover`): two genuine
+    local modes — AI Person (MediaPipe Selfie Segmentation, model vendored
+    same-origin, cached after first use) and Smart Color (deterministic
+    border flood-fill in a Web Worker).
+  - **Watermark & Annotation Studio** (`/tools/image-watermark`): text and
+    logo watermarks (single or tiled), plus real annotations — text, arrow,
+    rectangle, circle, highlight, blur, pixelate, and freehand pen — all
+    rendered into the exported pixels.
+- Pure image math library (`lib/image-geometry.ts`) and segmentation
+  (`lib/image-segmentation.ts`) with a bun test suite (`tests/`).
+- Tool registry, category filters, search, SEO content, and sitemap updated
+  for the new tools.
+
+### Privacy
+- All image processing is client-side (Canvas, ImageBitmap, Blob Workers).
+- No image bytes are ever uploaded; the only network fetch in the new tools
+  is the small local AI model, downloaded once from this site and cached.
+
 ## v1.0.0 — 2026-09-22
 
 First public release. Production deployment:
