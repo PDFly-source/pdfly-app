@@ -123,7 +123,7 @@ export const ImageCompressorWorkspace: React.FC = () => {
         processed += 1;
         continue;
       }
-      updateItem(item.id, { status: 'processing', error: undefined });
+      updateItem(item.id, { status: 'processing', error: undefined, outQuality: undefined, targetMet: undefined });
       const format = mimeOf(item.file, output);
       const ext = extensionForFormat(format);
       const baseName = item.file.name.replace(/\.[^.]+$/, '');
@@ -323,7 +323,9 @@ export const ImageCompressorWorkspace: React.FC = () => {
                     {formatBytes(item.file.size)}
                     {item.status === 'done' && item.outBytes != null && (
                       <> → <span className="font-semibold text-foreground">{formatBytes(item.outBytes)}</span>{' '}
-                        ({Math.round((1 - item.outBytes / item.file.size) * 100)}% smaller)
+                        ({item.outBytes <= item.file.size
+                          ? `${Math.round((1 - item.outBytes / item.file.size) * 100)}% smaller`
+                          : `${Math.round((item.outBytes / item.file.size - 1) * 100)}% larger`})
                         {item.outQuality != null && <> · q{Math.round(item.outQuality * 100)}</>}
                         {item.targetMet === false && (
                           <span className="text-amber-600 dark:text-amber-400"> · target not reachable — best real result shown</span>

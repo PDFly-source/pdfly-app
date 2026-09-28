@@ -35,7 +35,7 @@ import {
 type Handle = 'nw' | 'ne' | 'sw' | 'se' | 'n' | 's' | 'w' | 'e';
 
 interface DragState {
-  kind: 'move' | 'resize' | 'pan';
+  kind: 'move' | 'resize' | 'pan' | 'newcrop';
   handle?: Handle;
   startX: number;
   startY: number;
@@ -247,11 +247,18 @@ export const ImageCropWorkspace: React.FC = () => {
     else if (near(rEdge, my)) handle = 'e';
 
     const inside = p.x >= rx && p.x <= rEdge && p.y >= ry && p.y <= bEdge;
+    // when the current crop covers essentially the whole image, dragging
+    // inside draws a NEW crop region (standard crop-tool behavior) instead
+    // of pointlessly "moving" a full-image crop.
+    const cropIsFull = rect.width * rect.height >= 0.985 * img.width * img.height;
 
     if (handle) {
       dragRef.current = { kind: 'resize', handle, startX: p.x, startY: p.y, startRect: { ...rect }, startPanX: pan.x, startPanY: pan.y };
-    } else if (inside) {
+    } else if (inside && !cropIsFull) {
       dragRef.current = { kind: 'move', startX: p.x, startY: p.y, startRect: { ...rect }, startPanX: pan.x, startPanY: pan.y };
+    } else if (inside && cropIsFull) {
+      // draw a fresh region anchored at the press point
+      dragRef.current = { kind: 'newcrop', startX: p.x, startY: p.y, startRect: { x: p.x, y: p.y, width: 0, height: 0 }, startPanX: pan.x, startPanY: pan.y };
     } else {
       dragRef.current = { kind: 'pan', startX: e.clientX, startY: e.clientY, startRect: { ...rect }, startPanX: pan.x, startPanY: pan.y };
     }
@@ -266,6 +273,23 @@ export const ImageCropWorkspace: React.FC = () => {
 
     if (drag.kind === 'pan') {
       setPan({ x: drag.startPanX + (e.clientX - drag.startX), y: drag.startPanY + (e.clientY - drag.startY) });
+      return;
+    }
+
+    if (drag.kind === 'newcrop') {
+      // draw fresh region from anchor to pointer (respect active ratio)
+      let w = p.x - drag.startX;
+      let h = p.y - drag.startY;
+      if (ratio != null) {
+        h = Math.sign(h || 1) * Math.abs(w) * ratio;
+      }
+      const next = clampCropRect({
+        x: Math.min(drag.startX, drag.startX + w),
+        y: Math.min(drag.startY, drag.startY + h),
+        width: Math.abs(w),
+        height: Math.abs(h),
+      }, img, MIN_CROP);
+      setRect(next);
       return;
     }
 
