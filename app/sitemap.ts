@@ -21,31 +21,31 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 1,
     },
     {
-      url: `${SITE_URL}/tools`,
+      url: `${SITE_URL}/tools/`,
       lastModified: now,
       changeFrequency: 'weekly',
       priority: 0.9,
     },
     {
-      url: `${SITE_URL}/about`,
+      url: `${SITE_URL}/about/`,
       lastModified: now,
       changeFrequency: 'monthly',
       priority: 0.6,
     },
     {
-      url: `${SITE_URL}/install`,
+      url: `${SITE_URL}/install/`,
       lastModified: now,
       changeFrequency: 'monthly',
       priority: 0.7,
     },
     {
-      url: `${SITE_URL}/privacy`,
+      url: `${SITE_URL}/privacy/`,
       lastModified: now,
       changeFrequency: 'yearly',
       priority: 0.4,
     },
     {
-      url: `${SITE_URL}/security`,
+      url: `${SITE_URL}/security/`,
       lastModified: now,
       changeFrequency: 'monthly',
       priority: 0.5,
@@ -53,7 +53,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
   ];
 
   const toolPages: MetadataRoute.Sitemap = ALL_TOOLS.map((tool) => ({
-    url: `${SITE_URL}/tools/${tool.slug}`,
+    url: `${SITE_URL}/tools/${tool.slug}/`,
     lastModified: now,
     changeFrequency: 'monthly',
     priority: tool.popular ? 0.9 : 0.8,
