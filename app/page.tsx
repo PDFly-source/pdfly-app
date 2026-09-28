@@ -10,6 +10,7 @@ import { MobileBottomNav } from '@/components/MobileBottomNav';
 import { RecentJobsModal } from '@/components/RecentJobsModal';
 import { RecentActivitySection } from '@/components/RecentActivitySection';
 import { ToolCard } from '@/components/ToolCard';
+import { AppMintlyBanner } from '@/components/AppMintlyBanner';
 import { PWAInstallButton } from '@/components/PWAInstallButton';
 import {
   ShieldCheck,
@@ -409,6 +410,11 @@ export default function HomePage() {
             )}
           </div>
         </section>
+
+        {/* ======================================================== */}
+        {/* APPMINTLY ECOSYSTEM BANNER (PDFMiniFly → AppMintly) */}
+        {/* ======================================================== */}
+        <AppMintlyBanner />
 
         {/* ======================================================== */}
         {/* POPULAR TOOLS SHOWCASE (TOP 8) */}
