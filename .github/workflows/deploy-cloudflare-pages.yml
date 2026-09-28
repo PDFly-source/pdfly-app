@@ -1,0 +1,100 @@
+name: Deploy to Cloudflare Pages
+
+# Root deployment of PDFMiniFly at https://pdfminifly.pages.dev/
+#
+# This workflow is fully INDEPENDENT of deploy-pages.yml (GitHub Pages),
+# which continues to build with NEXT_PUBLIC_BASE_PATH=/pdfly-app and is
+# NOT modified by this file. Both workflows trigger on push to main:
+#
+#   push to main ──┬── deploy-pages.yml          → https://pdfly-source.github.io/pdfly-app/
+#                  └── deploy-cloudflare-pages.yml → https://pdfminifly.pages.dev/
+#
+# Credentials (never hard-coded):
+#   CLOUDFLARE_API_TOKEN  — Cloudflare API token with "Cloudflare Pages: Edit"
+#   CLOUDFLARE_ACCOUNT_ID — Cloudflare account ID
+# Both are GitHub repository secrets (Settings → Secrets and variables → Actions).
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: cloudflare-pages-deploy
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  deploy-cloudflare:
+    name: Build & deploy to pdfminifly.pages.dev
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check required secrets
+        env:
+          HAS_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN != '' }}
+          HAS_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID != '' }}
+        run: |
+          if [ "$HAS_API_TOKEN" != "true" ] || [ "$HAS_ACCOUNT_ID" != "true" ]; then
+            echo "::error::Missing GitHub repository secrets. Add CLOUDFLARE_API_TOKEN and CLOUDFLARE_ACCOUNT_ID under Settings → Secrets and variables → Actions → New repository secret, then re-run this workflow."
+            exit 1
+          fi
+
+      - uses: actions/checkout@v4
+
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: 1.4.2
+
+      - name: Install dependencies (frozen lockfile)
+        run: bun install --frozen-lockfile
+
+      - name: Build static export (root deployment)
+        env:
+          NEXT_PUBLIC_BASE_PATH: ''
+          NEXT_PUBLIC_SITE_URL: https://pdfminifly.pages.dev
+        run: bun run build
+
+      - name: Verify build output
+        run: |
+          test -f out/manifest.json
+          test -f out/sw.js
+          test -f out/pdf.worker.min.mjs
+          test -d out/cmaps
+          ! grep -q '/pdfly-app' out/manifest.json
+          grep -q '"start_url": "/"' out/manifest.json
+          grep -q '"scope": "/"' out/manifest.json
+          grep -q '"id": "/"' out/manifest.json
+          echo "out/ verified: root manifest, service worker, PDF.js worker, cMaps present; no /pdfly-app references."
+
+      - name: Ensure Cloudflare Pages project exists
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          if ! npx --yes wrangler@3 pages project list 2>/dev/null | grep -q '"name": "pdfminifly"'; then
+            npx --yes wrangler@3 pages project create pdfminifly --production-branch main
+          else
+            echo "Project pdfminifly already exists — reusing it."
+          fi
+
+      - name: Deploy out/ to Cloudflare Pages
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: npx --yes wrangler@3 pages deploy out --project-name=pdfminifly --branch=main
+
+      - name: Verify production URL
+        run: |
+          for i in $(seq 1 12); do
+            code=$(curl -sL -o /dev/null -w '%{http_code}' --max-time 15 https://pdfminifly.pages.dev/ || echo 000)
+            if [ "$code" = "200" ]; then
+              echo "https://pdfminifly.pages.dev/ is live (HTTP 200)."
+              exit 0
+            fi
+            echo "attempt $i: HTTP $code — waiting 15s..."
+            sleep 15
+          done
+          echo "::error::https://pdfminifly.pages.dev/ did not return HTTP 200 after deployment."
+          exit 1
