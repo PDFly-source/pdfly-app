@@ -149,7 +149,7 @@ export const BrandSplash: React.FC<BrandSplashProps> = ({ autoDismissMs = 2600, 
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img className="bs-tx" src="/brand/splash/wordmark.jpg" alt="PDFMiniFly" width={185} height={48} />
         </div>
-        <div className="bs-pb" style={{["--pg" if False else "backgroundImage"]:"linear-gradient(90deg,#d71920,#ff7a1a)",left:70,right:70,backgroundColor:"rgba(215,25,32,.12)"}} />
+        <div className="bs-pb" style={{backgroundImage:"linear-gradient(90deg,#d71920,#ff7a1a)",left:70,right:70,backgroundColor:"rgba(215,25,32,.12)"}} />
       </div>
     </>
   );
